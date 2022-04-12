@@ -1,0 +1,1301 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<title>ComhBasics</title>
+</head>
+
+<body>
+
+<div id="page">
+
+<div id="header">
+</div>
+
+<div id="main">
+
+<h1 class="libtitle">Library ComhBasics</h1>
+
+<div class="code">
+</div>
+
+<div class="doc">
+This file was written by Colm Bhandal, PhD student, Foundations and Methods group,
+School of Computer Science and Statistics, Trinity College, Dublin, Ireland.
+<div class="paragraph"> </div>
+
+ Various constants relating to the comhordu model are assumed here. Also some basic notions
+are defined here such as the notion of a network of entities.
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.Extras.LibTactics</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">Fourier_util</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Export</span> <span class="id" title="var">List</span>.<br/>
+</div>
+
+<div class="doc">
+Notations stolen from tutorial.
+</div>
+<div class="code">
+<span class="id" title="keyword">Notation</span> &quot;x :: l" := (<span class="id" title="var">cons</span> <span class="id" title="var">x</span> <span class="id" title="var">l</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 60, <span class="id" title="tactic">right</span> <span class="id" title="keyword">associativity</span>).<br/>
+<span class="id" title="keyword">Notation</span> &quot;[ ]" := <span class="id" title="var">nil</span>.<br/>
+<span class="id" title="keyword">Notation</span> &quot;[ x , .. , y ]" := (<span class="id" title="var">cons</span> <span class="id" title="var">x</span> .. (<span class="id" title="var">cons</span> <span class="id" title="var">y</span> <span class="id" title="var">nil</span>) ..).<br/>
+<span class="id" title="keyword">Notation</span> &quot;e _: n" := (<span class="id" title="var">In</span> <span class="id" title="var">e</span> <span class="id" title="var">n</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 60).<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Export</span> <span class="id" title="var">Logic.Decidable</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.GenTacs</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.StandardResults</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ListSet</span>.<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">toNonneg</span> (<span class="id" title="var">r</span> : <span class="id" title="var">posreal</span>) : <span class="id" title="var">nonnegreal</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">h</span> := (<span class="id" title="var">Rlt_le</span> 0 <span class="id" title="var">r</span> (<span class="id" title="var">cond_pos</span> <span class="id" title="var">r</span>)) <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;<span class="id" title="var">mknonnegreal</span> <span class="id" title="var">r</span> <span class="id" title="var">h</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+A time value is a non negative real number.
+</div>
+<div class="code">
+<span class="id" title="keyword">Record</span> <span class="id" title="keyword">Time</span> := <span class="id" title="var">mkTime</span> {<span class="id" title="var">time</span> :&gt; <span class="id" title="var">nonnegreal</span>}.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">zeroTime</span> : <span class="id" title="keyword">Time</span> := <span class="id" title="var">mkTime</span> <span class="id" title="var">zeroNonneg</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Solves the goal 0 &lt;= u where u is some time.
+</div>
+<div class="code">
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">timeNonneg</span> := <br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| [ |- 0 &lt;= (<span class="id" title="var">nonneg</span> (<span class="id" title="var">time</span> ?<span class="id" title="var">t</span>))] =&gt; <span class="id" title="var">unwrap2_apply2</span> <span class="id" title="var">t</span><br/>
+&nbsp;&nbsp;| [ |- (<span class="id" title="var">nonneg</span> (<span class="id" title="var">time</span> <span class="id" title="var">zeroTime</span>)) &lt;= (<span class="id" title="var">nonneg</span> (<span class="id" title="var">time</span> ?<span class="id" title="var">t</span>))] =&gt; <span class="id" title="tactic">simpl</span>;<span class="id" title="var">unwrap2_apply2</span> <span class="id" title="var">t</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+A delay is a positive real number.
+</div>
+<div class="code">
+<span class="id" title="keyword">Record</span> <span class="id" title="var">Delay</span> := <span class="id" title="var">mkDelay</span> {<span class="id" title="var">delay</span> :&gt; <span class="id" title="var">posreal</span>}.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Solves the goal 0 &lt; u where u is some delay.
+</div>
+<div class="code">
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">delPos</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| [ |- 0 &lt; (<span class="id" title="var">pos</span> (<span class="id" title="var">delay</span> ?<span class="id" title="var">d</span>))] =&gt; <span class="id" title="var">unwrap2_apply2</span> <span class="id" title="var">d</span><br/>
+&nbsp;&nbsp;| [ |- (<span class="id" title="var">nonneg</span> (<span class="id" title="var">time</span> <span class="id" title="var">zeroTime</span>)) &lt; (<span class="id" title="var">pos</span> (<span class="id" title="var">delay</span> ?<span class="id" title="var">d</span>))] =&gt; <span class="id" title="tactic">simpl</span>;<span class="id" title="var">unwrap2_apply2</span> <span class="id" title="var">d</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+We can coerce a delay to be a time.
+</div>
+<div class="code">
+<span class="id" title="keyword">Coercion</span> <span class="id" title="var">delToTime</span> (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>) : <span class="id" title="keyword">Time</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">d</span> <span class="id" title="keyword">with</span> <span class="id" title="var">mkDelay</span> <span class="id" title="var">d0</span> =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">mkTime</span> <span class="id" title="var">d0</span> <span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+A distance is a non negative real number
+</div>
+<div class="code">
+<span class="id" title="keyword">Record</span> <span class="id" title="var">Distance</span> := <span class="id" title="var">mkDistance</span> {<span class="id" title="var">distance</span> :&gt; <span class="id" title="var">nonnegreal</span>}.<br/>
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">foldDist</span> <span class="id" title="var">l</span> <span class="id" title="var">l0</span> <span class="id" title="var">H</span> := <span class="id" title="tactic">replace</span> (<span class="id" title="var">dist_euc</span> (<span class="id" title="var">xCoord</span> <span class="id" title="var">l</span>) (<span class="id" title="var">yCoord</span> <span class="id" title="var">l</span>) (<span class="id" title="var">xCoord</span> <span class="id" title="var">l0</span>) (<span class="id" title="var">yCoord</span> <span class="id" title="var">l0</span>)) <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;(<span class="id" title="var">nonneg</span> (<span class="id" title="var">dist2d</span> <span class="id" title="var">l</span> <span class="id" title="var">l0</span>)) <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>;[ | <span class="id" title="tactic">simpl</span>;<span class="id" title="tactic">ring</span>].<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">distFun</span> <span class="id" title="var">p1</span> <span class="id" title="var">p2</span> := <span class="id" title="var">mkDistance</span> (<span class="id" title="var">dist2d</span> <span class="id" title="var">p1</span> <span class="id" title="var">p2</span>).<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">timeEqNonneg</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">t1</span> <span class="id" title="var">t2</span> : <span class="id" title="keyword">Time</span>), (<span class="id" title="var">time</span> <span class="id" title="var">t1</span>) = (<span class="id" title="var">time</span> <span class="id" title="var">t2</span>) -&gt; <span class="id" title="var">t1</span> = <span class="id" title="var">t2</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">t1</span>, <span class="id" title="var">t2</span>. <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">f_equal</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">timeEqR</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">t1</span> <span class="id" title="var">t2</span> : <span class="id" title="keyword">Time</span>), (<span class="id" title="var">nonneg</span> (<span class="id" title="var">time</span> <span class="id" title="var">t1</span>)) = (<span class="id" title="var">nonneg</span> (<span class="id" title="var">time</span> <span class="id" title="var">t2</span>)) -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">t1</span> = <span class="id" title="var">t2</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">timeEqNonneg</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">nonnegRealEqR</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">delayEqPos</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">d1</span> <span class="id" title="var">d2</span> : <span class="id" title="var">Delay</span>), <span class="id" title="var">delay</span> <span class="id" title="var">d1</span> = <span class="id" title="var">delay</span> <span class="id" title="var">d2</span> -&gt; <span class="id" title="var">d1</span> = <span class="id" title="var">d2</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">d1</span>, <span class="id" title="var">d2</span>. <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">f_equal</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">delayEqR</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">d1</span> <span class="id" title="var">d2</span> : <span class="id" title="var">Delay</span>), <span class="id" title="var">pos</span> <span class="id" title="var">d1</span> = <span class="id" title="var">pos</span> <span class="id" title="var">d2</span> -&gt; <span class="id" title="var">d1</span> = <span class="id" title="var">d2</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">delayEqPos</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">posRealEqR</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">nat_scope</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">lt_notEq</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">m</span> : <span class="id" title="var">nat</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">n</span> &lt; <span class="id" title="var">m</span> -&gt; <span class="id" title="var">n</span> &lt;&gt; <span class="id" title="var">m</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">not</span>; <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">H0</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">lt_irrefl</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Converts a decidable proposition to a boolean.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">decToBool</span> {<span class="id" title="var">P</span> : <span class="id" title="keyword">Prop</span>} (<span class="id" title="var">p</span> : {<span class="id" title="var">P</span>} + {~<span class="id" title="var">P</span>}) : <span class="id" title="var">bool</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">p</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| <span class="id" title="tactic">left</span> <span class="id" title="var">_</span> =&gt; <span class="id" title="var">true</span><br/>
+&nbsp;&nbsp;| <span class="id" title="tactic">right</span> <span class="id" title="var">_</span> =&gt; <span class="id" title="var">false</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Converts a decidable relation to a boolean.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">decToOption</span> {<span class="id" title="var">P</span> : <span class="id" title="keyword">Prop</span>} (<span class="id" title="var">p</span> : {<span class="id" title="var">P</span>} + {~<span class="id" title="var">P</span>}) : <span class="id" title="var">option</span> <span class="id" title="var">P</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">p</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| <span class="id" title="tactic">left</span> <span class="id" title="var">P</span> =&gt; <span class="id" title="var">Some</span> <span class="id" title="var">P</span><br/>
+&nbsp;&nbsp;| <span class="id" title="tactic">right</span> <span class="id" title="var">_</span> =&gt; <span class="id" title="var">None</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">lt_plus_r</span> (<span class="id" title="var">m</span> <span class="id" title="var">n</span> : <span class="id" title="var">nat</span>) :<br/>
+&nbsp;&nbsp;0 &lt; <span class="id" title="var">n</span> -&gt; <span class="id" title="var">m</span> &lt; <span class="id" title="var">m</span> + <span class="id" title="var">n</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">le_lt_trans</span> <span class="id" title="keyword">with</span> (<span class="id" title="var">m</span> := <span class="id" title="var">m</span> + 0).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">replace</span> (<span class="id" title="var">m</span> + 0) <span class="id" title="keyword">with</span> <span class="id" title="var">m</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">le_refl</span>. <span class="id" title="tactic">ring</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">plus_le_lt_compat</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">le_refl</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">lt_plus_l</span> (<span class="id" title="var">m</span> <span class="id" title="var">n</span> : <span class="id" title="var">nat</span>) :<br/>
+&nbsp;&nbsp;0 &lt; <span class="id" title="var">n</span> -&gt; <span class="id" title="var">m</span> &lt; <span class="id" title="var">n</span> + <span class="id" title="var">m</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">plus_comm</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">lt_plus_r</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">le_plus_r</span> (<span class="id" title="var">m</span> <span class="id" title="var">n</span> : <span class="id" title="var">nat</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">m</span> &lt;= <span class="id" title="var">m</span> + <span class="id" title="var">n</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">le_trans</span> <span class="id" title="keyword">with</span> (<span class="id" title="var">m</span> := <span class="id" title="var">m</span> + 0).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">replace</span> (<span class="id" title="var">m</span> + 0) <span class="id" title="keyword">with</span> <span class="id" title="var">m</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">le_refl</span>. <span class="id" title="tactic">ring</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">plus_le_compat</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">le_refl</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">le_0_n</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">le_plus_l</span> (<span class="id" title="var">m</span> <span class="id" title="var">n</span> : <span class="id" title="var">nat</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">m</span> &lt;= <span class="id" title="var">n</span> + <span class="id" title="var">m</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">plus_comm</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">le_plus_r</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">R_scope</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+inAtList a i l says that a is at position i in the list l.
+The first position is position 0.
+</div>
+<div class="code">
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">inAtList</span> {<span class="id" title="var">A</span> : <span class="id" title="keyword">Type</span>} (<span class="id" title="var">a</span> : <span class="id" title="var">A</span>) : <span class="id" title="var">nat</span> -&gt; <span class="id" title="var">list</span> <span class="id" title="var">A</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">inatlFst</span> (<span class="id" title="var">l</span> : <span class="id" title="var">list</span> <span class="id" title="var">A</span>) :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">inAtList</span> <span class="id" title="var">a</span> 0 (<span class="id" title="var">a</span> :: <span class="id" title="var">l</span>)<br/>
+&nbsp;&nbsp;| <span class="id" title="var">inatlCons</span> (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">a'</span> : <span class="id" title="var">A</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">list</span> <span class="id" title="var">A</span>) :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">inAtList</span> <span class="id" title="var">a</span> <span class="id" title="var">i</span> <span class="id" title="var">l</span> -&gt; <span class="id" title="var">inAtList</span> <span class="id" title="var">a</span> (<span class="id" title="var">S</span> <span class="id" title="var">i</span>) (<span class="id" title="var">a'</span> :: <span class="id" title="var">l</span>).<br/>
+
+<br/>
+<span class="id" title="keyword">Notation</span> &quot;a -@ i -: l" := (<span class="id" title="var">inAtList</span> <span class="id" title="var">a</span> <span class="id" title="var">i</span> <span class="id" title="var">l</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 50).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If an element is in a list according to the definition of inAtList,
+then it is in the list according to In.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">inAtList_inList</span> (<span class="id" title="var">A</span> : <span class="id" title="keyword">Type</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">A</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">list</span> <span class="id" title="var">A</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">a</span> -@ <span class="id" title="var">i</span> -: <span class="id" title="var">l</span> -&gt; <span class="id" title="var">a</span> <span class="id" title="var">_</span>: <span class="id" title="var">l</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">right</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If a is at i in l and so is a', then a = a'.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">inAtListUnique</span> (<span class="id" title="var">A</span> : <span class="id" title="keyword">Type</span>) (<span class="id" title="var">a</span> <span class="id" title="var">a'</span> : <span class="id" title="var">A</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">list</span> <span class="id" title="var">A</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">a</span> -@ <span class="id" title="var">i</span> -: <span class="id" title="var">l</span> -&gt; <span class="id" title="var">a'</span> -@ <span class="id" title="var">i</span> -: <span class="id" title="var">l</span> -&gt; <span class="id" title="var">a</span> = <span class="id" title="var">a'</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">IHinAtList</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+There either exists an element at position i or there doesn't.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">decInAtList</span> (<span class="id" title="var">A</span> : <span class="id" title="keyword">Type</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">list</span> <span class="id" title="var">A</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">decidable</span> (<span class="id" title="tactic">exists</span> <span class="id" title="var">a</span>, <span class="id" title="var">a</span> -@ <span class="id" title="var">i</span> -: <span class="id" title="var">l</span>). <span class="id" title="tactic">unfold</span> <span class="id" title="var">decidable</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">i</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">l</span>; <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">right</span>. <span class="id" title="tactic">intro</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">i</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">left</span>. <span class="id" title="tactic">exists</span> <span class="id" title="var">a</span>. <span class="id" title="tactic">constructor</span>. <span class="id" title="var">addHyp</span> (<span class="id" title="var">IHl</span> <span class="id" title="var">i</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>; <span class="id" title="tactic">clear</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">e</span> <span class="id" title="var">He</span>]. <span class="id" title="tactic">left</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">e</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">inatlCons</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">right</span>. <span class="id" title="tactic">intro</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">e</span> <span class="id" title="var">He</span>]. <span class="id" title="tactic">clear</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">He</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">exists</span> <span class="id" title="var">e</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Equality is decidable for times.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">eqDecTime</span> : <span class="id" title="var">eqDec</span> <span class="id" title="keyword">Time</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">eqDec</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">x1</span>, <span class="id" title="var">x2</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">generalize</span> (<span class="id" title="var">eqDecNonnegReal</span> <span class="id" title="var">time0</span> <span class="id" title="var">time1</span>). <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">left</span>. <span class="id" title="tactic">f_equal</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">right</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">not</span>; <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H1</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Equality is decidable on Delays.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">eqDecDelay</span> : <span class="id" title="var">eqDec</span> <span class="id" title="var">Delay</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">eqDec</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">x1</span>, <span class="id" title="var">x2</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">generalize</span> (<span class="id" title="var">eqDecPosReal</span> <span class="id" title="var">delay0</span> <span class="id" title="var">delay1</span>). <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">left</span>. <span class="id" title="tactic">f_equal</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">right</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">not</span>; <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H1</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">eqDecDistance</span> : <span class="id" title="var">eqDec</span> <span class="id" title="var">Distance</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">eqDec</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">x1</span>, <span class="id" title="var">x2</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">generalize</span> (<span class="id" title="var">eqDecNonnegReal</span> <span class="id" title="var">distance0</span> <span class="id" title="var">distance1</span>). <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">left</span>. <span class="id" title="tactic">f_equal</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">right</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">not</span>; <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H1</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Returns t1 - t2, or None if t1 &lt; t2.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">subtractTime</span> (<span class="id" title="var">t1</span> <span class="id" title="var">t2</span> : <span class="id" title="keyword">Time</span>) : <span class="id" title="var">option</span> <span class="id" title="keyword">Time</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">r1</span> := <span class="id" title="var">nonneg</span> <span class="id" title="var">t1</span> <span class="id" title="tactic">in</span> <span class="id" title="keyword">let</span> <span class="id" title="var">r2</span> := <span class="id" title="var">nonneg</span> <span class="id" title="var">t2</span> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">total_order_T</span> <span class="id" title="var">r1</span> <span class="id" title="var">r2</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">inleft</span> <span class="id" title="var">_</span> =&gt; <span class="id" title="var">None</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">inright</span> <span class="id" title="var">H</span> =&gt; <span class="id" title="var">Some</span> (<span class="id" title="var">mkTime</span> (<span class="id" title="var">mknonnegreal</span> (<span class="id" title="var">r1</span> - <span class="id" title="var">r2</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">Rlt_le</span> 0 (<span class="id" title="var">r1</span> - <span class="id" title="var">r2</span>) (<span class="id" title="var">RltMinusBothSides</span> <span class="id" title="var">r1</span> <span class="id" title="var">r2</span> <span class="id" title="var">H</span>))))<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">addTime</span> (<span class="id" title="var">t1</span> <span class="id" title="var">t2</span> : <span class="id" title="keyword">Time</span>) : <span class="id" title="keyword">Time</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">r1</span> := <span class="id" title="var">nonneg</span> <span class="id" title="var">t1</span> <span class="id" title="tactic">in</span> <span class="id" title="keyword">let</span> <span class="id" title="var">r2</span> := <span class="id" title="var">nonneg</span> <span class="id" title="var">t2</span> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;<span class="id" title="var">mkTime</span> (<span class="id" title="var">mknonnegreal</span> (<span class="id" title="var">r1</span> + <span class="id" title="var">r2</span>) (<span class="id" title="var">Rle_zero_plus</span> <span class="id" title="var">r1</span> <span class="id" title="var">r2</span> (<span class="id" title="var">cond_nonneg</span> <span class="id" title="var">t1</span>) (<span class="id" title="var">cond_nonneg</span> <span class="id" title="var">t2</span>))).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Add two delays together to get a third delay.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">addDelay</span> (<span class="id" title="var">d1</span> <span class="id" title="var">d2</span> : <span class="id" title="var">Delay</span>) : <span class="id" title="var">Delay</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">r1</span> := <span class="id" title="var">pos</span> <span class="id" title="var">d1</span> <span class="id" title="tactic">in</span> <span class="id" title="keyword">let</span> <span class="id" title="var">r2</span> := <span class="id" title="var">pos</span> <span class="id" title="var">d2</span> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;<span class="id" title="var">mkDelay</span> (<span class="id" title="var">mkposreal</span> (<span class="id" title="var">r1</span> + <span class="id" title="var">r2</span>) (<span class="id" title="var">Rlt_zero_plus</span> <span class="id" title="var">r1</span> <span class="id" title="var">r2</span> (<span class="id" title="var">cond_pos</span> <span class="id" title="var">d1</span>) (<span class="id" title="var">cond_pos</span> <span class="id" title="var">d2</span>))).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Add a delay to a time to get a delay.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">addDelayTime</span> (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>) : <span class="id" title="var">Delay</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">r1</span> := <span class="id" title="var">nonneg</span> <span class="id" title="var">t</span> <span class="id" title="tactic">in</span> <span class="id" title="keyword">let</span> <span class="id" title="var">r2</span> := <span class="id" title="var">pos</span> <span class="id" title="var">d</span> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;<span class="id" title="var">mkDelay</span> (<span class="id" title="var">mkposreal</span> (<span class="id" title="var">r1</span> + <span class="id" title="var">r2</span>) (<span class="id" title="var">Rplus_le_lt_0_compat</span> <span class="id" title="var">r1</span> <span class="id" title="var">r2</span> (<span class="id" title="var">cond_nonneg</span> <span class="id" title="var">t</span>) (<span class="id" title="var">cond_pos</span> <span class="id" title="var">d</span>))).<br/>
+
+<br/>
+<span class="id" title="keyword">Notation</span> &quot;t +dt+ d" := (<span class="id" title="var">addDelayTime</span> <span class="id" title="var">t</span> <span class="id" title="var">d</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 45).<br/>
+<span class="id" title="keyword">Notation</span> &quot;d +d+ d'" := (<span class="id" title="var">addDelay</span> <span class="id" title="var">d</span> <span class="id" title="var">d'</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 45).<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">addDelayComm</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">d</span> <span class="id" title="var">d'</span> : <span class="id" title="var">Delay</span>), <span class="id" title="var">d</span> +<span class="id" title="var">d</span>+ <span class="id" title="var">d'</span> = <span class="id" title="var">d'</span> +<span class="id" title="var">d</span>+ <span class="id" title="var">d</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">d</span>, <span class="id" title="var">d'</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">addDelay</span>. <span class="id" title="tactic">repeat</span> <span class="id" title="tactic">f_equal</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">posRealEqR</span>. <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_comm</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If there is some delays d and d', and they are being
+added with the left one as a time, then they can be added as normal.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">timeDelAddSwitch</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">d</span> <span class="id" title="var">d'</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">d</span> +<span class="id" title="var">dt</span>+ <span class="id" title="var">d'</span> = <span class="id" title="var">d</span> +<span class="id" title="var">d</span>+ <span class="id" title="var">d'</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">addDelayTime</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">addDelay</span>. <span class="id" title="tactic">f_equal</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">posRealEqR</span>. <span class="id" title="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">d</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">delay0</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">delTimeAddAssoc</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">d</span> <span class="id" title="var">d'</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">t</span> +<span class="id" title="var">dt</span>+ <span class="id" title="var">d</span> +<span class="id" title="var">dt</span>+ <span class="id" title="var">d'</span> = <span class="id" title="var">t</span> +<span class="id" title="var">dt</span>+ (<span class="id" title="var">d</span> +<span class="id" title="var">dt</span>+ <span class="id" title="var">d'</span>). <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">t</span>, <span class="id" title="var">d</span>, <span class="id" title="var">d'</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">time0</span>, <span class="id" title="var">delay0</span>, <span class="id" title="var">delay1</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">addDelayTime</span>. <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">repeat</span> <span class="id" title="tactic">f_equal</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">posRealEqR</span>. <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_assoc</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">delTimeAddAssoc2</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">d</span> <span class="id" title="var">d'</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;(<span class="id" title="var">t</span> +<span class="id" title="var">dt</span>+ <span class="id" title="var">d</span>) +<span class="id" title="var">d</span>+ <span class="id" title="var">d'</span> = <span class="id" title="var">t</span> +<span class="id" title="var">dt</span>+ (<span class="id" title="var">d</span> +<span class="id" title="var">d</span>+ <span class="id" title="var">d'</span>). <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">repeat</span> <span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">timeDelAddSwitch</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">delTimeAddAssoc</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">timeDelAddZeroL</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">zeroTime</span> +<span class="id" title="var">dt</span>+ <span class="id" title="var">d</span> = <span class="id" title="var">d</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">zeroTime</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">d</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">addDelayTime</span>. <span class="id" title="tactic">f_equal</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">posRealEqR</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">ring</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If a delay d is less than or equal a time t,
+then there is some time t' such that t = t' + d.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">delLeTimeSum</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">d</span> &lt;= <span class="id" title="var">t</span> -&gt; <span class="id" title="tactic">exists</span> <span class="id" title="var">t'</span>, <span class="id" title="var">t</span> = <span class="id" title="var">t'</span> +<span class="id" title="var">dt</span>+ <span class="id" title="var">d</span>. <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="tactic">exists</span> <span class="id" title="var">r</span>, <span class="id" title="var">nonneg</span> (<span class="id" title="var">time</span> <span class="id" title="var">t</span>) = <span class="id" title="var">d</span> + <span class="id" title="var">r</span> /\ 0 &lt;= <span class="id" title="var">r</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> (<span class="id" title="var">t</span> - <span class="id" title="var">d</span>). <span class="id" title="tactic">split</span>. <span class="id" title="tactic">ring</span>. <span class="id" title="tactic">replace</span> 0 <span class="id" title="keyword">with</span> (<span class="id" title="var">t</span> - <span class="id" title="var">t</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_le_compat</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">Rle_refl</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Ropp_le_contravar</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">ring</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H0</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H1</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> (<span class="id" title="var">mkTime</span> (<span class="id" title="var">mknonnegreal</span> <span class="id" title="var">x</span> <span class="id" title="var">H2</span>)). <span class="id" title="tactic">destruct</span> <span class="id" title="var">t</span>, <span class="id" title="var">d</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">timeEqR</span>. <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">Rplus_comm</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Subtract d2 from d1. Requires a proof that d2 is indeed less than d1 so
+that the result is a delay.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">minusDelay</span> (<span class="id" title="var">r1</span> <span class="id" title="var">r2</span> : <span class="id" title="var">R</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">r2</span> &lt; <span class="id" title="var">r1</span>) : <span class="id" title="var">Delay</span> :=<br/>
+&nbsp;&nbsp;&nbsp;<span class="id" title="var">mkDelay</span> (<span class="id" title="var">mkposreal</span> (<span class="id" title="var">r1</span> - <span class="id" title="var">r2</span>) (<span class="id" title="var">Rgt_minus</span> <span class="id" title="var">r1</span> <span class="id" title="var">r2</span> (<span class="id" title="var">Rlt_gt</span> <span class="id" title="var">r2</span> <span class="id" title="var">r1</span> <span class="id" title="var">p</span>))).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Subtracting and then adding the same delay gives the same result.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">minusAddDelay</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">d1</span> <span class="id" title="var">d2</span> : <span class="id" title="var">Delay</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">d2</span> &lt; <span class="id" title="var">d1</span>),<br/>
+&nbsp;&nbsp;(<span class="id" title="var">minusDelay</span> <span class="id" title="var">d1</span> <span class="id" title="var">d2</span> <span class="id" title="var">p</span>) +<span class="id" title="var">d</span>+ <span class="id" title="var">d2</span> = <span class="id" title="var">d1</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">delayEqR</span>. <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">ring</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Adding a time that has been subtracted gives back the original result.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">minusDelayAddTime</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">t</span> &lt; <span class="id" title="var">d</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">d</span> = <span class="id" title="var">t</span> +<span class="id" title="var">dt</span>+ (<span class="id" title="var">minusDelay</span> <span class="id" title="var">d</span> <span class="id" title="var">t</span> <span class="id" title="var">p</span>). <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">delayEqR</span>. <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">ring</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The right summand in a sum of delays is less than the total sum.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">addDelayLtR</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">d1</span> <span class="id" title="var">d2</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">d2</span> &lt; <span class="id" title="var">d1</span> +<span class="id" title="var">d</span>+ <span class="id" title="var">d2</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">d1</span>, <span class="id" title="var">d2</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">delay0</span>, <span class="id" title="var">delay1</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">Rplus_comm</span>. <span class="id" title="tactic">cut</span> (<span class="id" title="var">pos0</span> + 0 &lt; <span class="id" title="var">pos0</span> + <span class="id" title="var">pos</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">Rplus_0_r</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_lt_compat_l</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Adding and then subtracting the same quantity leaves the original delay.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">addMinusDelay</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">d1</span> <span class="id" title="var">d2</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">p</span>, <span class="id" title="var">minusDelay</span> (<span class="id" title="var">d1</span> +<span class="id" title="var">d</span>+ <span class="id" title="var">d2</span>) <span class="id" title="var">d2</span> <span class="id" title="var">p</span> = <span class="id" title="var">d1</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">exists</span> (<span class="id" title="var">addDelayLtR</span> <span class="id" title="var">d1</span> <span class="id" title="var">d2</span>). <span class="id" title="tactic">destruct</span> <span class="id" title="var">d1</span>, <span class="id" title="var">d2</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">delay0</span>, <span class="id" title="var">delay1</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">delayEqR</span>. <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">ring</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Communtativity of times in a sum of three terms.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">timeDelAddComm</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">t1</span> <span class="id" title="var">t2</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">t1</span> +<span class="id" title="var">dt</span>+ (<span class="id" title="var">t2</span> +<span class="id" title="var">dt</span>+ <span class="id" title="var">d</span>) = <span class="id" title="var">t2</span> +<span class="id" title="var">dt</span>+ (<span class="id" title="var">t1</span> +<span class="id" title="var">dt</span>+ <span class="id" title="var">d</span>). <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">delayEqR</span>. <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">ring</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Subtract R2 from R1. Requires a proof that R2 is indeed less
+than or equal r1 so that the result is a Time.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">minusTime</span> (<span class="id" title="var">r1</span> <span class="id" title="var">r2</span> : <span class="id" title="var">R</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">r2</span> &lt;= <span class="id" title="var">r1</span>) : <span class="id" title="keyword">Time</span> :=<br/>
+&nbsp;&nbsp;&nbsp;<span class="id" title="var">mkTime</span> (<span class="id" title="var">mknonnegreal</span> (<span class="id" title="var">r1</span> - <span class="id" title="var">r2</span>) (<span class="id" title="var">Rge_le</span> (<span class="id" title="var">r1</span> - <span class="id" title="var">r2</span>) 0<br/>
+&nbsp;&nbsp;&nbsp;(<span class="id" title="var">Rge_minus</span> <span class="id" title="var">r1</span> <span class="id" title="var">r2</span> (<span class="id" title="var">Rle_ge</span> <span class="id" title="var">r2</span> <span class="id" title="var">r1</span> <span class="id" title="var">p</span>)))).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+To show that d = d +d+ d' according to the addDel function, it suffices to show that
+d = d + d' i.e. that the real parts and real number addition equates.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">addRaddDel</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">d</span> <span class="id" title="var">d'</span> <span class="id" title="var">d''</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">pos</span> <span class="id" title="var">d</span> = <span class="id" title="var">d'</span> + <span class="id" title="var">d''</span> -&gt; <span class="id" title="var">d</span> = <span class="id" title="var">d'</span> +<span class="id" title="var">d</span>+ <span class="id" title="var">d''</span>. <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">delayEqR</span>. <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Every delay has two delays that add up to make it.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">addDelayExists</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">d1</span> <span class="id" title="var">d2</span>, <span class="id" title="var">d</span> = <span class="id" title="var">d1</span> +<span class="id" title="var">d</span>+ <span class="id" title="var">d2</span>. <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">d</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">r</span>]. <span class="id" title="var">addHyp</span> (<span class="id" title="var">addPosRealExists</span> <span class="id" title="var">r</span>). <span class="id" title="var">invertClear</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">exists</span> (<span class="id" title="var">mkDelay</span> <span class="id" title="var">x</span>). <span class="id" title="tactic">exists</span> (<span class="id" title="var">mkDelay</span> <span class="id" title="var">x0</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">addRaddDel</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">RMax_time</span> (<span class="id" title="var">t1</span> <span class="id" title="var">t2</span> : <span class="id" title="keyword">Time</span>) : 0 &lt;= <span class="id" title="var">Rmax</span> <span class="id" title="var">t1</span> <span class="id" title="var">t2</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">Rle_trans</span>;[ |<span class="id" title="tactic">apply</span> <span class="id" title="var">Rmax_l</span>]. <span class="id" title="var">timeNonneg</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">timeMax</span> (<span class="id" title="var">t1</span> <span class="id" title="var">t2</span> : <span class="id" title="keyword">Time</span>) : <span class="id" title="keyword">Time</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">mkTime</span> (<span class="id" title="var">mknonnegreal</span> (<span class="id" title="var">Rmax</span> <span class="id" title="var">t1</span> <span class="id" title="var">t2</span>) (<span class="id" title="var">RMax_time</span> <span class="id" title="var">t1</span> <span class="id" title="var">t2</span>)).<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">timeMax_RMax</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">t1</span> <span class="id" title="var">t2</span> : <span class="id" title="keyword">Time</span>), <span class="id" title="var">nonneg</span> (<span class="id" title="var">timeMax</span> <span class="id" title="var">t1</span> <span class="id" title="var">t2</span>) = <span class="id" title="var">Rmax</span> <span class="id" title="var">t1</span> <span class="id" title="var">t2</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="keyword">Qed</span>.<br/>
+<span class="id" title="keyword">Notation</span> &quot;t1 +t+ t2" := (<span class="id" title="var">addTime</span> <span class="id" title="var">t1</span> <span class="id" title="var">t2</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 50).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Given time t, splits goal into two subgoals based on whether 0 = t or 0 &lt; t
+</div>
+<div class="code">
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">timezerolteq</span> <span class="id" title="var">t</span> <span class="id" title="var">U</span> := <span class="id" title="keyword">let</span> <span class="id" title="var">H</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span> <span class="id" title="tactic">assert</span> (0 &lt;= <span class="id" title="var">t</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">H</span>;[<span class="id" title="var">timeNonneg</span>| ];<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rle_lt_or_eq_dec</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>; <span class="id" title="keyword">let</span> <span class="id" title="var">U1</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span> <span class="id" title="var">elim_intro</span> <span class="id" title="var">H</span> <span class="id" title="var">U1</span> <span class="id" title="var">U1</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">mkdel</span> <span class="id" title="var">t</span> <span class="id" title="var">Q</span> <span class="id" title="var">d'</span> := <span class="id" title="var">remember</span> (<span class="id" title="var">mkDelay</span> (<span class="id" title="var">mkposreal</span> <span class="id" title="var">t</span> <span class="id" title="var">Q</span>)) <span class="id" title="keyword">as</span> <span class="id" title="var">d'</span>.<br/>
+
+<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The time it takes for an entity to be notified of a message delivery area.
+</div>
+<div class="code">
+<span class="id" title="keyword">Axiom</span> <span class="id" title="var">adaptNotif</span> : <span class="id" title="keyword">Time</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The time between initiating the sending of a message and its actual delivery.
+</div>
+<div class="code">
+<span class="id" title="keyword">Axiom</span> <span class="id" title="var">msgLatency</span> : <span class="id" title="keyword">Time</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+We assume a maximum speed at which entities may travel.
+</div>
+<div class="code">
+<span class="id" title="keyword">Axiom</span> <span class="id" title="var">speedMax</span> : <span class="id" title="var">nonnegreal</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The set of all modes.
+</div>
+<div class="code">
+<span class="id" title="keyword">Axiom</span> <span class="id" title="var">Mode</span> : <span class="id" title="keyword">Type</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+A subset of the modes are fail safe.
+</div>
+<div class="code">
+<span class="id" title="keyword">Axiom</span> <span class="id" title="var">failSafe</span> : <span class="id" title="var">Mode</span> -&gt; <span class="id" title="keyword">Prop</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+A mode is either fail safe or it isn't.
+</div>
+<div class="code">
+<span class="id" title="keyword">Axiom</span> <span class="id" title="var">fsDecMode</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>), <span class="id" title="var">decidable</span> (<span class="id" title="var">failSafe</span> <span class="id" title="var">m</span>).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Equality on modes is decidable.
+</div>
+<div class="code">
+<span class="id" title="keyword">Axiom</span> <span class="id" title="var">eqDecMode</span> : <span class="id" title="var">eqDec</span> <span class="id" title="var">Mode</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The mode transition relation, which says whether one mode can transition
+to another or not.
+</div>
+<div class="code">
+<span class="id" title="keyword">Axiom</span> <span class="id" title="var">modeTransRel</span> : <span class="id" title="var">Mode</span> -&gt; <span class="id" title="var">Mode</span> -&gt; <span class="id" title="keyword">Prop</span>.<br/>
+<span class="id" title="keyword">Notation</span> &quot;m1 -mtr-&gt; m2" := (<span class="id" title="var">modeTransRel</span> <span class="id" title="var">m1</span> <span class="id" title="var">m2</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 39).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The mode transition relation is assumed to be decidable.
+</div>
+<div class="code">
+<span class="id" title="keyword">Axiom</span> <span class="id" title="var">modeTransRelDec</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">m1</span> <span class="id" title="var">m2</span> : <span class="id" title="var">Mode</span>),<br/>
+&nbsp;&nbsp;{<span class="id" title="var">m1</span> -<span class="id" title="var">mtr</span>-&gt; <span class="id" title="var">m2</span>} + {~<span class="id" title="var">m1</span> -<span class="id" title="var">mtr</span>-&gt; <span class="id" title="var">m2</span>}.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Mode transition relation as a boolean function.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">modeTransRelBool</span> (<span class="id" title="var">m1</span> <span class="id" title="var">m2</span> : <span class="id" title="var">Mode</span>) : <span class="id" title="var">bool</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">decToBool</span> (<span class="id" title="var">modeTransRelDec</span> <span class="id" title="var">m1</span> <span class="id" title="var">m2</span>).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Mode transition relation as an option type
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">modeTransRelOpt</span> (<span class="id" title="var">m1</span> <span class="id" title="var">m2</span> : <span class="id" title="var">Mode</span>) : <span class="id" title="var">option</span> (<span class="id" title="var">m1</span> -<span class="id" title="var">mtr</span>-&gt; <span class="id" title="var">m2</span>) :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">decToOption</span> (<span class="id" title="var">modeTransRelDec</span> <span class="id" title="var">m1</span> <span class="id" title="var">m2</span>).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+modeTransTime m1 m2 gives the time it takes to transition from
+m1 to m2. Note that this function takes two modes and a proof that one
+transitions to the other and then returns the transition time.
+</div>
+<div class="code">
+<span class="id" title="keyword">Axiom</span> <span class="id" title="var">modeTransTime</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">m1</span> <span class="id" title="var">m2</span> : <span class="id" title="var">Mode</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">m1</span> -<span class="id" title="var">mtr</span>-&gt; <span class="id" title="var">m2</span> -&gt; <span class="id" title="keyword">Time</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+We assume that every mode transitions to some fail safe mode,
+and this function simply arbitrarily picks one such fail safe mode.
+</div>
+<div class="code">
+<span class="id" title="keyword">Axiom</span> <span class="id" title="var">failSafeSucc</span> : <span class="id" title="var">Mode</span> -&gt; <span class="id" title="var">Mode</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+This is the assumption that failSafeSucc m is indeed fail safe for all m.
+</div>
+<div class="code">
+<span class="id" title="keyword">Axiom</span> <span class="id" title="var">failSafeSuccFS</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>), <span class="id" title="var">failSafe</span> (<span class="id" title="var">failSafeSucc</span> <span class="id" title="var">m</span>).<br/>
+
+<br/>
+<span class="id" title="keyword">Axiom</span> <span class="id" title="var">failSafeSucc_successor</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">m</span>, <span class="id" title="var">m</span> -<span class="id" title="var">mtr</span>-&gt; <span class="id" title="var">failSafeSucc</span> <span class="id" title="var">m</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+trans m is the worst case time it takes for an entity in a mode m
+to reach a failsafe mode.
+</div>
+<div class="code">
+<span class="id" title="keyword">Axiom</span> <span class="id" title="var">trans</span> : <span class="id" title="var">Mode</span> -&gt; <span class="id" title="keyword">Time</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+An upper bound on trans m over all m: transMax is an upper bound on
+the time it takes any entity to reach a failsafe mode.
+</div>
+<div class="code">
+<span class="id" title="keyword">Axiom</span> <span class="id" title="var">transMax</span> : <span class="id" title="keyword">Time</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+A little extra positive time that ensures we wait beyond the boundary
+</div>
+<div class="code">
+<span class="id" title="keyword">Axiom</span> <span class="id" title="var">waitSurplus</span> : <span class="id" title="var">Delay</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The wait time between two modes m1 and m2 is the maximum between two different
+values. The first is the mode transition time, denoting the physical time it takes
+to transition from one mode to another. The second value ensures that the wait time
+is to sufficient to ensure surrounding entities are warned. As such, it incorporates
+the term msgLatency to allow the initial message to be delivered, transMax for the
+receiving entities to react, adaptNotif for the sender to be notified of the coverage,
+and finally some positive waitSurplus to ensure that the message delivery, reaction and
+notification have definitely happened in the past- without the surplus it might be possible
+for these events to be about to happen this instant but they might not have happened yet.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">waitTime</span> (<span class="id" title="var">m1</span> <span class="id" title="var">m2</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">m1</span> -<span class="id" title="var">mtr</span>-&gt; <span class="id" title="var">m2</span>) : <span class="id" title="keyword">Time</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">timeMax</span> (<span class="id" title="var">modeTransTime</span> <span class="id" title="var">m1</span> <span class="id" title="var">m2</span> <span class="id" title="var">p</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">msgLatency</span> +<span class="id" title="var">t</span>+ (<span class="id" title="var">timeMax</span> <span class="id" title="var">adaptNotif</span> <span class="id" title="var">transMax</span>) +<span class="id" title="var">t</span>+ <span class="id" title="var">waitSurplus</span>).<br/>
+
+<br/>
+<span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">R_scope</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+transMax is an upper bound on trans m for all m.
+</div>
+<div class="code">
+<span class="id" title="keyword">Axiom</span> <span class="id" title="var">transMaxBound</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>,<br/>
+&nbsp;&nbsp;<span class="id" title="var">trans</span> <span class="id" title="var">m</span> &lt;= <span class="id" title="var">transMax</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The minimum distance of compatibiltiy function is assumed to exist.
+It tells us the minimum distance by which two modes must be separated in
+order for them to be compatible. If two entities in these modes are
+separated by a distance greater than or equal to this distance,
+then they are compatible.
+</div>
+<div class="code">
+<span class="id" title="keyword">Axiom</span> <span class="id" title="var">minDistComp</span> : <span class="id" title="var">Mode</span> -&gt; <span class="id" title="var">Mode</span> -&gt; <span class="id" title="var">Distance</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The minimum distance of compatibility function is symmetric.
+</div>
+<div class="code">
+<span class="id" title="keyword">Axiom</span> <span class="id" title="var">minDistCompSymmetric</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">m1</span> <span class="id" title="var">m2</span> : <span class="id" title="var">Mode</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">minDistComp</span> <span class="id" title="var">m1</span> <span class="id" title="var">m2</span> = <span class="id" title="var">minDistComp</span> <span class="id" title="var">m2</span> <span class="id" title="var">m1</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+For a given mode m, maxMinDistComp m is an upper bound on the set
+minDistComp m m' taken over all other modes m'. We do not enforce that this
+is the least such upper bound, though this would be the sensible interpretation.
+</div>
+<div class="code">
+<span class="id" title="keyword">Axiom</span> <span class="id" title="var">maxMinDistComp</span> : <span class="id" title="var">Mode</span> -&gt; <span class="id" title="var">Distance</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The maxMinDistComp is an upper bound on the minDistComp for all other modes
+</div>
+<div class="code">
+<span class="id" title="keyword">Axiom</span> <span class="id" title="var">maxMinDistCompBound</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span> : <span class="id" title="var">Mode</span>,<br/>
+&nbsp;&nbsp;<span class="id" title="var">minDistComp</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span> &lt;= <span class="id" title="var">maxMinDistComp</span> <span class="id" title="var">m</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The minimum distance of compatibility function returns 0 if either
+of its arguments are fail safe. Note we only choose the left argument here,
+but the choice is irrelevant since the function is symmetric.
+</div>
+<div class="code">
+<span class="id" title="keyword">Axiom</span> <span class="id" title="var">minDistCompFS</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">m1</span> <span class="id" title="var">m2</span> : <span class="id" title="var">Mode</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">failSafe</span> <span class="id" title="var">m1</span> -&gt; <span class="id" title="var">minDistComp</span> <span class="id" title="var">m1</span> <span class="id" title="var">m2</span> = (<span class="id" title="var">mkDistance</span> <span class="id" title="var">zeroNonneg</span>).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+period m is the time between successive broadcasts from an entity in mode m.
+</div>
+<div class="code">
+<span class="id" title="keyword">Axiom</span> <span class="id" title="var">period</span> : <span class="id" title="var">Mode</span> -&gt; <span class="id" title="keyword">Time</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Axiom</span> <span class="id" title="var">msgLatency_positive</span> : 0 &lt; <span class="id" title="var">msgLatency</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Axiom</span> <span class="id" title="var">period_positive</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>, 0 &lt; <span class="id" title="var">period</span> <span class="id" title="var">m</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+To rule out a trivial system, we assume the maximum speed is above 0.
+</div>
+<div class="code">
+<span class="id" title="keyword">Axiom</span> <span class="id" title="var">speedMax_pos</span>: 0 &lt; <span class="id" title="var">speedMax</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">speedMax_nonneg</span> : 0 &lt;= <span class="id" title="var">speedMax</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rlt_le</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">speedMax_pos</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Axiom</span> <span class="id" title="var">adaptNotif_positive</span> : 0 &lt; <span class="id" title="var">adaptNotif</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Axiom</span> <span class="id" title="var">modeTransTime_bound</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">m</span> <span class="id" title="var">m'</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">m</span> -<span class="id" title="var">mtr</span>-&gt; <span class="id" title="var">m'</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">modeTransTime</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span> <span class="id" title="var">p</span> &lt;= <span class="id" title="var">trans</span> <span class="id" title="var">m</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">timering</span> := <span class="id" title="tactic">apply</span> <span class="id" title="var">timeEqR</span>; <span class="id" title="tactic">simpl</span>; <span class="id" title="tactic">ring</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The coverage r is sufficient for an entity broadcasting in mode m.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">sufficient</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">r</span> : <span class="id" title="var">Distance</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">maxMinDistComp</span> <span class="id" title="var">m</span> +<br/>
+&nbsp;&nbsp;2 * <span class="id" title="var">speedMax</span> * (<span class="id" title="var">Rmax</span> <span class="id" title="var">adaptNotif</span> <span class="id" title="var">transMax</span> + <span class="id" title="var">period</span> <span class="id" title="var">m</span> + <span class="id" title="var">trans</span> <span class="id" title="var">m</span>) &lt;= <span class="id" title="var">r</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The sufficient predicate is decidable.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">suffDec</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">r</span> : <span class="id" title="var">Distance</span>),<br/>
+&nbsp;&nbsp;{<span class="id" title="var">sufficient</span> <span class="id" title="var">m</span> <span class="id" title="var">r</span>} + {~<span class="id" title="var">sufficient</span> <span class="id" title="var">m</span> <span class="id" title="var">r</span>}. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">Rle_dec</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+A version of the sufficient Prop that gives a bool as a result.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">suffBool</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">r</span> : <span class="id" title="var">Distance</span>) : <span class="id" title="var">bool</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">if</span> <span class="id" title="var">suffDec</span> <span class="id" title="var">m</span> <span class="id" title="var">r</span> <span class="id" title="keyword">then</span> <span class="id" title="var">true</span> <span class="id" title="keyword">else</span> <span class="id" title="var">false</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The possibly incompatible distance for modes m and m' is the distance
+beneath which an entity in mode m must consider mode m' messages from other entities
+as potential threats.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">possIncDist</span> (<span class="id" title="var">m</span> <span class="id" title="var">m'</span> : <span class="id" title="var">Mode</span>) : <span class="id" title="var">R</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">minDistComp</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span> + 2 * <span class="id" title="var">speedMax</span> * (<span class="id" title="var">Rmax</span> <span class="id" title="var">adaptNotif</span> <span class="id" title="var">transMax</span> + <span class="id" title="var">period</span> <span class="id" title="var">m'</span> + <span class="id" title="var">trans</span> <span class="id" title="var">m'</span>).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+possiblyIncompatible m m' r means that if e and e' in m and m'
+respectively are separated by r, then e' should begin to transition to a
+fail safe mode if it has not already done so.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">possiblyIncompatible</span> (<span class="id" title="var">m</span> <span class="id" title="var">m'</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">r</span> : <span class="id" title="var">R</span>) :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">r</span> &lt; <span class="id" title="var">possIncDist</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">possIncDec</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">m</span> <span class="id" title="var">m'</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">r</span> : <span class="id" title="var">Distance</span>),<br/>
+&nbsp;&nbsp;{<span class="id" title="var">possiblyIncompatible</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span> <span class="id" title="var">r</span>} + {~<span class="id" title="var">possiblyIncompatible</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span> <span class="id" title="var">r</span>}. <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rlt_dec</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+A version of the possiblyIncompatible Prop that gives a bool as a result.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">possIncBool</span> (<span class="id" title="var">m</span> <span class="id" title="var">m'</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">r</span> : <span class="id" title="var">Distance</span>) : <span class="id" title="var">bool</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">if</span> <span class="id" title="var">possIncDec</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span> <span class="id" title="var">r</span> <span class="id" title="keyword">then</span> <span class="id" title="var">true</span> <span class="id" title="keyword">else</span> <span class="id" title="var">false</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If m m' r are possibly incompatible, r' is a sufficient coverage for m, then
+r &lt;= r'.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">possIncSuff</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">m</span> <span class="id" title="var">m'</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">r</span> <span class="id" title="var">r'</span> : <span class="id" title="var">Distance</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">possiblyIncompatible</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span> <span class="id" title="var">r</span> -&gt; <span class="id" title="var">sufficient</span> <span class="id" title="var">m'</span> <span class="id" title="var">r'</span> -&gt; <span class="id" title="var">r</span> &lt; <span class="id" title="var">r'</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">possiblyIncompatible</span>, <span class="id" title="var">sufficient</span>. <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">Rlt_le_trans</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">Rle_trans</span>; <span class="id" title="tactic">try</span> <span class="id" title="tactic">apply</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_le_compat</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">minDistCompSymmetric</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">maxMinDistCompBound</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">Rle_refl</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">nat_scope</span>.<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">nat_scope</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If a property p is true of the number j, and j &lt;= k, then there is some
+largest j' between j and k such that p is true at j'.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">rightmost</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">j</span> <span class="id" title="var">k</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">nat</span> -&gt; <span class="id" title="keyword">Prop</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">K</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">i</span> : <span class="id" title="var">nat</span>, <span class="id" title="var">decidable</span> (<span class="id" title="var">p</span> <span class="id" title="var">i</span>)),<br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> <span class="id" title="var">j</span> -&gt; <span class="id" title="var">j</span> &lt;= <span class="id" title="var">k</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">j'</span>, <span class="id" title="var">j</span> &lt;= <span class="id" title="var">j'</span> &lt;= <span class="id" title="var">k</span> /\ <span class="id" title="var">p</span> <span class="id" title="var">j'</span> /\<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">forall</span> <span class="id" title="var">x</span> : <span class="id" title="var">nat</span>, <span class="id" title="var">j'</span> &lt; <span class="id" title="var">x</span> &lt;= <span class="id" title="var">k</span> -&gt; ~ <span class="id" title="var">p</span> <span class="id" title="var">x</span>. <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">induction</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">exists</span> <span class="id" title="var">j</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">split</span>; <span class="id" title="tactic">apply</span> <span class="id" title="var">le_refl</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">split</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">False_ind</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">lt_not_le</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H1</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">IHle</span>. <span class="id" title="var">addHyp</span> (<span class="id" title="var">K</span> (<span class="id" title="var">S</span> <span class="id" title="var">m</span>)). <span class="id" title="var">invertClear</span> <span class="id" title="var">H2</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> (<span class="id" title="var">S</span> <span class="id" title="var">m</span>). <span class="id" title="tactic">split</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">le_refl</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">split</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H2</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">False_ind</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">lt_not_le</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H4</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">exists</span> <span class="id" title="var">x</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H1</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H4</span>. <span class="id" title="tactic">split</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H2</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">split</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H4</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H7</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H5</span>; <span class="id" title="tactic">split</span>; <span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">R_scope</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+This is the interval in the past during which we show that any entity
+in a non fail safe mode m must have sent a message containing mode m.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">preSentInterval</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) : <span class="id" title="var">Interval</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">lower</span> := <span class="id" title="var">msgLatency</span> + <span class="id" title="var">Rmax</span> <span class="id" title="var">adaptNotif</span> <span class="id" title="var">transMax</span> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">upper</span> := <span class="id" title="var">lower</span> + <span class="id" title="var">period</span> <span class="id" title="var">m</span> + <span class="id" title="var">trans</span> <span class="id" title="var">m</span> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;(\<span class="id" title="var">lower</span>, <span class="id" title="var">upper</span>\].<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The interval of time in the past during which we can show a
+sufficient pre-broadcast takes place, parametrised on the mode m.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">preDeliveredInterval</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) : <span class="id" title="var">Interval</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">lower</span> := <span class="id" title="var">Rmax</span> <span class="id" title="var">adaptNotif</span> <span class="id" title="var">transMax</span> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">upper</span> := <span class="id" title="var">lower</span> + <span class="id" title="var">period</span> <span class="id" title="var">m</span> + <span class="id" title="var">trans</span> <span class="id" title="var">m</span> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;(\<span class="id" title="var">lower</span>, <span class="id" title="var">upper</span>\].<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The upper bound of the pre bc suff interval is positive
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">preBcSuffUpperPos</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>,<br/>
+&nbsp;&nbsp;0 &lt;= <span class="id" title="var">upper</span> (<span class="id" title="var">preDeliveredInterval</span> <span class="id" title="var">m</span>). <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">Rle_trans</span> <span class="id" title="keyword">with</span> (<span class="id" title="var">r2</span> := <span class="id" title="var">adaptNotif</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">adaptNotif</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">time</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">cond_nonneg</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">replace</span> (<span class="id" title="var">nonneg</span> (<span class="id" title="var">time</span> <span class="id" title="var">adaptNotif</span>)) <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;(<span class="id" title="var">nonneg</span> (<span class="id" title="var">time</span> <span class="id" title="var">adaptNotif</span>) + 0 + 0).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">preDeliveredInterval</span>. <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">repeat</span> <span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_le_compat</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rmax_l</span>. <span class="id" title="tactic">destruct</span> (<span class="id" title="var">period</span> <span class="id" title="var">m</span>). <span class="id" title="tactic">destruct</span> <span class="id" title="var">time</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">cond_nonneg</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> (<span class="id" title="var">trans</span> <span class="id" title="var">m</span>). <span class="id" title="tactic">destruct</span> <span class="id" title="var">time</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">cond_nonneg</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">ring</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">plusIntervalZero</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">i</span> : <span class="id" title="var">Interval</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">i</span> [+] <span class="id" title="var">zeroTime</span> = <span class="id" title="var">i</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">i</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">zeroTime</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">f_equal</span>; <span class="id" title="tactic">ring</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">nat_scope</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The same theorem as rightmost but with negation of P as existential and P as
+universal properties.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">rightmostNeg</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">j</span> <span class="id" title="var">k</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">nat</span> -&gt; <span class="id" title="keyword">Prop</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">K</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">i</span> : <span class="id" title="var">nat</span>, <span class="id" title="var">decidable</span> (<span class="id" title="var">p</span> <span class="id" title="var">i</span>)),<br/>
+&nbsp;&nbsp;~<span class="id" title="var">p</span> <span class="id" title="var">j</span> -&gt; <span class="id" title="var">j</span> &lt;= <span class="id" title="var">k</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">j'</span>, <span class="id" title="var">j</span> &lt;= <span class="id" title="var">j'</span> &lt;= <span class="id" title="var">k</span> /\ ~<span class="id" title="var">p</span> <span class="id" title="var">j'</span> /\<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">forall</span> <span class="id" title="var">x</span> : <span class="id" title="var">nat</span>, <span class="id" title="var">j'</span> &lt; <span class="id" title="var">x</span> &lt;= <span class="id" title="var">k</span> -&gt; <span class="id" title="var">p</span> <span class="id" title="var">x</span>. <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="keyword">forall</span> <span class="id" title="var">a</span>, ~(~(<span class="id" title="var">p</span> <span class="id" title="var">a</span>)) -&gt; <span class="id" title="var">p</span> <span class="id" title="var">a</span>). <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">addHyp</span> (<span class="id" title="var">K</span> <span class="id" title="var">a</span>). <span class="id" title="var">invertClear</span> <span class="id" title="var">H2</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H3</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">False_ind</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">H1</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">assert</span> (<span class="id" title="keyword">forall</span> <span class="id" title="var">a</span>, <span class="id" title="var">decidable</span> (~ <span class="id" title="var">p</span> <span class="id" title="var">a</span>)).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">dec_not</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">K</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">addHyp</span> (<span class="id" title="var">rightmost</span> <span class="id" title="var">j</span> <span class="id" title="var">k</span> (<span class="id" title="keyword">fun</span> <span class="id" title="var">j</span> =&gt; ~<span class="id" title="var">p</span> <span class="id" title="var">j</span>) <span class="id" title="var">H2</span> <span class="id" title="var">H</span> <span class="id" title="var">H0</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H3</span>. <span class="id" title="tactic">rename</span> <span class="id" title="var">x</span> <span class="id" title="var">into</span> <span class="id" title="var">j'</span>. <span class="id" title="tactic">exists</span> <span class="id" title="var">j'</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H4</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H5</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">H1</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H6</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+This characterisation of le leaves does the inductive part by
+subtracting from the lesser number rather than adding to the larger
+one, and makes certain proofs easier.
+</div>
+<div class="code">
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">leAlt</span> : <span class="id" title="var">nat</span> -&gt; <span class="id" title="var">nat</span>-&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">leaRefl</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> : <span class="id" title="var">nat</span>), <span class="id" title="var">leAlt</span> <span class="id" title="var">n</span> <span class="id" title="var">n</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">leaSucc</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">m</span> <span class="id" title="var">n</span> : <span class="id" title="var">nat</span>), <span class="id" title="var">leAlt</span> (<span class="id" title="var">S</span> <span class="id" title="var">m</span>) <span class="id" title="var">n</span> -&gt; <span class="id" title="var">leAlt</span> <span class="id" title="var">m</span> <span class="id" title="var">n</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+This is the key difference between leAlt and le.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">leAlt_S</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">m</span> <span class="id" title="var">n</span> : <span class="id" title="var">nat</span>), <span class="id" title="var">leAlt</span> <span class="id" title="var">m</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">leAlt</span> <span class="id" title="var">m</span> (<span class="id" title="var">S</span> <span class="id" title="var">n</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">repeat</span> <span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">constructor</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">leAltLe</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">m</span> <span class="id" title="var">n</span> : <span class="id" title="var">nat</span>), <span class="id" title="var">m</span> &lt;= <span class="id" title="var">n</span> &lt;-&gt; <span class="id" title="var">leAlt</span> <span class="id" title="var">m</span> <span class="id" title="var">n</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">split</span>; <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">constructor</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">leAlt_S</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">constructor</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">le_S_n</span>. <span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If a property p is true of the number k, and j &lt;= k,
+then there is some smallest j' between j and k such that p is true at j'.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">leftmost</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">j</span> <span class="id" title="var">k</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">nat</span> -&gt; <span class="id" title="keyword">Prop</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">K</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">i</span> : <span class="id" title="var">nat</span>, <span class="id" title="var">decidable</span> (<span class="id" title="var">p</span> <span class="id" title="var">i</span>)),<br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> <span class="id" title="var">k</span> -&gt; <span class="id" title="var">j</span> &lt;= <span class="id" title="var">k</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">j'</span>, <span class="id" title="var">j</span> &lt;= <span class="id" title="var">j'</span> &lt;= <span class="id" title="var">k</span> /\ <span class="id" title="var">p</span> <span class="id" title="var">j'</span> /\<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">forall</span> <span class="id" title="var">x</span> : <span class="id" title="var">nat</span>, <span class="id" title="var">j</span> &lt;= <span class="id" title="var">x</span> &lt; <span class="id" title="var">j'</span> -&gt; ~ <span class="id" title="var">p</span> <span class="id" title="var">x</span>. <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">leAltLe</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">n</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">split</span>; <span class="id" title="tactic">apply</span> <span class="id" title="var">le_refl</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">split</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">False_ind</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">lt_not_le</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H2</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">IHleAlt</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">clear</span> <span class="id" title="var">IHleAlt</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H</span>. <span class="id" title="var">addHyp</span> (<span class="id" title="var">K</span> (<span class="id" title="var">m</span>)).<br/>
+&nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H1</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H3</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">m</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">leAltLe</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">not</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">lt_not_le</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">H6</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">exists</span> <span class="id" title="var">x</span>. <span class="id" title="tactic">split</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H2</span>. <span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">le_S_n</span>. <span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">split</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H5</span>. <span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">H</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">H4</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">le_n_S</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">H7</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The same theorem as leftmost but with
+negation of P as existential and P as universal properties.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">leftmostNeg</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">j</span> <span class="id" title="var">k</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">nat</span> -&gt; <span class="id" title="keyword">Prop</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">K</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">i</span> : <span class="id" title="var">nat</span>, <span class="id" title="var">decidable</span> (<span class="id" title="var">p</span> <span class="id" title="var">i</span>)),<br/>
+&nbsp;&nbsp;~<span class="id" title="var">p</span> <span class="id" title="var">k</span> -&gt; <span class="id" title="var">j</span> &lt;= <span class="id" title="var">k</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">j'</span>, <span class="id" title="var">j</span> &lt;= <span class="id" title="var">j'</span> &lt;= <span class="id" title="var">k</span> /\ ~<span class="id" title="var">p</span> <span class="id" title="var">j'</span> /\<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">forall</span> <span class="id" title="var">x</span> : <span class="id" title="var">nat</span>, <span class="id" title="var">j</span> &lt;= <span class="id" title="var">x</span> &lt; <span class="id" title="var">j'</span> -&gt; <span class="id" title="var">p</span> <span class="id" title="var">x</span>. <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="keyword">forall</span> <span class="id" title="var">a</span>, ~(~(<span class="id" title="var">p</span> <span class="id" title="var">a</span>)) -&gt; <span class="id" title="var">p</span> <span class="id" title="var">a</span>). <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">addHyp</span> (<span class="id" title="var">K</span> <span class="id" title="var">a</span>). <span class="id" title="var">invertClear</span> <span class="id" title="var">H2</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H3</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">False_ind</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">H1</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">assert</span> (<span class="id" title="keyword">forall</span> <span class="id" title="var">a</span>, <span class="id" title="var">decidable</span> (~ <span class="id" title="var">p</span> <span class="id" title="var">a</span>)).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">dec_not</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">K</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">addHyp</span> (<span class="id" title="var">leftmost</span> <span class="id" title="var">j</span> <span class="id" title="var">k</span> (<span class="id" title="keyword">fun</span> <span class="id" title="var">j</span> =&gt; ~<span class="id" title="var">p</span> <span class="id" title="var">j</span>) <span class="id" title="var">H2</span> <span class="id" title="var">H</span> <span class="id" title="var">H0</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H3</span>. <span class="id" title="tactic">rename</span> <span class="id" title="var">x</span> <span class="id" title="var">into</span> <span class="id" title="var">j'</span>. <span class="id" title="tactic">exists</span> <span class="id" title="var">j'</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H4</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H5</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">H1</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H6</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If p is true at j and j &lt;= k, then there is some rightmost
+j' such that p is true from j to j' and either ~p is true at j'+1 or j' = k.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">rightmostCont</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">j</span> <span class="id" title="var">k</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">nat</span> -&gt; <span class="id" title="keyword">Prop</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">K</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">i</span> : <span class="id" title="var">nat</span>, <span class="id" title="var">decidable</span> (<span class="id" title="var">p</span> <span class="id" title="var">i</span>)),<br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> <span class="id" title="var">j</span> -&gt; <span class="id" title="var">j</span> &lt;= <span class="id" title="var">k</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">j'</span> , <span class="id" title="var">j</span> &lt;= <span class="id" title="var">j'</span> &lt;= <span class="id" title="var">k</span> /\ <br/>
+&nbsp;&nbsp;<span class="id" title="keyword">forall</span> <span class="id" title="var">m</span> : <span class="id" title="var">nat</span>, <span class="id" title="var">j</span> &lt;= <span class="id" title="var">m</span> &lt;= <span class="id" title="var">j'</span> -&gt; <span class="id" title="var">p</span> <span class="id" title="var">m</span> /\<br/>
+&nbsp;&nbsp;(~<span class="id" title="var">p</span> (<span class="id" title="var">S</span> <span class="id" title="var">j'</span>) \/ <span class="id" title="var">j'</span> = <span class="id" title="var">k</span>). <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">j</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">split</span>; <span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">m</span> = <span class="id" title="var">j</span>). <span class="id" title="var">invertClear</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">le_antisym</span>; <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">H1</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">right</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">IHle</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H1</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rename</span> <span class="id" title="var">x</span> <span class="id" title="var">into</span> <span class="id" title="var">j'</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H2</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">le_lt_eq_dec</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H4</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H4</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">j'</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">constructor</span>. <span class="id" title="var">ltToLe</span> <span class="id" title="var">H2</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rename</span> <span class="id" title="var">m0</span> <span class="id" title="var">into</span> <span class="id" title="var">n</span>. <span class="id" title="var">addHyp</span> (<span class="id" title="var">H3</span> <span class="id" title="var">n</span> <span class="id" title="var">H4</span>). <span class="id" title="tactic">clear</span> <span class="id" title="var">H3</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H5</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H6</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">left</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">False_ind</span>. <span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">H5</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H2</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">lt_irrefl</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H2</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">addHyp</span> (<span class="id" title="var">K</span> (<span class="id" title="var">S</span> <span class="id" title="var">m</span>)). <span class="id" title="var">invertClear</span> <span class="id" title="var">H4</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> (<span class="id" title="var">S</span> <span class="id" title="var">m</span>). <span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">split</span>. <span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">H2</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">constructor</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H4</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">le_lt_eq_dec</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H7</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H7</span>. <span class="id" title="tactic">rename</span> <span class="id" title="var">m0</span> <span class="id" title="var">into</span> <span class="id" title="var">n</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">H2</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H3</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">addHyp</span> (<span class="id" title="var">H3</span> <span class="id" title="var">n</span>). <span class="id" title="tactic">assert</span> (<span class="id" title="var">j</span> &lt;= <span class="id" title="var">n</span> &lt;= <span class="id" title="var">m</span>). <span class="id" title="tactic">split</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">le_S_n</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H4</span>. <span class="id" title="var">addHyp</span> (<span class="id" title="var">H7</span> <span class="id" title="var">H8</span>). <span class="id" title="tactic">clear</span> <span class="id" title="var">H7</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H9</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">right</span>. <span class="id" title="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">split</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">H4</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">right</span>. <span class="id" title="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">j'</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">H2</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">repeat</span> <span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">intros</span> <span class="id" title="var">n</span> <span class="id" title="var">Q</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">addHyp</span> (<span class="id" title="var">H3</span> <span class="id" title="var">n</span> <span class="id" title="var">Q</span>). <span class="id" title="var">invertClear</span> <span class="id" title="var">H4</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H7</span>. <span class="id" title="tactic">left</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">left</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">H4</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">R_scope</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If u = 0 as a real, then u = zeroTime.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">timeZero</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">u</span> : <span class="id" title="keyword">Time</span>),<br/>
+&nbsp;&nbsp;(<span class="id" title="var">nonneg</span> (<span class="id" title="var">time</span> <span class="id" title="var">u</span>)) = 0 -&gt; <span class="id" title="var">u</span> = <span class="id" title="var">zeroTime</span>. <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">zeroTime</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">u</span>. <span class="id" title="tactic">f_equal</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">time0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">zeroNonneg</span>. <span class="id" title="tactic">simpl</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">cond_nonneg</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">f_equal</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">proof_irrelevance</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">speedMax_double_nonneg</span> : 0 &lt;= 2*<span class="id" title="var">speedMax</span>. <span class="id" title="tactic">replace</span> 0 <span class="id" title="keyword">with</span> (2*0).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rmult_le_compat_l</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">two_nonneg</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">speedMax_nonneg</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">ring</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+All numbers within the preDeliveredInterval are strictly positive.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">inPreBcSuffPos</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">u</span> : <span class="id" title="keyword">Time</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">u</span> [:] (<span class="id" title="var">preDeliveredInterval</span> <span class="id" title="var">m</span>) -&gt; 0 &lt; <span class="id" title="var">u</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">simpl</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">Rle_lt_trans</span> <span class="id" title="keyword">with</span> (<span class="id" title="var">r2</span> := <span class="id" title="var">adaptNotif</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="var">timeNonneg</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">Rle_lt_trans</span>; <span class="id" title="tactic">try</span> <span class="id" title="tactic">apply</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rmax_l</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">inclNotEx</span> {<span class="id" title="var">A</span> : <span class="id" title="keyword">Type</span>} (<span class="id" title="var">l1</span> <span class="id" title="var">l2</span> : <span class="id" title="var">list</span> <span class="id" title="var">A</span>) : (<span class="id" title="keyword">forall</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> : <span class="id" title="var">A</span>, {<span class="id" title="var">x</span> = <span class="id" title="var">y</span>} + {<span class="id" title="var">x</span> &lt;&gt; <span class="id" title="var">y</span>}) -&gt;<br/>
+&nbsp;&nbsp;~ <span class="id" title="var">incl</span> <span class="id" title="var">l1</span> <span class="id" title="var">l2</span> -&gt; <span class="id" title="tactic">exists</span> <span class="id" title="var">a</span>, <span class="id" title="var">a</span> <span class="id" title="var">_</span>: <span class="id" title="var">l1</span> /\ ~<span class="id" title="var">a</span> <span class="id" title="var">_</span>: <span class="id" title="var">l2</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">l1</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">False_ind</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">incl</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">addHyp</span> (<span class="id" title="var">in_dec</span> <span class="id" title="var">X</span> <span class="id" title="var">a</span> <span class="id" title="var">l2</span>). <span class="id" title="var">invertClear</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">assert</span> (~ <span class="id" title="var">incl</span> <span class="id" title="var">l1</span> <span class="id" title="var">l2</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">not</span>. <span class="id" title="tactic">intro</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">incl</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H2</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">H3</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H3</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">IHl1</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">exists</span> <span class="id" title="var">x</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H2</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">in_cons</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">exists</span> <span class="id" title="var">a</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">incl_emp</span> {<span class="id" title="var">A</span> : <span class="id" title="keyword">Type</span>} (<span class="id" title="var">l</span> : <span class="id" title="var">list</span> <span class="id" title="var">A</span>) : <span class="id" title="var">incl</span> [] <span class="id" title="var">l</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">incl</span>. <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">incl_emp_eq</span> {<span class="id" title="var">A</span> : <span class="id" title="keyword">Type</span>} (<span class="id" title="var">l</span> : <span class="id" title="var">list</span> <span class="id" title="var">A</span>) : <span class="id" title="var">incl</span> <span class="id" title="var">l</span> [] -&gt; <span class="id" title="var">l</span> = []. <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">incl</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">l</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="var">addHyp</span> (<span class="id" title="var">H</span> <span class="id" title="var">a</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">cut</span> (<span class="id" title="var">a</span> <span class="id" title="var">_</span>: []). <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H1</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">constructor</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">reflexivity</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">diff_emp</span> {<span class="id" title="var">A</span> : <span class="id" title="keyword">Type</span>} (<span class="id" title="var">l</span> : <span class="id" title="var">list</span> <span class="id" title="var">A</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">p</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> : <span class="id" title="var">A</span>, {<span class="id" title="var">x</span> = <span class="id" title="var">y</span>} + {<span class="id" title="var">x</span> &lt;&gt; <span class="id" title="var">y</span>}) : <span class="id" title="var">set_diff</span> <span class="id" title="var">p</span> <span class="id" title="var">l</span> [] = [] -&gt; <span class="id" title="var">l</span> = [].<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">l</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">set_add_not_empty</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H1</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H1</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">incl_diff_equiv</span> {<span class="id" title="var">A</span> : <span class="id" title="keyword">Type</span>} (<span class="id" title="var">l1</span> <span class="id" title="var">l2</span> : <span class="id" title="var">list</span> <span class="id" title="var">A</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">p</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> : <span class="id" title="var">A</span>, {<span class="id" title="var">x</span> = <span class="id" title="var">y</span>} + {<span class="id" title="var">x</span> &lt;&gt; <span class="id" title="var">y</span>}) : <span class="id" title="var">incl</span> <span class="id" title="var">l1</span> <span class="id" title="var">l2</span> &lt;-&gt; <span class="id" title="var">set_diff</span> <span class="id" title="var">p</span> <span class="id" title="var">l1</span> <span class="id" title="var">l2</span> = [].<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">split</span>; <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">incl</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>. <span class="id" title="var">remember</span> (<span class="id" title="var">set_diff</span> <span class="id" title="var">p</span> <span class="id" title="var">l1</span> <span class="id" title="var">l2</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">l</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">l</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">False_ind</span>. <span class="id" title="tactic">cut</span> (~<span class="id" title="var">a</span> <span class="id" title="var">_</span>: <span class="id" title="var">l2</span>). <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">set_diff_elim1</span> <span class="id" title="keyword">with</span> (<span class="id" title="var">Aeq_dec</span> := <span class="id" title="var">p</span>) (<span class="id" title="var">y</span> := <span class="id" title="var">l2</span>). <span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">Heql</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">set_diff_elim2</span> <span class="id" title="keyword">with</span> (<span class="id" title="var">Aeq_dec</span> := <span class="id" title="var">p</span>) (<span class="id" title="var">x</span> := <span class="id" title="var">l1</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">Heql</span>. <span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">incl</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="var">addHyp</span> (<span class="id" title="var">in_dec</span> <span class="id" title="var">p</span> <span class="id" title="var">a</span> <span class="id" title="var">l2</span>). <span class="id" title="var">invertClear</span> <span class="id" title="var">H1</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">addHyp</span> (<span class="id" title="var">set_diff_intro</span> <span class="id" title="var">p</span> <span class="id" title="var">a</span> <span class="id" title="var">l1</span> <span class="id" title="var">l2</span> <span class="id" title="var">H0</span> <span class="id" title="var">H2</span>). <span class="id" title="tactic">rewrite</span> <span class="id" title="var">H</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H1</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H1</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">decIncl</span> {<span class="id" title="var">A</span> : <span class="id" title="keyword">Type</span>} (<span class="id" title="var">l1</span> <span class="id" title="var">l2</span> : <span class="id" title="var">list</span> <span class="id" title="var">A</span>) :<br/>
+&nbsp;&nbsp;(<span class="id" title="keyword">forall</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> : <span class="id" title="var">A</span>, {<span class="id" title="var">x</span> = <span class="id" title="var">y</span>} + {<span class="id" title="var">x</span> &lt;&gt; <span class="id" title="var">y</span>}) -&gt; <span class="id" title="var">decidable</span> (<span class="id" title="var">incl</span> <span class="id" title="var">l1</span> <span class="id" title="var">l2</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="var">remember</span> (<span class="id" title="var">set_diff</span> <span class="id" title="var">X</span> <span class="id" title="var">l1</span> <span class="id" title="var">l2</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">l</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">l</span>. <span class="id" title="tactic">left</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">incl_diff_equiv</span>. <span class="id" title="tactic">symmetry</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">Heql</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">right</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">not</span>. <span class="id" title="tactic">intro</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">incl_diff_equiv</span> <span class="id" title="keyword">with</span> (<span class="id" title="var">p</span> := <span class="id" title="var">X</span>) <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">Heql</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">inter_incl</span> {<span class="id" title="var">A</span> : <span class="id" title="keyword">Type</span>} (<span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">z</span> : <span class="id" title="tactic">set</span> <span class="id" title="var">A</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">p</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">a</span> <span class="id" title="var">b</span> : <span class="id" title="var">A</span>, {<span class="id" title="var">a</span> = <span class="id" title="var">b</span>} + {<span class="id" title="var">a</span> &lt;&gt; <span class="id" title="var">b</span>}) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">incl</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> -&gt; <span class="id" title="var">incl</span> (<span class="id" title="var">set_inter</span> <span class="id" title="var">p</span> <span class="id" title="var">x</span> <span class="id" title="var">z</span>) (<span class="id" title="var">set_inter</span> <span class="id" title="var">p</span> <span class="id" title="var">y</span> <span class="id" title="var">z</span>). <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">incl</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="var">addHyp</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">set_inter_elim1</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">set_inter_elim2</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H1</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">set_inter_intro</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">set_inter_nil_cons</span> {<span class="id" title="var">X</span> : <span class="id" title="keyword">Type</span>}<br/>
+&nbsp;&nbsp;{<span class="id" title="var">p</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> : <span class="id" title="var">X</span>, {<span class="id" title="var">x</span> = <span class="id" title="var">y</span>} + {<span class="id" title="var">x</span> &lt;&gt; <span class="id" title="var">y</span>}} (<span class="id" title="var">l1</span> <span class="id" title="var">l2</span> : <span class="id" title="var">list</span> <span class="id" title="var">X</span>) (<span class="id" title="var">x</span> : <span class="id" title="var">X</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">set_inter</span> <span class="id" title="var">p</span> (<span class="id" title="var">x</span> :: <span class="id" title="var">l1</span>) <span class="id" title="var">l2</span> = [] -&gt; <span class="id" title="var">set_inter</span> <span class="id" title="var">p</span> <span class="id" title="var">l1</span> <span class="id" title="var">l2</span> = [].<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="var">remember</span> (<span class="id" title="var">set_inter</span> <span class="id" title="var">p</span> <span class="id" title="var">l1</span> <span class="id" title="var">l2</span>). <span class="id" title="tactic">destruct</span> <span class="id" title="var">s</span>. <span class="id" title="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">x0</span> <span class="id" title="var">_</span>: <span class="id" title="var">set_inter</span> <span class="id" title="var">p</span> <span class="id" title="var">l1</span> <span class="id" title="var">l2</span>). <span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">Heqs</span>. <span class="id" title="tactic">constructor</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">reflexivity</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">set_inter_elim</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H0</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">x0</span> <span class="id" title="var">_</span>: (<span class="id" title="var">x</span> :: <span class="id" title="var">l1</span>)). <span class="id" title="tactic">unfold</span> <span class="id" title="var">In</span>. <span class="id" title="tactic">right</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H1</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">x0</span> <span class="id" title="var">_</span>: []). <span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">H</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">set_inter_intro</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H3</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">set_inter_nil_in1</span> {<span class="id" title="var">X</span> : <span class="id" title="keyword">Type</span>}<br/>
+&nbsp;&nbsp;{<span class="id" title="var">p</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> : <span class="id" title="var">X</span>, {<span class="id" title="var">x</span> = <span class="id" title="var">y</span>} + {<span class="id" title="var">x</span> &lt;&gt; <span class="id" title="var">y</span>}} (<span class="id" title="var">l1</span> <span class="id" title="var">l2</span> : <span class="id" title="var">list</span> <span class="id" title="var">X</span>) (<span class="id" title="var">x</span> : <span class="id" title="var">X</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">set_inter</span> <span class="id" title="var">p</span> <span class="id" title="var">l1</span> <span class="id" title="var">l2</span> = [] -&gt; <span class="id" title="var">x</span> <span class="id" title="var">_</span>: <span class="id" title="var">l1</span> -&gt; ~<span class="id" title="var">x</span> <span class="id" title="var">_</span>: <span class="id" title="var">l2</span>. <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">l2</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">l1</span>; <span class="id" title="tactic">unfold</span> <span class="id" title="var">not</span>; <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">assert</span> (<span class="id" title="var">a</span> <span class="id" title="var">_</span>: []). <span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">set_inter_intro</span>. <span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">H2</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">H2</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H3</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">IHl1</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H2</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">set_inter_nil_cons</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">set_inter_nil_in2</span> {<span class="id" title="var">X</span> : <span class="id" title="keyword">Type</span>}<br/>
+&nbsp;&nbsp;{<span class="id" title="var">p</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> : <span class="id" title="var">X</span>, {<span class="id" title="var">x</span> = <span class="id" title="var">y</span>} + {<span class="id" title="var">x</span> &lt;&gt; <span class="id" title="var">y</span>}} (<span class="id" title="var">l1</span> <span class="id" title="var">l2</span> : <span class="id" title="var">list</span> <span class="id" title="var">X</span>) (<span class="id" title="var">x</span> : <span class="id" title="var">X</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">set_inter</span> <span class="id" title="var">p</span> <span class="id" title="var">l1</span> <span class="id" title="var">l2</span> = [] -&gt; <span class="id" title="var">x</span> <span class="id" title="var">_</span>: <span class="id" title="var">l2</span> -&gt; ~<span class="id" title="var">x</span> <span class="id" title="var">_</span>: <span class="id" title="var">l1</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">not</span>. <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">generalize</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">set_inter_nil_in1</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">sufficient_suffBool</span> <span class="id" title="var">m</span> <span class="id" title="var">r</span> : <span class="id" title="var">sufficient</span> <span class="id" title="var">m</span> <span class="id" title="var">r</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">suffBool</span> <span class="id" title="var">m</span> <span class="id" title="var">r</span> = <span class="id" title="var">true</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">suffBool</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">remember</span> (<span class="id" title="var">suffDec</span> <span class="id" title="var">m</span> <span class="id" title="var">r</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">SD</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">SD</span>. <span class="id" title="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">false</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">possInc_possIncBool</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span> <span class="id" title="var">r</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">possiblyIncompatible</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span> (<span class="id" title="var">distance</span> <span class="id" title="var">r</span>) -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">possIncBool</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span> <span class="id" title="var">r</span> = <span class="id" title="var">true</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">possIncBool</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">remember</span> (<span class="id" title="var">possIncDec</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span> <span class="id" title="var">r</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">PD</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">PD</span>. <span class="id" title="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">false</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">possIncBool_possInc</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span> <span class="id" title="var">r</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">possIncBool</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span> <span class="id" title="var">r</span> = <span class="id" title="var">true</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">possiblyIncompatible</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span> (<span class="id" title="var">distance</span> <span class="id" title="var">r</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">possIncBool</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="var">remember</span> (<span class="id" title="var">possIncDec</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span> <span class="id" title="var">r</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">PD</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">PD</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">possIncDist_positive</span> <span class="id" title="var">m1</span> <span class="id" title="var">m2</span> : 0 &lt; <span class="id" title="var">possIncDist</span> <span class="id" title="var">m1</span> <span class="id" title="var">m2</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">replace</span> 0 <span class="id" title="keyword">with</span> (0 + 0); [ | <span class="id" title="tactic">ring</span>]. <span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_le_lt_compat</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">cond_nonneg</span>. <span class="id" title="tactic">repeat</span> <span class="id" title="tactic">apply</span> <span class="id" title="var">Rmult_lt_0_compat</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>. </div>
+
+<div class="doc">
+Old proof broken - needs to be reproved. Result is pretty obvious.</div>
+<div class="code">
+</div>
+<hr/>This page has been generated by <a href="http://coq.inria.fr/">coqdoc</a>
+</div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,550 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<title>ProcEquiv</title>
+</head>
+
+<body>
+
+<div id="page">
+
+<div id="header">
+</div>
+
+<div id="main">
+
+<h1 class="libtitle">Library ProcEquiv</h1>
+
+<div class="code">
+</div>
+
+<div class="doc">
+This file was written by Colm Bhandal, PhD student, Foundations and Methods group,
+School of Computer Science and Statistics, Trinity College, Dublin, Ireland.
+</div>
+<div class="code">
+
+<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.StandardResults</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.ComhBasics</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.LanguageFoundations</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.SoftwareLanguage</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.GenTacs</span>.<br/>
+
+<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Single step equivlance on process terms is defined as a bisimulation.
+</div>
+<div class="code">
+<span class="id" title="keyword">CoInductive</span> <span class="id" title="var">bisimulation</span> <span class="id" title="var">p</span> <span class="id" title="var">q</span> : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">bisimWitness</span> :<br/>
+&nbsp;&nbsp;(<span class="id" title="keyword">forall</span> <span class="id" title="var">a</span> <span class="id" title="var">p'</span>, <span class="id" title="var">p</span> -<span class="id" title="var">P</span>- <span class="id" title="var">a</span> -<span class="id" title="var">P</span>&gt; <span class="id" title="var">p'</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">q'</span>, <span class="id" title="var">q</span> -<span class="id" title="var">P</span>- <span class="id" title="var">a</span> -<span class="id" title="var">P</span>&gt; <span class="id" title="var">q'</span> /\ <span class="id" title="var">bisimulation</span> <span class="id" title="var">p'</span> <span class="id" title="var">q'</span>) -&gt;<br/>
+&nbsp;&nbsp;(<span class="id" title="keyword">forall</span> <span class="id" title="var">a</span> <span class="id" title="var">q'</span>, <span class="id" title="var">q</span> -<span class="id" title="var">P</span>- <span class="id" title="var">a</span> -<span class="id" title="var">P</span>&gt; <span class="id" title="var">q'</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">p'</span>, <span class="id" title="var">p</span> -<span class="id" title="var">P</span>- <span class="id" title="var">a</span> -<span class="id" title="var">P</span>&gt; <span class="id" title="var">p'</span> /\ <span class="id" title="var">bisimulation</span> <span class="id" title="var">p'</span> <span class="id" title="var">q'</span>) -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">bisimulation</span> <span class="id" title="var">p</span> <span class="id" title="var">q</span>.<br/>
+<span class="id" title="keyword">Notation</span> &quot;p ~p~ q" := (<span class="id" title="var">bisimulation</span> <span class="id" title="var">p</span> <span class="id" title="var">q</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 70).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Generic Properties of the Relation 
+<div class="paragraph"> </div>
+
+ The siumlation relation is reflexive.
+</div>
+<div class="code">
+<span class="id" title="keyword">CoFixpoint</span> <span class="id" title="var">bisim_refl</span> <span class="id" title="var">p</span> : <span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">p</span>. <span class="id" title="tactic">constructor</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">exists</span> <span class="id" title="var">p'</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">bisim_refl</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">exists</span> <span class="id" title="var">q'</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">bisim_refl</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The siumlation relation is transitive.
+</div>
+<div class="code">
+<span class="id" title="keyword">CoFixpoint</span> <span class="id" title="var">bisim_trans</span> <span class="id" title="var">p1</span> <span class="id" title="var">p2</span> <span class="id" title="var">p3</span> : <span class="id" title="var">p1</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">p2</span> -&gt; <span class="id" title="var">p2</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">p3</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">p1</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">p3</span>. <span class="id" title="var">introz</span> <span class="id" title="var">U</span>. <span class="id" title="tactic">constructor</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">a</span> <span class="id" title="var">p'</span>. <span class="id" title="var">introz</span> <span class="id" title="var">U</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span> <span class="id" title="var">U1</span>. <span class="id" title="var">ex_flat</span>. <span class="id" title="var">and_flat</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">U0</span> <span class="id" title="tactic">in</span> <span class="id" title="var">AND</span>. <span class="id" title="var">ex_flat</span>. <span class="id" title="var">and_flat</span>. <span class="id" title="tactic">exists</span> <span class="id" title="var">x0</span>. <span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">bisim_trans</span>; <span class="id" title="var">eassumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">a</span> <span class="id" title="var">q'</span>. <span class="id" title="var">introz</span> <span class="id" title="var">U</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">U0</span> <span class="id" title="tactic">in</span> <span class="id" title="var">U1</span>. <span class="id" title="var">ex_flat</span>. <span class="id" title="var">and_flat</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span> <span class="id" title="var">AND</span>. <span class="id" title="var">ex_flat</span>. <span class="id" title="var">and_flat</span>. <span class="id" title="tactic">exists</span> <span class="id" title="var">x0</span>. <span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">bisim_trans</span>; <span class="id" title="var">eassumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">CoFixpoint</span> <span class="id" title="var">bisim_symm</span> <span class="id" title="var">p</span> <span class="id" title="var">q</span> : <span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">q</span> -&gt; <span class="id" title="var">q</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">p</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">constructor</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H1</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H2</span>. <span class="id" title="var">ex_flat</span>. <span class="id" title="var">and_flat</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">bisim_symm</span> <span class="id" title="tactic">in</span> <span class="id" title="var">AND0</span>. <span class="id" title="tactic">exists</span> <span class="id" title="var">x</span>. <span class="id" title="tactic">split</span>; <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H0</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H2</span>. <span class="id" title="var">ex_flat</span>. <span class="id" title="var">and_flat</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">bisim_symm</span> <span class="id" title="tactic">in</span> <span class="id" title="var">AND0</span>. <span class="id" title="tactic">exists</span> <span class="id" title="var">x</span>. <span class="id" title="tactic">split</span>; <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Slightly more Specific 
+</div>
+<div class="code">
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">plus_le_left_red</span> := <span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span> [<span class="id" title="var">Q</span> : ?<span class="id" title="var">a</span> + ?<span class="id" title="var">b</span> = ?<span class="id" title="var">a</span> + ?<span class="id" title="var">c</span> |-<br/>
+&nbsp;&nbsp;?<span class="id" title="var">b</span> = ?<span class="id" title="var">c</span>] =&gt; <span class="id" title="tactic">replace</span> <span class="id" title="var">b</span> <span class="id" title="keyword">with</span> (<span class="id" title="var">a</span> + <span class="id" title="var">b</span> - <span class="id" title="var">a</span>);[ | <span class="id" title="tactic">ring</span>];<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">Q</span>; <span class="id" title="tactic">ring</span> <span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.Extras.LibTactics</span>.<br/>
+<span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">R_scope</span>.<br/>
+
+<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If a is in the sort relation for d, p, and p is capable of doing a delay
+of d, then there is some d' &lt; d and p' such that p can delay to this p' by
+d' and the resulting p' is capable of doing the action a.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">sort_del</span> <span class="id" title="var">a</span> <span class="id" title="var">d</span> <span class="id" title="var">p</span> : <span class="id" title="var">sort</span> <span class="id" title="var">a</span> <span class="id" title="var">d</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">timedActEnabled</span> <span class="id" title="var">p</span> <span class="id" title="var">d</span> -&gt;<br/>
+&nbsp;&nbsp;(<span class="id" title="tactic">exists</span> <span class="id" title="var">p'</span> <span class="id" title="var">d'</span>, <span class="id" title="var">p</span> -<span class="id" title="var">PD</span>- <span class="id" title="var">d'</span> -<span class="id" title="var">PD</span>&gt; <span class="id" title="var">p'</span> /\ <span class="id" title="var">d'</span> &lt; <span class="id" title="var">d</span> /\ <span class="id" title="var">discActEnabled</span> <span class="id" title="var">p'</span> <span class="id" title="var">a</span>)<br/>
+&nbsp;&nbsp;\/ <span class="id" title="var">discActEnabled</span> <span class="id" title="var">p</span> <span class="id" title="var">a</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">introz</span> <span class="id" title="var">U</span>. <span class="id" title="var">invertClearAs2</span> <span class="id" title="var">U0</span> <span class="id" title="var">p'</span> <span class="id" title="var">PD</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">induction</span> <span class="id" title="var">PD</span>; <span class="id" title="tactic">inversion</span> <span class="id" title="var">U</span>; <span class="id" title="tactic">subst</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">right</span>; <span class="id" title="tactic">do</span> 2 <span class="id" title="tactic">econstructor</span>; <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">right</span>; <span class="id" title="tactic">do</span> 2 <span class="id" title="tactic">econstructor</span>. <span class="id" title="tactic">symmetry</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">IHPD</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H5</span>. <span class="id" title="tactic">clear</span> <span class="id" title="var">IHPD</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H5</span>. <span class="id" title="var">ex_flat</span>. <span class="id" title="var">and_flat</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">AND2</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">left</span>. <span class="id" title="tactic">repeat</span> <span class="id" title="tactic">eexists</span>; <span class="id" title="tactic">try</span> <span class="id" title="var">eassumption</span>. <span class="id" title="tactic">econstructor</span>; <span class="id" title="var">eassumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">right</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">do</span> 2 <span class="id" title="tactic">econstructor</span>; <span class="id" title="var">eassumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">evalBoolExpTrueTot</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H4</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">H</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H4</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H4</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">IHPD1</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H2</span>. <span class="id" title="tactic">clear</span> <span class="id" title="var">IHPD1</span> <span class="id" title="var">IHPD2</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H2</span>; <span class="id" title="var">ex_flat</span>; <span class="id" title="var">and_flat</span>. <span class="id" title="tactic">left</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">timedActEnabled</span> <span class="id" title="var">p2</span> <span class="id" title="var">x0</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">TAE</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">delShortenStrict</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">econstructor</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">PD2</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="var">invertClearAs2</span> <span class="id" title="var">TAE</span> <span class="id" title="var">q'</span> <span class="id" title="var">TP</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">do</span> 2 <span class="id" title="tactic">eexists</span>; <span class="id" title="tactic">try</span> <span class="id" title="var">eassumption</span>. <span class="id" title="tactic">split</span>; [ | <span class="id" title="tactic">split</span>; [<span class="id" title="var">eassumption</span> | ]].<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">econstructor</span>; <span class="id" title="var">eassumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">daeSumL</span>; <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">right</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">daeSumL</span>; <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">IHPD2</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H2</span>. <span class="id" title="tactic">clear</span> <span class="id" title="var">IHPD1</span> <span class="id" title="var">IHPD2</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H2</span>; <span class="id" title="var">ex_flat</span>; <span class="id" title="var">and_flat</span>. <span class="id" title="tactic">left</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">timedActEnabled</span> <span class="id" title="var">p1</span> <span class="id" title="var">x0</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">TAE</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">delShortenStrict</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">econstructor</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">PD1</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="var">invertClearAs2</span> <span class="id" title="var">TAE</span> <span class="id" title="var">q'</span> <span class="id" title="var">TP</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">do</span> 2 <span class="id" title="tactic">eexists</span>; <span class="id" title="tactic">try</span> <span class="id" title="var">eassumption</span>. <span class="id" title="tactic">split</span>; [ | <span class="id" title="tactic">split</span>; [<span class="id" title="var">eassumption</span> | ]].<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">econstructor</span>; <span class="id" title="var">eassumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">daeSumR</span>; <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">right</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">daeSumR</span>; <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">IHPD1</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H3</span>. <span class="id" title="tactic">clear</span> <span class="id" title="var">IHPD1</span> <span class="id" title="var">IHPD2</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H3</span>; <span class="id" title="var">ex_flat</span>; <span class="id" title="var">and_flat</span>. <span class="id" title="tactic">left</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">timedActEnabled</span> <span class="id" title="var">q</span> <span class="id" title="var">x0</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">TAE</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">delShortenStrict</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">econstructor</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">PD2</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">invertClearAs2</span> <span class="id" title="var">TAE</span> <span class="id" title="var">q0</span> <span class="id" title="var">TP</span>. <span class="id" title="tactic">do</span> 2 <span class="id" title="tactic">eexists</span>; <span class="id" title="tactic">try</span> <span class="id" title="var">eassumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">split</span>; [ | <span class="id" title="tactic">split</span>; [<span class="id" title="var">eassumption</span> | ]]. <span class="id" title="tactic">econstructor</span>; <span class="id" title="tactic">try</span> <span class="id" title="var">eassumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">not</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">assert</span> (<span class="id" title="var">x0</span> &lt;= <span class="id" title="var">d</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">XLE</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">Rlt_le</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">H</span>; <span class="id" title="tactic">eapply</span> <span class="id" title="var">sortLe</span>; <span class="id" title="var">eassumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">daeParL</span>; <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">right</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">daeParL</span>; <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">IHPD2</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H3</span>. <span class="id" title="tactic">clear</span> <span class="id" title="var">IHPD1</span> <span class="id" title="var">IHPD2</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H3</span>; <span class="id" title="var">ex_flat</span>; <span class="id" title="var">and_flat</span>. <span class="id" title="tactic">left</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">timedActEnabled</span> <span class="id" title="var">p</span> <span class="id" title="var">x0</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">TAE</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">delShortenStrict</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">econstructor</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">PD1</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">invertClearAs2</span> <span class="id" title="var">TAE</span> <span class="id" title="var">q0</span> <span class="id" title="var">TP</span>. <span class="id" title="tactic">do</span> 2 <span class="id" title="tactic">eexists</span>; <span class="id" title="tactic">try</span> <span class="id" title="var">eassumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">split</span>; [ | <span class="id" title="tactic">split</span>; [<span class="id" title="var">eassumption</span> | ]]. <span class="id" title="tactic">econstructor</span>; <span class="id" title="tactic">try</span> <span class="id" title="var">eassumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">not</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">assert</span> (<span class="id" title="var">x0</span> &lt;= <span class="id" title="var">d</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">XLE</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">Rlt_le</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">H</span>; <span class="id" title="tactic">eapply</span> <span class="id" title="var">sortLe</span>; <span class="id" title="var">eassumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">daeParR</span>; <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">right</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">daeParR</span>; <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">H</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H4</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H4</span>; <span class="id" title="tactic">subst</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">IHPD</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H5</span>. <span class="id" title="tactic">clear</span> <span class="id" title="var">IHPD</span>. <span class="id" title="var">or_flat</span>. <span class="id" title="var">ex_flat</span>. <span class="id" title="var">and_flat</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">left</span>. <span class="id" title="tactic">do</span> 2 <span class="id" title="tactic">eexists</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">econstructor</span>; <span class="id" title="var">eassumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">split</span>; <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">right</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">daeApp</span>; <span class="id" title="var">eassumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">H</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H4</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H4</span>. <span class="id" title="tactic">subst</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">d0</span> = <span class="id" title="var">d</span>). <span class="id" title="tactic">apply</span> <span class="id" title="var">delayEqR</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">plus_le_left_red</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">clear</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">subst</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">IHPD</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H5</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">or_flat</span>. <span class="id" title="var">ex_flat</span>. <span class="id" title="var">and_flat</span>. <span class="id" title="tactic">left</span>. <span class="id" title="tactic">exists</span> <span class="id" title="var">x</span> (<span class="id" title="var">t0</span> +<span class="id" title="var">dt</span>+ <span class="id" title="var">x0</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">split</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepTpDelAdd</span>; <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_le_lt_compat</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">Rle_refl</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">TLZ</span> : <span class="id" title="var">Rle_lt_or_eq_dec</span> <span class="id" title="var">zeroTime</span> (<span class="id" title="var">nonneg</span> <span class="id" title="var">t0</span>) (<span class="id" title="var">cond_nonneg</span> <span class="id" title="var">t0</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="var">elim_intro</span> <span class="id" title="var">TLZ</span> <span class="id" title="var">TL</span> <span class="id" title="var">TE</span>. <span class="id" title="var">mkdel</span> <span class="id" title="var">t0</span> <span class="id" title="var">TL</span> <span class="id" title="var">d0</span>. <span class="id" title="tactic">assert</span> (<span class="id" title="var">d0</span> &lt;= <span class="id" title="var">t0</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">Q</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">Heqd0</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">Rle_refl</span>. <span class="id" title="tactic">left</span>. <span class="id" title="tactic">exists</span> ($&lt; <span class="id" title="var">minusTime</span> <span class="id" title="var">t0</span> <span class="id" title="var">d0</span> <span class="id" title="var">Q</span> &gt;$ <span class="id" title="var">p</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">d0</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">Rle_lt_trans</span>. <span class="id" title="var">eassumption</span>. <span class="id" title="var">Rplus_lt_tac</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">delPos</span>. <span class="id" title="tactic">subst</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">daeTimeout</span>. <span class="id" title="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">evalExp_evalExpFunTime</span>. <span class="id" title="var">lets</span> <span class="id" title="var">EB</span> : <span class="id" title="var">evalBase</span> <span class="id" title="var">zeroTime</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">my_applys_eq</span> <span class="id" title="var">EB</span>. <span class="id" title="tactic">repeat</span> <span class="id" title="tactic">f_equal</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">timeEqR</span>. <span class="id" title="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">ring</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">right</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">daeTimeout</span>. <span class="id" title="var">my_applys_eq</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">f_equal</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">timeEqR</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">TE</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">H1</span>. <span class="id" title="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">symmetry</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">H0</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H5</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H5</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">H2</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">false</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">Rle_not_lt</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">simpl</span>. <span class="id" title="var">Rplus_lt_tac</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">delPos</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">H</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H4</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H4</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">bisim_dae</span> <span class="id" title="var">p</span> <span class="id" title="var">q</span> <span class="id" title="var">a</span> : <span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">q</span> -&gt; <span class="id" title="var">discActEnabled</span> <span class="id" title="var">p</span> <span class="id" title="var">a</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">discActEnabled</span> <span class="id" title="var">q</span> <span class="id" title="var">a</span>. <span class="id" title="var">introz</span> <span class="id" title="var">U</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">U0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">stepPDisc</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>. <span class="id" title="var">ex_flat</span>. <span class="id" title="var">and_flat</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">econstructor</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">AND</span>. <span class="id" title="var">eassumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">bisim_del_sort</span> <span class="id" title="var">p</span> <span class="id" title="var">q</span> <span class="id" title="var">a</span> <span class="id" title="var">d</span> : <span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">q</span> -&gt; <span class="id" title="var">timedActEnabled</span> <span class="id" title="var">p</span> <span class="id" title="var">d</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">sort</span> <span class="id" title="var">a</span> <span class="id" title="var">d</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">sort</span> <span class="id" title="var">a</span> <span class="id" title="var">d</span> <span class="id" title="var">q</span>. <span class="id" title="var">introz</span> <span class="id" title="var">U</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">SD</span> : <span class="id" title="var">sort_del</span> <span class="id" title="var">U1</span> <span class="id" title="var">U0</span>. <span class="id" title="var">elim_intro</span> <span class="id" title="var">SD</span> <span class="id" title="var">PD</span> <span class="id" title="var">DA</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">ex_flat</span>. <span class="id" title="var">and_flat</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepPTimed</span> <span class="id" title="tactic">in</span> <span class="id" title="var">AND</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span> <span class="id" title="var">AND</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">ex_flat</span>. <span class="id" title="var">and_flat</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">AND</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">DAX</span> : <span class="id" title="var">bisim_dae</span> <span class="id" title="var">AND0</span> <span class="id" title="var">AND2</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">sort_complete</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">sortNotTau</span>. <span class="id" title="var">eassumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">right</span>. <span class="id" title="tactic">exists</span> <span class="id" title="var">x0</span> <span class="id" title="var">x1</span>. <span class="id" title="tactic">repeat</span> (<span class="id" title="tactic">split</span>; [<span class="id" title="tactic">assumption</span> | ]).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">BD</span> : <span class="id" title="var">bisim_dae</span> <span class="id" title="var">U</span> <span class="id" title="var">DA</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">enabledInSort</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">sortNotTau</span>. <span class="id" title="var">eassumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Bisimulation and Syntax 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">CoFixpoint</span> <span class="id" title="var">choice_bisim_symm</span> <span class="id" title="var">p1</span> <span class="id" title="var">p2</span> : <span class="id" title="var">p1</span> $+$ <span class="id" title="var">p2</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">p2</span> $+$ <span class="id" title="var">p1</span>. <span class="id" title="tactic">constructor</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">p'</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepPDisc</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepDpChoiceR</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">bisim_refl</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">p'</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepPDisc</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepDpChoiceL</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">bisim_refl</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">exists</span> (<span class="id" title="var">p2'</span> $+$ <span class="id" title="var">p1'</span>). <span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">stepPTimed</span>. <span class="id" title="tactic">constructor</span>; <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">choice_bisim_symm</span> .<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">q'</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepPDisc</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepDpChoiceR</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">bisim_refl</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">q'</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepPDisc</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepDpChoiceL</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">bisim_refl</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">exists</span> (<span class="id" title="var">p2'</span> $+$ <span class="id" title="var">p1'</span>). <span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">stepPTimed</span>. <span class="id" title="tactic">constructor</span>; <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">choice_bisim_symm</span> . <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">CoFixpoint</span> <span class="id" title="var">par_bisim_symm</span> <span class="id" title="var">p1</span> <span class="id" title="var">p2</span> : <span class="id" title="var">p1</span> $||$ <span class="id" title="var">p2</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">p2</span> $||$ <span class="id" title="var">p1</span>. <span class="id" title="tactic">constructor</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>; <span class="id" title="tactic">subst</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> (<span class="id" title="var">p2</span> $||$ <span class="id" title="var">p'0</span>). <span class="id" title="tactic">split</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepPDisc</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepDpParR</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">par_bisim_symm</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> (<span class="id" title="var">q'</span> $||$ <span class="id" title="var">p1</span>). <span class="id" title="tactic">split</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepPDisc</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepDpParL</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">par_bisim_symm</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> (<span class="id" title="var">q'</span> $||$ <span class="id" title="var">p'0</span>). <span class="id" title="tactic">split</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepPDisc</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">stepDpSyncRL</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="var">eassumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">par_bisim_symm</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> (<span class="id" title="var">q'</span> $||$ <span class="id" title="var">p'0</span>). <span class="id" title="tactic">split</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepPDisc</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">stepDpSyncLR</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="var">eassumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">par_bisim_symm</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">exists</span> (<span class="id" title="var">q'</span> $||$ <span class="id" title="var">p'0</span>). <span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">stepPTimed</span>. <span class="id" title="tactic">constructor</span>; <span class="id" title="tactic">try</span> <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">not</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">H9</span>. <span class="id" title="var">eassumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">my_applys_eq</span> <span class="id" title="var">H10</span>. <span class="id" title="tactic">symmetry</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">complementInvol</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">par_bisim_symm</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>; <span class="id" title="tactic">subst</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> (<span class="id" title="var">p1</span> $||$ <span class="id" title="var">p'</span>). <span class="id" title="tactic">split</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepPDisc</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepDpParR</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">par_bisim_symm</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> (<span class="id" title="var">q'0</span> $||$ <span class="id" title="var">p2</span>). <span class="id" title="tactic">split</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepPDisc</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepDpParL</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">par_bisim_symm</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> (<span class="id" title="var">q'0</span> $||$ <span class="id" title="var">p'</span>). <span class="id" title="tactic">split</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepPDisc</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">stepDpSyncRL</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="var">eassumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">par_bisim_symm</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> (<span class="id" title="var">q'0</span> $||$ <span class="id" title="var">p'</span>). <span class="id" title="tactic">split</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepPDisc</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">stepDpSyncLR</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="var">eassumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">par_bisim_symm</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">exists</span> (<span class="id" title="var">q'0</span> $||$ <span class="id" title="var">p'</span>). <span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">stepPTimed</span>. <span class="id" title="tactic">constructor</span>; <span class="id" title="tactic">try</span> <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">not</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">H9</span>. <span class="id" title="var">eassumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">my_applys_eq</span> <span class="id" title="var">H10</span>. <span class="id" title="tactic">symmetry</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">complementInvol</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">par_bisim_symm</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">CoFixpoint</span> <span class="id" title="var">choice_bism_unit_r</span> <span class="id" title="var">p</span> : <span class="id" title="var">p</span> $+$ <span class="id" title="var">nilProc</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">p</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">constructor</span>; <span class="id" title="tactic">intros</span>; <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>; <span class="id" title="tactic">subst</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">stepPDisc</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H7</span>. <span class="id" title="tactic">exists</span> <span class="id" title="var">p'</span>. <span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">bisim_refl</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H7</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>; <span class="id" title="tactic">inversion</span> <span class="id" title="var">H8</span>; <span class="id" title="tactic">subst</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">p1'</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepPTimed</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">choice_bism_unit_r</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">subst</span>. <span class="id" title="tactic">exists</span> <span class="id" title="var">q'</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepPDisc</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">stepDpChoiceL</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">bisim_refl</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">subst</span>. <span class="id" title="tactic">exists</span> (<span class="id" title="var">q'</span> $+$ <span class="id" title="var">nilProc</span>). <span class="id" title="tactic">split</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepPTimed</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">stepTpSum</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">constructor</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">choice_bism_unit_r</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">CoFixpoint</span> <span class="id" title="var">choice_bism_unit_l</span> <span class="id" title="var">p</span> : <span class="id" title="var">nilProc</span> $+$ <span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">p</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">bisim_trans</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">choice_bisim_symm</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">choice_bism_unit_r</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">CoFixpoint</span> <span class="id" title="var">choice_bisim_context</span> <span class="id" title="var">p1</span> <span class="id" title="var">p2</span> <span class="id" title="var">p1'</span> <span class="id" title="var">p2'</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">p1</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">p1'</span> -&gt; <span class="id" title="var">p2</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">p2'</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">p1</span> $+$ <span class="id" title="var">p2</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">p1'</span> $+$ <span class="id" title="var">p2'</span>. <span class="id" title="var">introz</span> <span class="id" title="var">U</span>. <span class="id" title="tactic">constructor</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">stepPDisc</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H7</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H7</span>. <span class="id" title="var">ex_flat</span>. <span class="id" title="var">and_flat</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">x</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepPDisc</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">AND</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">stepDpChoiceL</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">stepPDisc</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H7</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">U0</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H7</span>. <span class="id" title="var">ex_flat</span>. <span class="id" title="var">and_flat</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">x</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepPDisc</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">AND</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">stepDpChoiceR</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">stepPTimed</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H5</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepPTimed</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H8</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H5</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">U0</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H8</span>. <span class="id" title="var">ex_flat</span>. <span class="id" title="var">and_flat</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> (<span class="id" title="var">x0</span> $+$ <span class="id" title="var">x</span>). <span class="id" title="tactic">inversion</span> <span class="id" title="var">AND</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">AND1</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">split</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepPTimed</span>. <span class="id" title="tactic">constructor</span>; <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">choice_bisim_context</span>; <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">stepPDisc</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H7</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H7</span>. <span class="id" title="var">ex_flat</span>. <span class="id" title="var">and_flat</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">x</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepPDisc</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">AND</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">stepDpChoiceL</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">stepPDisc</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H7</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">U0</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H7</span>. <span class="id" title="var">ex_flat</span>. <span class="id" title="var">and_flat</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">x</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepPDisc</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">AND</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">stepDpChoiceR</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">stepPTimed</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H5</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepPTimed</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H8</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H5</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">U0</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H8</span>. <span class="id" title="var">ex_flat</span>. <span class="id" title="var">and_flat</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> (<span class="id" title="var">x0</span> $+$ <span class="id" title="var">x</span>). <span class="id" title="tactic">inversion</span> <span class="id" title="var">AND</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">AND1</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">split</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepPTimed</span>. <span class="id" title="tactic">constructor</span>; <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">choice_bisim_context</span>; <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">bisim_disc_tac_parm</span> <span class="id" title="var">U</span> <span class="id" title="var">V</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">stepPDisc</span> <span class="id" title="tactic">in</span> <span class="id" title="var">V</span>; <span class="id" title="tactic">apply</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span> <span class="id" title="var">V</span>; <span class="id" title="var">ex_flat</span>; <span class="id" title="var">and_flat</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span> [<span class="id" title="var">U1</span> : <span class="id" title="var">_</span> -<span class="id" title="var">P</span>- <span class="id" title="var">_</span> -<span class="id" title="var">P</span>&gt; <span class="id" title="var">_</span> |- <span class="id" title="var">_</span>] =&gt; <span class="id" title="tactic">inversion</span> <span class="id" title="var">U1</span>; <span class="id" title="tactic">subst</span> <span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If there are bisimilar processes in the context and there's a discrete
+transition from the first bisimilar process then this tactic generates a
+matching discrete transition from the second bisimilar process.
+</div>
+<div class="code">
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">bisim_disc_tac</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| [<span class="id" title="var">U</span> : ?<span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ ?<span class="id" title="var">q</span>, <span class="id" title="var">V</span> : ?<span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">_</span> -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">_</span> |- <span class="id" title="var">_</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">bisim_disc_tac_parm</span> <span class="id" title="var">U</span> <span class="id" title="var">V</span><br/>
+&nbsp;&nbsp;| [<span class="id" title="var">U</span> : ?<span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ ?<span class="id" title="var">q</span>, <span class="id" title="var">V</span> : ?<span class="id" title="var">q</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">_</span> -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">_</span> |- <span class="id" title="var">_</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">bisim_disc_tac_parm</span> <span class="id" title="var">U</span> <span class="id" title="var">V</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">bisim_timed_tac_parm</span> <span class="id" title="var">U</span> <span class="id" title="var">V</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">stepPTimed</span> <span class="id" title="tactic">in</span> <span class="id" title="var">V</span>; <span class="id" title="tactic">apply</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span> <span class="id" title="var">V</span>; <span class="id" title="var">ex_flat</span>; <span class="id" title="var">and_flat</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span> [<span class="id" title="var">U1</span> : <span class="id" title="var">_</span> -<span class="id" title="var">P</span>- <span class="id" title="var">_</span> -<span class="id" title="var">P</span>&gt; <span class="id" title="var">_</span> |- <span class="id" title="var">_</span>] =&gt; <span class="id" title="tactic">inversion</span> <span class="id" title="var">U1</span>; <span class="id" title="tactic">subst</span> <span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Similar to bisim_disc_tac but matches a delay rather than a discrete step.
+</div>
+<div class="code">
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">bisim_timed_tac</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| [<span class="id" title="var">U</span> : ?<span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ ?<span class="id" title="var">q</span>, <span class="id" title="var">V</span> : ?<span class="id" title="var">p</span> -<span class="id" title="var">PD</span>- <span class="id" title="var">_</span> -<span class="id" title="var">PD</span>&gt; <span class="id" title="var">_</span> |- <span class="id" title="var">_</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">bisim_timed_tac_parm</span> <span class="id" title="var">U</span> <span class="id" title="var">V</span><br/>
+&nbsp;&nbsp;| [<span class="id" title="var">U</span> : ?<span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ ?<span class="id" title="var">q</span>, <span class="id" title="var">V</span> : ?<span class="id" title="var">q</span> -<span class="id" title="var">PD</span>- <span class="id" title="var">_</span> -<span class="id" title="var">PD</span>&gt; <span class="id" title="var">_</span> |- <span class="id" title="var">_</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">bisim_timed_tac_parm</span> <span class="id" title="var">U</span> <span class="id" title="var">V</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">cond_bisim_lift_true</span> <span class="id" title="var">p</span> <span class="id" title="var">q</span> <span class="id" title="var">b</span> : <span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">q</span> -&gt; <span class="id" title="var">evalBoolExp</span> <span class="id" title="var">b</span> <span class="id" title="var">true</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">b</span> $&gt; <span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">b</span> $&gt; <span class="id" title="var">q</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">constructor</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H1</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H2</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">bisim_disc_tac</span>. <span class="id" title="tactic">exists</span> <span class="id" title="var">x</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">do</span> 2 <span class="id" title="tactic">constructor</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H2</span>. <span class="id" title="var">bisim_timed_tac</span>. <span class="id" title="tactic">exists</span> <span class="id" title="var">x</span>. <span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">do</span> 2 <span class="id" title="tactic">constructor</span>; <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">evalBoolExpTrueTot</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">H0</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H9</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H9</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H1</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H2</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">bisim_disc_tac</span>. <span class="id" title="tactic">exists</span> <span class="id" title="var">x</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">do</span> 2 <span class="id" title="tactic">constructor</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H2</span>. <span class="id" title="var">bisim_timed_tac</span>. <span class="id" title="tactic">exists</span> <span class="id" title="var">x</span>. <span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">do</span> 2 <span class="id" title="tactic">constructor</span>; <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">evalBoolExpTrueTot</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">H0</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H9</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H9</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">CoFixpoint</span> <span class="id" title="var">par_bisim_context</span> <span class="id" title="var">p</span> <span class="id" title="var">p'</span> <span class="id" title="var">q</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">p'</span> -&gt; <span class="id" title="var">p</span> $||$ <span class="id" title="var">q</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">p'</span> $||$ <span class="id" title="var">q</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">constructor</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H0</span>; <span class="id" title="tactic">subst</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H1</span>; <span class="id" title="tactic">subst</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">bisim_disc_tac</span>. <span class="id" title="tactic">exists</span> (<span class="id" title="var">x</span> $||$ <span class="id" title="var">q</span>). <span class="id" title="tactic">split</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepPDisc</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">stepDpParL</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">par_bisim_context</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> (<span class="id" title="var">p'</span> $||$ <span class="id" title="var">q'</span>). <span class="id" title="tactic">split</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepPDisc</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">stepDpParR</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">par_bisim_context</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">bisim_disc_tac</span>. <span class="id" title="tactic">exists</span> (<span class="id" title="var">x</span> $||$ <span class="id" title="var">q'</span>). <span class="id" title="tactic">split</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepPDisc</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">stepDpSyncLR</span>; <span class="id" title="var">eassumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">par_bisim_context</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">bisim_disc_tac</span>. <span class="id" title="tactic">exists</span> (<span class="id" title="var">x</span> $||$ <span class="id" title="var">q'</span>). <span class="id" title="tactic">split</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepPDisc</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">stepDpSyncRL</span>; <span class="id" title="var">eassumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">par_bisim_context</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H1</span>; <span class="id" title="tactic">subst</span>. <span class="id" title="var">bisim_timed_tac</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> (<span class="id" title="var">x</span> $||$ <span class="id" title="var">q'</span>). <span class="id" title="tactic">split</span>. <span class="id" title="tactic">do</span> 2 <span class="id" title="tactic">constructor</span>; [<span class="id" title="tactic">assumption</span>.. | ].<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">not</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">H7</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">bisim_del_sort</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">bisim_symm</span>. <span class="id" title="var">eassumption</span>. <span class="id" title="tactic">econstructor</span>. <span class="id" title="var">eassumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">eassumption</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">par_bisim_context</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H0</span>; <span class="id" title="tactic">subst</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H1</span>; <span class="id" title="tactic">subst</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">bisim_disc_tac</span>. <span class="id" title="tactic">exists</span> (<span class="id" title="var">x</span> $||$ <span class="id" title="var">q</span>). <span class="id" title="tactic">split</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepPDisc</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">stepDpParL</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">par_bisim_context</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> (<span class="id" title="var">p</span> $||$ <span class="id" title="var">q'0</span>). <span class="id" title="tactic">split</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepPDisc</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">stepDpParR</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">par_bisim_context</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">bisim_disc_tac</span>. <span class="id" title="tactic">exists</span> (<span class="id" title="var">x</span> $||$ <span class="id" title="var">q'0</span>). <span class="id" title="tactic">split</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepPDisc</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">stepDpSyncLR</span>; <span class="id" title="var">eassumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">par_bisim_context</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">bisim_disc_tac</span>. <span class="id" title="tactic">exists</span> (<span class="id" title="var">x</span> $||$ <span class="id" title="var">q'0</span>). <span class="id" title="tactic">split</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepPDisc</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">stepDpSyncRL</span>; <span class="id" title="var">eassumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">par_bisim_context</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H1</span>; <span class="id" title="tactic">subst</span>. <span class="id" title="var">bisim_timed_tac</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> (<span class="id" title="var">x</span> $||$ <span class="id" title="var">q'0</span>). <span class="id" title="tactic">split</span>. <span class="id" title="tactic">do</span> 2 <span class="id" title="tactic">constructor</span>; [<span class="id" title="tactic">assumption</span>.. | ].<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">not</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">H7</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">bisim_del_sort</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">bisim_symm</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">bisim_symm</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>. <span class="id" title="var">eassumption</span>. <span class="id" title="tactic">econstructor</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">eassumption</span>. <span class="id" title="var">eassumption</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">par_bisim_context</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Corollary</span> <span class="id" title="var">par_bisim_context2</span> <span class="id" title="var">p</span> <span class="id" title="var">q</span> <span class="id" title="var">q'</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">q</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">q'</span> -&gt; <span class="id" title="var">p</span> $||$ <span class="id" title="var">q</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">p</span> $||$ <span class="id" title="var">q'</span>. <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">bisim_trans</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">par_bisim_symm</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">bisim_trans</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">par_bisim_context</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">eassumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">par_bisim_symm</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Corollary</span> <span class="id" title="var">par_bisim_context_strong</span> <span class="id" title="var">p</span> <span class="id" title="var">p'</span> <span class="id" title="var">q</span> <span class="id" title="var">q'</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">p'</span> -&gt; <span class="id" title="var">q</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">q'</span> -&gt; <span class="id" title="var">p</span> $||$ <span class="id" title="var">q</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">p'</span> $||$ <span class="id" title="var">q'</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">bisim_trans</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">par_bisim_context</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">eassumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">par_bisim_context2</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Corollary</span> <span class="id" title="var">par_bisim_triple</span> <span class="id" title="var">p1</span> <span class="id" title="var">p1'</span> <span class="id" title="var">p2</span> <span class="id" title="var">p2'</span> <span class="id" title="var">p3</span> <span class="id" title="var">p3'</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">p1</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">p1'</span> -&gt; <span class="id" title="var">p2</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">p2'</span> -&gt; <span class="id" title="var">p3</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">p3'</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">p1</span> $||$ <span class="id" title="var">p2</span> $||$ <span class="id" title="var">p3</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">p1'</span> $||$ <span class="id" title="var">p2'</span> $||$ <span class="id" title="var">p3'</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">introz</span> <span class="id" title="var">U</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">par_bisim_context_strong</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">par_bisim_context_strong</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">cond_bisim_true</span> <span class="id" title="var">p</span> <span class="id" title="var">b</span> : <span class="id" title="var">evalBoolExp</span> <span class="id" title="var">b</span> <span class="id" title="var">true</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">b</span> $&gt; <span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">p</span>. <span class="id" title="var">introz</span> <span class="id" title="var">U</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">split</span>; <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">exists</span> <span class="id" title="var">p'</span>. <span class="id" title="tactic">split</span>;[ | <span class="id" title="tactic">apply</span> <span class="id" title="var">bisim_refl</span>].<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>; <span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepPDisc</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">stepPTimed</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">evalBoolExpTrueTot</span> <span class="id" title="tactic">in</span> <span class="id" title="var">U</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H7</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H7</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">exists</span> <span class="id" title="var">q'</span>. <span class="id" title="tactic">split</span>;[ | <span class="id" title="tactic">apply</span> <span class="id" title="var">bisim_refl</span>].<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">do</span> 2 <span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">evalBoolExpTrueTot</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">exists</span> <span class="id" title="var">q'</span>. <span class="id" title="tactic">split</span>;[ | <span class="id" title="tactic">apply</span> <span class="id" title="var">bisim_refl</span>].<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">do</span> 2 <span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">evalBoolExpTrueTot</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">evalBoolExpFalseTot</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">e</span> : <span class="id" title="var">BoolExp</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">evalBoolExp</span> <span class="id" title="var">e</span> <span class="id" title="var">false</span> &lt;-&gt; <span class="id" title="var">evalBoolExpFunTot</span> <span class="id" title="var">e</span> = <span class="id" title="var">false</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">split</span>; <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">evalBoolExpRelFun</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">evalBoolExpFunTot</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">evalBoolExpFunTot</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">remember</span> (<span class="id" title="var">evalBoolExpFun</span> <span class="id" title="var">e</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">EV</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">EV</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">subst</span>. <span class="id" title="tactic">symmetry</span> <span class="id" title="tactic">in</span> <span class="id" title="var">HeqEV</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">evalBoolExpFunRel</span> <span class="id" title="tactic">in</span> <span class="id" title="var">HeqEV</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">symmetry</span> <span class="id" title="tactic">in</span> <span class="id" title="var">HeqEV</span>. <span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">CoFixpoint</span> <span class="id" title="var">cond_bisim_false</span> <span class="id" title="var">p</span> <span class="id" title="var">b</span> : <span class="id" title="var">evalBoolExpFunTot</span> <span class="id" title="var">b</span> = <span class="id" title="var">false</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">b</span> $&gt; <span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">nilProc</span>. <span class="id" title="var">introz</span> <span class="id" title="var">U</span>. <span class="id" title="tactic">split</span>; <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>; <span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">evalBoolExpTrueTot</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H8</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">evalBoolExpTrueTot</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H8</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H8</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H8</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H8</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H8</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">subst</span>. <span class="id" title="tactic">exists</span> <span class="id" title="var">nilProc</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">do</span> 2 <span class="id" title="tactic">constructor</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">cond_bisim_false</span>; <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>; <span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>; <span class="id" title="tactic">subst</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> (<span class="id" title="var">b</span> $&gt; <span class="id" title="var">p</span>). <span class="id" title="tactic">split</span>. <span class="id" title="tactic">constructor</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">stepTpIfFalse</span>; <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">cond_bisim_false</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">if_then_bisim_true</span> <span class="id" title="var">b</span> <span class="id" title="var">p</span> <span class="id" title="var">q</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">evalBoolExp</span> <span class="id" title="var">b</span> <span class="id" title="var">true</span> -&gt; <span class="id" title="var">b</span> $&gt; <span class="id" title="var">p</span> $+$ !~<span class="id" title="var">b</span> $&gt; <span class="id" title="var">q</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">p</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">introz</span> <span class="id" title="var">U</span>. <span class="id" title="tactic">cut</span> (!~<span class="id" title="var">b</span> $&gt; <span class="id" title="var">q</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">nilProc</span>). <span class="id" title="tactic">intro</span> <span class="id" title="var">NP</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">bisim_trans</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">choice_bisim_context</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">bisim_refl</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">NP</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">bisim_trans</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">choice_bism_unit_r</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">cond_bisim_true</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">cond_bisim_false</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">evalBoolExpFunTot</span>. <span class="id" title="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">evalBoolExpRelFun</span> <span class="id" title="tactic">in</span> <span class="id" title="var">U</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">U</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">if_then_bisim_false</span> <span class="id" title="var">b</span> <span class="id" title="var">p</span> <span class="id" title="var">q</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">evalBoolExp</span> <span class="id" title="var">b</span> <span class="id" title="var">false</span> -&gt; <span class="id" title="var">b</span> $&gt; <span class="id" title="var">p</span> $+$ !~<span class="id" title="var">b</span> $&gt; <span class="id" title="var">q</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">q</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">introz</span> <span class="id" title="var">U</span>. <span class="id" title="tactic">cut</span> (<span class="id" title="var">b</span> $&gt; <span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">nilProc</span>). <span class="id" title="tactic">intro</span> <span class="id" title="var">NP</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">bisim_trans</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">choice_bisim_context</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">NP</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">bisim_refl</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">bisim_trans</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">choice_bism_unit_l</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">cond_bisim_true</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">bevalNot</span> <span class="id" title="tactic">in</span> <span class="id" title="var">U</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">U</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">cond_bisim_false</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">evalBoolExpRelFun</span> <span class="id" title="tactic">in</span> <span class="id" title="var">U</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">evalBoolExpFunTot</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">U</span>. <span class="id" title="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">reflexivity</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+<hr/>This page has been generated by <a href="http://coq.inria.fr/">coqdoc</a>
+</div>
+
+</div>
+
+</body>
+</html>

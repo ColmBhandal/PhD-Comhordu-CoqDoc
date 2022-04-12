@@ -1,0 +1,330 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<title>ProtAuxDefs</title>
+</head>
+
+<body>
+
+<div id="page">
+
+<div id="header">
+</div>
+
+<div id="main">
+
+<h1 class="libtitle">Library ProtAuxDefs</h1>
+
+<div class="code">
+</div>
+
+<div class="doc">
+This file was written by Colm Bhandal, PhD student, Foundations and Methods group,
+School of Computer Science and Statistics, Trinity College, Dublin, Ireland.
+</div>
+<div class="code">
+
+<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.StandardResults</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.ComhBasics</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.LanguageFoundations</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.SoftwareLanguage</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.ProcEquiv</span>.<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">bcWaitState</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">x</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="keyword">Prop</span> := <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ (<span class="id" title="var">bcWait</span> <span class="id" title="var">m</span> <span class="id" title="var">x</span>).<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">sleepingState</span> (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">sleeping</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">bcReadyState</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ (<span class="id" title="var">bcReady</span> <span class="id" title="var">m</span> <span class="id" title="var">l</span>).<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">dormantState</span> (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">dormant</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">ovWaitState</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">t</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span>: <span class="id" title="keyword">Time</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">ovWait</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">ovReadyState</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">ovReady</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">l</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">switchBcState</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">switchBc</span> <span class="id" title="var">m</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">switchCurrState</span> (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">switchCurr</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">switchListenState</span> (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">switchListen</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">tfsStartState</span> (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="keyword">Prop</span> := <br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">tfsStart</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">tfsNextState</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">tfsNext</span> <span class="id" title="var">m</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">tfsCurrState</span> (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="keyword">Prop</span> := <br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">tfsCurr</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">tfsBcState</span> (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="keyword">Prop</span> := <br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">tfsBc</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">tfsListenState</span> (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="keyword">Prop</span> := <br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">tfsListen</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">initState</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="keyword">Prop</span> := <br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">init</span> <span class="id" title="var">m</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">ovAbortState</span> (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="keyword">Prop</span> := <br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">ovAbort</span>.<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">listeningState</span> (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">listening</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">rangeBadState</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">rangeBad</span> <span class="id" title="var">m</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">currOKState</span> (<span class="id" title="var">m'</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">currOK</span> <span class="id" title="var">m'</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">abortOvlpState</span> (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">abortOvlp</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">badOvlpState</span> (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">badOvlp</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">currCompState</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">r</span> : <span class="id" title="var">Distance</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">currComp</span> <span class="id" title="var">m</span> <span class="id" title="var">r</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">pausedState</span> (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="keyword">Prop</span> := <br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">paused</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">gotMsgState</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">gotMsg</span> <span class="id" title="var">m</span> <span class="id" title="var">l</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">gotRangeState</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">r</span> : <span class="id" title="var">Distance</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">gotRange</span> <span class="id" title="var">m</span> <span class="id" title="var">r</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">currEqState</span> (<span class="id" title="var">m</span> <span class="id" title="var">m'</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="keyword">Prop</span> := <br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">currEq</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">nextEqState</span> (<span class="id" title="var">m</span> <span class="id" title="var">m'</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="keyword">Prop</span> := <br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">nextEq</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">currPincCheckState</span> (<span class="id" title="var">m</span> <span class="id" title="var">m'</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Distance</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="keyword">Prop</span> := <br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">currPincCheck</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span> <span class="id" title="var">d</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">nextPincCheckState</span> (<span class="id" title="var">m</span> <span class="id" title="var">m'</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Distance</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="keyword">Prop</span> := <br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> ~<span class="id" title="var">p</span>~ <span class="id" title="var">nextPincCheck</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span> <span class="id" title="var">d</span>.<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">broadcastState</span> (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">broadBcwSt</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">x</span> : <span class="id" title="keyword">Time</span>) : <span class="id" title="var">bcWaitState</span> <span class="id" title="var">m</span> <span class="id" title="var">x</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">broadcastState</span> <span class="id" title="var">p</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">broadSlpSt</span> : <span class="id" title="var">sleepingState</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">broadcastState</span> <span class="id" title="var">p</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">broadBcrSt</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>) : <span class="id" title="var">bcReadyState</span> <span class="id" title="var">m</span> <span class="id" title="var">l</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">broadcastState</span> <span class="id" title="var">p</span>.<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">overlapState</span> (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">ovlpDorSt</span> : <span class="id" title="var">dormantState</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">overlapState</span> <span class="id" title="var">p</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">ovlpWaSt</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">t</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> : <span class="id" title="keyword">Time</span>) : <span class="id" title="var">ovWaitState</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">overlapState</span> <span class="id" title="var">p</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">nextSinceState</span> (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">nexsOvwSt</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">t</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> : <span class="id" title="keyword">Time</span>) : <span class="id" title="var">ovWaitState</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">nextSinceState</span> <span class="id" title="var">p</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">nexsOvrSt</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>) : <span class="id" title="var">ovReadyState</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">l</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">nextSinceState</span> <span class="id" title="var">p</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">nexsSbcSt</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) : <span class="id" title="var">switchBcState</span> <span class="id" title="var">m</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">nextSinceState</span> <span class="id" title="var">p</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">nexsScSt</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) : <span class="id" title="var">switchCurrState</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">nextSinceState</span> <span class="id" title="var">p</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">tfsState</span> (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">tfsStaSt</span> : <span class="id" title="var">tfsStartState</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">tfsState</span> <span class="id" title="var">p</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">tfsNexSt</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) : <span class="id" title="var">tfsNextState</span> <span class="id" title="var">m</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">tfsState</span> <span class="id" title="var">p</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">tfsCurSt</span> : <span class="id" title="var">tfsCurrState</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">tfsState</span> <span class="id" title="var">p</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">tfsBcSt</span> : <span class="id" title="var">tfsBcState</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">tfsState</span> <span class="id" title="var">p</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">tfsLisSt</span> : <span class="id" title="var">tfsListenState</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">tfsState</span> <span class="id" title="var">p</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">switchState</span> (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">switBcSt</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) : <span class="id" title="var">switchBcState</span> <span class="id" title="var">m</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">switchState</span> <span class="id" title="var">p</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">switCurSt</span> : <span class="id" title="var">switchCurrState</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">switchState</span> <span class="id" title="var">p</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">switLisSt</span> : <span class="id" title="var">switchListenState</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">switchState</span> <span class="id" title="var">p</span>.<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">listenerState</span> (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">listLisSt</span> : <span class="id" title="var">listeningState</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">listenerState</span> <span class="id" title="var">p</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">listRbSt</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) : <span class="id" title="var">rangeBadState</span> <span class="id" title="var">m</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">listenerState</span> <span class="id" title="var">p</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">listCokSt</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) : <span class="id" title="var">currOKState</span> <span class="id" title="var">m</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">listenerState</span> <span class="id" title="var">p</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">listAovSt</span> : <span class="id" title="var">abortOvlpState</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">listenerState</span> <span class="id" title="var">p</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">listBovSt</span> : <span class="id" title="var">badOvlpState</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">listenerState</span> <span class="id" title="var">p</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">listCucost</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">r</span> : <span class="id" title="var">Distance</span>) : <span class="id" title="var">currCompState</span> <span class="id" title="var">m</span> <span class="id" title="var">r</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">listenerState</span> <span class="id" title="var">p</span>.<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">liftBroadcast</span> (<span class="id" title="var">X</span> : <span class="id" title="var">ProcTerm</span> -&gt; <span class="id" title="keyword">Prop</span>) : <span class="id" title="var">ProcTerm</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">lftbc</span> (<span class="id" title="var">p</span> <span class="id" title="var">p2</span> <span class="id" title="var">p3</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="var">X</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">liftBroadcast</span> <span class="id" title="var">X</span> (<span class="id" title="var">p</span> $||$ <span class="id" title="var">p2</span> $||$ <span class="id" title="var">p3</span>) .<br/>
+
+<br/>
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">liftOverlap</span> (<span class="id" title="var">X</span> : <span class="id" title="var">ProcTerm</span> -&gt; <span class="id" title="keyword">Prop</span>) : <span class="id" title="var">ProcTerm</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">lftOv</span> (<span class="id" title="var">p1</span> <span class="id" title="var">p</span> <span class="id" title="var">p3</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="var">X</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">liftOverlap</span> <span class="id" title="var">X</span> (<span class="id" title="var">p1</span> $||$ <span class="id" title="var">p</span> $||$ <span class="id" title="var">p3</span>) .<br/>
+
+<br/>
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">liftListen</span> (<span class="id" title="var">X</span> : <span class="id" title="var">ProcTerm</span> -&gt; <span class="id" title="keyword">Prop</span>) : <span class="id" title="var">ProcTerm</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">lftlst</span> (<span class="id" title="var">p1</span> <span class="id" title="var">p2</span> <span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="var">X</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">liftListen</span> <span class="id" title="var">X</span> (<span class="id" title="var">p1</span> $||$ <span class="id" title="var">p2</span> $||$ <span class="id" title="var">p</span>) .<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">bcWaitStateProt</span> <span class="id" title="var">m</span> <span class="id" title="var">x</span> := <span class="id" title="var">liftBroadcast</span> (<span class="id" title="var">bcWaitState</span> <span class="id" title="var">m</span> <span class="id" title="var">x</span>).<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">sleepingStateProt</span> := <span class="id" title="var">liftBroadcast</span> <span class="id" title="var">sleepingState</span>.<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">bcReadyStateProt</span> <span class="id" title="var">m</span> <span class="id" title="var">l</span> := <span class="id" title="var">liftBroadcast</span> (<span class="id" title="var">bcReadyState</span> <span class="id" title="var">m</span> <span class="id" title="var">l</span>).<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">dormantStateProt</span> := <span class="id" title="var">liftOverlap</span> <span class="id" title="var">dormantState</span>.<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">ovWaitStateProt</span> <span class="id" title="var">m'</span> <span class="id" title="var">t</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> := <span class="id" title="var">liftOverlap</span> (<span class="id" title="var">ovWaitState</span> <span class="id" title="var">m'</span> <span class="id" title="var">t</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span>).<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">tfsListenStateProt</span> := <span class="id" title="var">liftOverlap</span> <span class="id" title="var">tfsListenState</span>.<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">tfsBcStateProt</span> := <span class="id" title="var">liftOverlap</span> <span class="id" title="var">tfsBcState</span>.<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">tfsCurrStateProt</span> := <span class="id" title="var">liftOverlap</span> <span class="id" title="var">tfsCurrState</span>.<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">ovAbortStateProt</span> := <span class="id" title="var">liftOverlap</span> <span class="id" title="var">ovAbortState</span>.<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">switchBcStateProt</span> <span class="id" title="var">m</span> := <span class="id" title="var">liftOverlap</span> (<span class="id" title="var">switchBcState</span> <span class="id" title="var">m</span>).<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">tfsNextStateProt</span> <span class="id" title="var">m</span> := <span class="id" title="var">liftOverlap</span> (<span class="id" title="var">tfsNextState</span> <span class="id" title="var">m</span>).<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">tfsStartStateProt</span> := <span class="id" title="var">liftOverlap</span> <span class="id" title="var">tfsStartState</span>.<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">initStateProt</span> <span class="id" title="var">m</span> := <span class="id" title="var">liftOverlap</span> (<span class="id" title="var">initState</span> <span class="id" title="var">m</span>).<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">ovReadyStateProt</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">l</span> := <span class="id" title="var">liftOverlap</span> (<span class="id" title="var">ovReadyState</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">l</span>).<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">switchCurrStateProt</span> := <span class="id" title="var">liftOverlap</span> <span class="id" title="var">switchCurrState</span>.<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">switchListenStateProt</span> := <span class="id" title="var">liftOverlap</span> <span class="id" title="var">switchListenState</span>.<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">listeningStateProt</span> := <span class="id" title="var">liftListen</span> <span class="id" title="var">listeningState</span>.<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">currCompStateProt</span> <span class="id" title="var">m''</span> <span class="id" title="var">r</span> := <span class="id" title="var">liftListen</span> (<span class="id" title="var">currCompState</span> <span class="id" title="var">m''</span> <span class="id" title="var">r</span>).<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">abortOvlpStateProt</span> := <span class="id" title="var">liftListen</span> <span class="id" title="var">abortOvlpState</span>.<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">badOvlpStateProt</span> := <span class="id" title="var">liftListen</span> <span class="id" title="var">badOvlpState</span>.<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">pausedStateProt</span> := <span class="id" title="var">liftListen</span> <span class="id" title="var">pausedState</span>.<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">gotMsgStateProt</span> <span class="id" title="var">m</span> <span class="id" title="var">l</span> := <span class="id" title="var">liftListen</span> (<span class="id" title="var">gotMsgState</span> <span class="id" title="var">m</span> <span class="id" title="var">l</span>).<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">gotRangeStateProt</span> <span class="id" title="var">m</span> <span class="id" title="var">r</span> := <span class="id" title="var">liftListen</span> (<span class="id" title="var">gotRangeState</span> <span class="id" title="var">m</span> <span class="id" title="var">r</span>).<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">rangeBadStateProt</span> <span class="id" title="var">m</span> := <span class="id" title="var">liftListen</span> (<span class="id" title="var">rangeBadState</span> <span class="id" title="var">m</span>).<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">currOKStateProt</span> <span class="id" title="var">m</span> := <span class="id" title="var">liftListen</span> (<span class="id" title="var">currOKState</span> <span class="id" title="var">m</span>).<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">currEqStateProt</span> <span class="id" title="var">m</span> <span class="id" title="var">m''</span> := <span class="id" title="var">liftListen</span> (<span class="id" title="var">currEqState</span> <span class="id" title="var">m</span> <span class="id" title="var">m''</span>).<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">nextEqStateProt</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span> := <span class="id" title="var">liftListen</span> (<span class="id" title="var">nextEqState</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span>).<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">currPincCheckStateProt</span> <span class="id" title="var">m</span> <span class="id" title="var">m''</span> <span class="id" title="var">r</span> := <span class="id" title="var">liftListen</span> (<span class="id" title="var">currPincCheckState</span> <span class="id" title="var">m</span> <span class="id" title="var">m''</span> <span class="id" title="var">r</span>).<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">nextPincCheckStateProt</span> <span class="id" title="var">m</span> <span class="id" title="var">m''</span> <span class="id" title="var">r</span> := <span class="id" title="var">liftListen</span> (<span class="id" title="var">nextPincCheckState</span> <span class="id" title="var">m</span> <span class="id" title="var">m''</span> <span class="id" title="var">r</span>).<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">broadcastStateProt</span> :=  <span class="id" title="var">liftBroadcast</span> <span class="id" title="var">broadcastState</span>.<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">overlapStateProt</span> := <span class="id" title="var">liftOverlap</span> <span class="id" title="var">overlapState</span>.<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">nextSinceStateProt</span> := <span class="id" title="var">liftOverlap</span> <span class="id" title="var">nextSinceState</span>.<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">tfsStateProt</span> := <span class="id" title="var">liftOverlap</span> <span class="id" title="var">tfsState</span>.<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">switchStateProt</span> := <span class="id" title="var">liftOverlap</span> <span class="id" title="var">switchState</span>.<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">listenerStateProt</span> := <span class="id" title="var">liftListen</span> <span class="id" title="var">listenerState</span>.<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">protocolState</span> : <span class="id" title="var">ProcTerm</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">protState</span> (<span class="id" title="var">p1</span> <span class="id" title="var">p2</span> <span class="id" title="var">p3</span> : <span class="id" title="var">ProcTerm</span>) :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">broadcastState</span> <span class="id" title="var">p1</span> -&gt; <span class="id" title="var">overlapState</span> <span class="id" title="var">p2</span> -&gt; <span class="id" title="var">listenerState</span> <span class="id" title="var">p3</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">protocolState</span> (<span class="id" title="var">p1</span> $||$ <span class="id" title="var">p2</span> $||$ <span class="id" title="var">p3</span>).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Reachability from the protocol process. Any process that is reachable from the
+  protocol process via a finite number of steps as per the semantics satisfies this relation.
+</div>
+<div class="code">
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">reachableProt</span> : <span class="id" title="var">ProcTerm</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">reachprBase</span> : <span class="id" title="var">reachableProt</span> <span class="id" title="var">procProtocol</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">reachprDisc</span> (<span class="id" title="var">p</span> <span class="id" title="var">p'</span> : <span class="id" title="var">ProcTerm</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">DiscAct</span>) : <span class="id" title="var">reachableProt</span> <span class="id" title="var">p</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> -&gt; <span class="id" title="var">reachableProt</span> <span class="id" title="var">p'</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">reachprDel</span> (<span class="id" title="var">p</span> <span class="id" title="var">p'</span> : <span class="id" title="var">ProcTerm</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>) : <span class="id" title="var">reachableProt</span> <span class="id" title="var">p</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> -<span class="id" title="var">PD</span>- <span class="id" title="var">d</span> -<span class="id" title="var">PD</span>&gt; <span class="id" title="var">p'</span> -&gt; <span class="id" title="var">reachableProt</span> <span class="id" title="var">p'</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">initialProc</span> : <span class="id" title="var">ProcTerm</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">initProcProt</span> : <span class="id" title="var">initialProc</span> <span class="id" title="var">procProtocol</span>.<br/>
+</div>
+<hr/>This page has been generated by <a href="http://coq.inria.fr/">coqdoc</a>
+</div>
+
+</div>
+
+</body>
+</html>

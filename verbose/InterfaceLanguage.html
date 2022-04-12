@@ -1,0 +1,723 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<title>InterfaceLanguage</title>
+</head>
+
+<body>
+
+<div id="page">
+
+<div id="header">
+</div>
+
+<div id="main">
+
+<h1 class="libtitle">Library InterfaceLanguage</h1>
+
+<div class="code">
+</div>
+
+<div class="doc">
+This file was written by Colm Bhandal, PhD student, Foundations and Methods group,
+School of Computer Science and Statistics, Trinity College, Dublin, Ireland.
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.Extras.LibTactics</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.LanguageFoundations</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.ComhBasics</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.GenTacs</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.StandardResults</span>.<br/>
+
+<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+A timed element is a vector of base values, along with a timestamp.
+</div>
+<div class="code">
+<span class="id" title="keyword">Record</span> <span class="id" title="var">TimedEl</span> : <span class="id" title="keyword">Type</span> := <span class="id" title="var">mkTimedEl</span><br/>
+{<br/>
+&nbsp;&nbsp;<span class="id" title="var">msg</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="var">stamp</span> : <span class="id" title="keyword">Time</span><br/>
+}.<br/>
+<span class="id" title="keyword">Notation</span> &quot;&lt;( m , t )&gt;" := (<span class="id" title="var">mkTimedEl</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 40).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Equality is decidable on timed elements.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">eqDecTimedEl</span> : <span class="id" title="var">eqDec</span> <span class="id" title="var">TimedEl</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">eqDec</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">x1</span>, <span class="id" title="var">x2</span>. <span class="id" title="var">addHyp</span> (<span class="id" title="var">eqDecTime</span> <span class="id" title="var">stamp0</span> <span class="id" title="var">stamp1</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H</span>. <span class="id" title="var">addHyp</span> (<span class="id" title="var">list_eq_dec</span> <span class="id" title="var">eqDecBase</span> <span class="id" title="var">msg0</span> <span class="id" title="var">msg1</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">left</span>. <span class="id" title="tactic">subst</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="tactic">right</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">not</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H1</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">right</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">not</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+A timed list is a list of timed elements.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">TimedList</span> : <span class="id" title="keyword">Type</span> := <span class="id" title="var">list</span> <span class="id" title="var">TimedEl</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+An action is either a delay, an input or an output.
+</div>
+<div class="code">
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">ActTimedList</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">atlDel</span> :&gt; <span class="id" title="var">Delay</span> -&gt; <span class="id" title="var">ActTimedList</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">atlIn</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span> -&gt; <span class="id" title="var">ActTimedList</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">atlOut</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span> -&gt; <span class="id" title="var">ActTimedList</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Notation</span> &quot;v ?? " := (<span class="id" title="var">atlIn</span> <span class="id" title="var">v</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 30).<br/>
+<span class="id" title="keyword">Notation</span> &quot;v !! " := (<span class="id" title="var">atlOut</span> <span class="id" title="var">v</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 30).<br/>
+
+<br/>
+<span class="id" title="keyword">Reserved Notation</span> &quot;l -tl- a -tl&gt; l'" (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 75).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The operational semantics for timed lists. Note that the law "buff" will have
+to be defined separately for each of the sub-type lists individually,
+because it is parametrised on a time T.
+</div>
+<div class="code">
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">stepTimedList</span> : <span class="id" title="var">TimedList</span> -&gt; <span class="id" title="var">ActTimedList</span> -&gt; <span class="id" title="var">TimedList</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;</div>
+
+<div class="doc">
+If the head of the list has timed out (zero time) then it can be output.
+</div>
+<div class="code">
+&nbsp;&nbsp;| <span class="id" title="var">stepTlFwdHd</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">TimedList</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;(<span class="id" title="var">v</span>, <span class="id" title="var">zeroTime</span>)&gt; :: <span class="id" title="var">l</span> -<span class="id" title="var">tl</span>- <span class="id" title="var">v</span>!! -<span class="id" title="var">tl</span>&gt; <span class="id" title="var">l</span> <br/>
+&nbsp;&nbsp;</div>
+
+<div class="doc">
+If the tail can evolve by outputting an element, then the whole list can evolve as
+  such.
+</div>
+<div class="code">
+&nbsp;&nbsp;| <span class="id" title="var">stepTlFwd</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">l</span> <span class="id" title="var">l'</span> : <span class="id" title="var">TimedList</span>) (<span class="id" title="var">v1</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>) (<span class="id" title="var">e</span> : <span class="id" title="var">TimedEl</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">l</span> -<span class="id" title="var">tl</span>- <span class="id" title="var">v1</span>!! -<span class="id" title="var">tl</span>&gt; <span class="id" title="var">l'</span> -&gt; <span class="id" title="var">e</span> :: <span class="id" title="var">l</span> -<span class="id" title="var">tl</span>- <span class="id" title="var">v1</span>!! -<span class="id" title="var">tl</span>&gt; <span class="id" title="var">e</span> :: <span class="id" title="var">l'</span><br/>
+&nbsp;&nbsp;</div>
+
+<div class="doc">
+The empty list can delay by any amount and stay as the empty list.
+</div>
+<div class="code">
+&nbsp;&nbsp;| <span class="id" title="var">stepTlDelEmp</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>, [] -<span class="id" title="var">tl</span>- <span class="id" title="var">d</span> -<span class="id" title="var">tl</span>&gt; [] <br/>
+&nbsp;&nbsp;</div>
+
+<div class="doc">
+If the tail can delay by d, and the timestamp on the head is t + d, then the
+  whole list evolves by the tail delaying and the head element timestap reducing to t.
+  Note that this differs slightly from the formulation on paper, which asserts that the
+  timestamp of the head element is t &gt;= d, and then the resulting timestamp is t - d.
+  The reason for this alternative formulation is to avoid subtraction of delays/times.
+</div>
+<div class="code">
+&nbsp;&nbsp;| <span class="id" title="var">stepTlDel</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">l</span> <span class="id" title="var">l'</span> : <span class="id" title="var">TimedList</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>) (<span class="id" title="var">t</span> <span class="id" title="var">t'</span> : <span class="id" title="keyword">Time</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">l</span> -<span class="id" title="var">tl</span>- <span class="id" title="var">d</span> -<span class="id" title="var">tl</span>&gt; <span class="id" title="var">l'</span> -&gt; <span class="id" title="var">t</span> = <span class="id" title="var">t'</span> +<span class="id" title="var">dt</span>+ <span class="id" title="var">d</span> -&gt; &lt;(<span class="id" title="var">v</span>, <span class="id" title="var">t</span>)&gt; :: <span class="id" title="var">l</span> -<span class="id" title="var">tl</span>- <span class="id" title="var">d</span> -<span class="id" title="var">tl</span>&gt; <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;(<span class="id" title="var">v</span>, <span class="id" title="var">t'</span>)&gt; :: <span class="id" title="var">l'</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">where</span> &quot;l -tl- a -tl&gt; l'" := (<span class="id" title="var">stepTimedList</span> <span class="id" title="var">l</span> <span class="id" title="var">a</span> <span class="id" title="var">l'</span>).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The delay action preserves the size of a timed list.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">delPresSizeTL</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">l</span> <span class="id" title="var">l'</span> : <span class="id" title="var">TimedList</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">l</span> -<span class="id" title="var">tl</span>- <span class="id" title="var">d</span> -<span class="id" title="var">tl</span>&gt; <span class="id" title="var">l'</span> -&gt; <span class="id" title="var">length</span> <span class="id" title="var">l</span> = <span class="id" title="var">length</span> <span class="id" title="var">l'</span>. <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">remember</span> (<span class="id" title="var">atlDel</span> <span class="id" title="var">d</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">a</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">Heqa</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">IHstepTimedList</span> <span class="id" title="tactic">in</span> <span class="id" title="var">Heqa</span>. <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">Heqa</span>. <span class="id" title="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">reflexivity</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">IHstepTimedList</span> <span class="id" title="tactic">in</span> <span class="id" title="var">Heqa</span>. <span class="id" title="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">Heqa</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If <font size=-2>&#9744;</font> delays to l', then l' = <font size=-2>&#9744;</font>
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">empLeftDelTL</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">l'</span> : <span class="id" title="var">TimedList</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;[] -<span class="id" title="var">tl</span>- <span class="id" title="var">d</span> -<span class="id" title="var">tl</span>&gt; <span class="id" title="var">l'</span> -&gt; <span class="id" title="var">l'</span> = []. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">delPresSizeTL</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">l'</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If l delays to <font size=-2>&#9744;</font>, then l = <font size=-2>&#9744;</font>
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">empRightDelTL</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">l</span> : <span class="id" title="var">TimedList</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">l</span> -<span class="id" title="var">tl</span>- <span class="id" title="var">d</span> -<span class="id" title="var">tl</span>&gt; [] -&gt; <span class="id" title="var">l</span> = []. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">delPresSizeTL</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">l</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If a timed list l can delay by d to l' which in turn can delay by d' to l'',
+then l can delay by d+d' to l''.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">delAddTL</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">l</span> <span class="id" title="var">l'</span> <span class="id" title="var">l''</span> : <span class="id" title="var">TimedList</span>) (<span class="id" title="var">d</span> <span class="id" title="var">d'</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">l</span> -<span class="id" title="var">tl</span>- <span class="id" title="var">d</span> -<span class="id" title="var">tl</span>&gt; <span class="id" title="var">l'</span> -&gt; <span class="id" title="var">l'</span> -<span class="id" title="var">tl</span>- <span class="id" title="var">d'</span> -<span class="id" title="var">tl</span>&gt; <span class="id" title="var">l''</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">l</span> -<span class="id" title="var">tl</span>- <span class="id" title="var">d</span> +<span class="id" title="var">d</span>+ <span class="id" title="var">d'</span> -<span class="id" title="var">tl</span>&gt; <span class="id" title="var">l''</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">l</span>; <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">erewrite</span> <span class="id" title="var">empLeftDelTL</span>. <span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">assert</span> (<span class="id" title="var">l'</span> = []).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">empLeftDelTL</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">H1</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">a</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">l'</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">empRightDelTL</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rename</span> <span class="id" title="var">t</span> <span class="id" title="var">into</span> <span class="id" title="var">a</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">a</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">l''</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">empRightDelTL</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">t0</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">H18</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H9</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">delTimeAddAssoc</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H9</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">timeDelAddSwitch</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H9</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">addDelayComm</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H9</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">H9</span>. <span class="id" title="tactic">constructor</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">IHl</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H3</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">timedList_timeout_enabled</span> <span class="id" title="var">v</span> <span class="id" title="var">l</span> :<br/>
+&nbsp;&nbsp;&lt;( <span class="id" title="var">v</span>, <span class="id" title="var">zeroTime</span> )&gt; <span class="id" title="var">_</span>: <span class="id" title="var">l</span> -&gt; <span class="id" title="tactic">exists</span> <span class="id" title="var">l'</span>, <span class="id" title="var">l</span> -<span class="id" title="var">tl</span>- <span class="id" title="var">v</span> !! -<span class="id" title="var">tl</span>&gt; <span class="id" title="var">l'</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">introz</span> <span class="id" title="var">U</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">l</span>; <span class="id" title="tactic">inversion</span> <span class="id" title="var">U</span>. <span class="id" title="tactic">subst</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">l</span>. <span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">IHl</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">ex_flat</span>. <span class="id" title="tactic">eexists</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">stepTlFwd</span>. <span class="id" title="var">eassumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">timedList_del_le</span> <span class="id" title="var">l</span> <span class="id" title="var">l'</span> <span class="id" title="var">d</span> <span class="id" title="var">v</span> <span class="id" title="var">t</span> <span class="id" title="var">q</span> :<br/>
+&nbsp;&nbsp;&nbsp;<span class="id" title="var">l</span> -<span class="id" title="var">tl</span>- <span class="id" title="var">atlDel</span> <span class="id" title="var">d</span> -<span class="id" title="var">tl</span>&gt; <span class="id" title="var">l'</span> -&gt; &lt;( <span class="id" title="var">v</span>, <span class="id" title="var">t</span> )&gt; <span class="id" title="var">_</span>: <span class="id" title="var">l</span> -&gt;<br/>
+&nbsp;&nbsp;&lt;( <span class="id" title="var">v</span>, <span class="id" title="var">minusTime</span> <span class="id" title="var">t</span> <span class="id" title="var">d</span> <span class="id" title="var">q</span> )&gt; <span class="id" title="var">_</span>: <span class="id" title="var">l'</span>. <span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Reserved Notation</span> &quot;l -il- a -il&gt; l'" (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 75).<br/>
+<span class="id" title="keyword">Reserved Notation</span> &quot;l -ol- a -ol&gt; l'" (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 75).<br/>
+<span class="id" title="keyword">Reserved Notation</span> &quot;l -nl- a -nl&gt; l'" (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 75).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Syntactially, an input list is essentially a timed list.
+</div>
+<div class="code">
+<span class="id" title="keyword">Record</span> <span class="id" title="var">InputList</span> : <span class="id" title="keyword">Type</span> := <span class="id" title="var">mkInputList</span> {<span class="id" title="var">inList</span> : <span class="id" title="var">TimedList</span>}.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Syntactially, an input list is essentially a timed list.
+</div>
+<div class="code">
+<span class="id" title="keyword">Record</span> <span class="id" title="var">OutputList</span> : <span class="id" title="keyword">Type</span> := <span class="id" title="var">mkOutputList</span> {<span class="id" title="var">outList</span> : <span class="id" title="var">TimedList</span>}.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Syntactially, an input list is essentially a timed list.
+</div>
+<div class="code">
+<span class="id" title="keyword">Record</span> <span class="id" title="var">NotifList</span> : <span class="id" title="keyword">Type</span> := <span class="id" title="var">mkNotifList</span> {<span class="id" title="var">notifList</span> : <span class="id" title="var">TimedList</span>}.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Semantics for the input list.
+</div>
+<div class="code">
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">stepInputList</span> : <span class="id" title="var">InputList</span> -&gt; <span class="id" title="var">ActTimedList</span> -&gt; <span class="id" title="var">InputList</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;</div>
+
+<div class="doc">
+Buffer a message and stamp it with zero time.
+</div>
+<div class="code">
+&nbsp;&nbsp;| <span class="id" title="var">stepIlBuff</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">l</span> : <span class="id" title="var">TimedList</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">mkInputList</span> <span class="id" title="var">l</span> -<span class="id" title="var">il</span>- <span class="id" title="var">v</span> ?? -<span class="id" title="var">il</span>&gt; <span class="id" title="var">mkInputList</span> (&lt;(<span class="id" title="var">v</span>, <span class="id" title="var">zeroTime</span>)&gt; :: <span class="id" title="var">l</span>)<br/>
+&nbsp;&nbsp;</div>
+
+<div class="doc">
+Delay causes all the messages in the list to be lost. In other words,
+  any list can delay and become the empty list.
+</div>
+<div class="code">
+&nbsp;&nbsp;| <span class="id" title="var">stepIlDel</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">l</span> : <span class="id" title="var">InputList</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">l</span> -<span class="id" title="var">il</span>- <span class="id" title="var">d</span> -<span class="id" title="var">il</span>&gt; <span class="id" title="var">mkInputList</span> []<br/>
+&nbsp;&nbsp;</div>
+
+<div class="doc">
+Lift the timed list semantics to these specialised semantics.
+</div>
+<div class="code">
+&nbsp;&nbsp;| <span class="id" title="var">stepIlLift</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">l</span> <span class="id" title="var">l'</span> : <span class="id" title="var">TimedList</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">ActTimedList</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">l</span> -<span class="id" title="var">tl</span>- <span class="id" title="var">a</span> -<span class="id" title="var">tl</span>&gt; <span class="id" title="var">l'</span> -&gt; <span class="id" title="var">mkInputList</span> <span class="id" title="var">l</span> -<span class="id" title="var">il</span>- <span class="id" title="var">a</span> -<span class="id" title="var">il</span>&gt; <span class="id" title="var">mkInputList</span> <span class="id" title="var">l'</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">where</span> &quot;l -il- a -il&gt; l'" := (<span class="id" title="var">stepInputList</span> <span class="id" title="var">l</span> <span class="id" title="var">a</span> <span class="id" title="var">l'</span>).<br/>
+
+<br/>
+<span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">nat_scope</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The size of a list is non-increasing for an input list.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">delNonIncSizeIL</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">l</span> <span class="id" title="var">l'</span> : <span class="id" title="var">InputList</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">l</span> -<span class="id" title="var">il</span>- <span class="id" title="var">d</span> -<span class="id" title="var">il</span>&gt; <span class="id" title="var">l'</span> -&gt; <span class="id" title="var">length</span> (<span class="id" title="var">inList</span> <span class="id" title="var">l'</span>) &lt;= <span class="id" title="var">length</span> (<span class="id" title="var">inList</span> <span class="id" title="var">l</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">le_0_n</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">delPresSizeTL</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">constructor</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If an input list l can delay by d to l' which in turn can delay by d' to l'',
+then l can delay by d+d' to l''.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">delAddInput</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">l</span> <span class="id" title="var">l'</span> <span class="id" title="var">l''</span> : <span class="id" title="var">InputList</span>) (<span class="id" title="var">d</span> <span class="id" title="var">d'</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">l</span> -<span class="id" title="var">il</span>- <span class="id" title="var">d</span> -<span class="id" title="var">il</span>&gt; <span class="id" title="var">l'</span> -&gt; <span class="id" title="var">l'</span> -<span class="id" title="var">il</span>- <span class="id" title="var">d'</span> -<span class="id" title="var">il</span>&gt; <span class="id" title="var">l''</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">l</span> -<span class="id" title="var">il</span>- <span class="id" title="var">d</span> +<span class="id" title="var">d</span>+ <span class="id" title="var">d'</span> -<span class="id" title="var">il</span>&gt; <span class="id" title="var">l''</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">l''</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">inList0</span>. <span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">rename</span> <span class="id" title="var">t</span> <span class="id" title="var">into</span> <span class="id" title="var">a</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">l'</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">inList1</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">delNonIncSizeIL</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">rename</span> <span class="id" title="var">t</span> <span class="id" title="var">into</span> <span class="id" title="var">b</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">l</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">inList2</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">delNonIncSizeIL</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">rename</span> <span class="id" title="var">t</span> <span class="id" title="var">into</span> <span class="id" title="var">c</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">delAddTL</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H4</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+An input list l is action enabled for the action a iff
+there is some derivative list l' such that l transitions to l' via a.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">actEnabledInList</span> (<span class="id" title="var">l</span> : <span class="id" title="var">InputList</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">ActTimedList</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">l'</span>, <span class="id" title="var">l</span> -<span class="id" title="var">il</span>- <span class="id" title="var">a</span> -<span class="id" title="var">il</span>&gt; <span class="id" title="var">l'</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+An input list can always input a message.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">inListInEnabled</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">l</span> : <span class="id" title="var">InputList</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">actEnabledInList</span> <span class="id" title="var">l</span> (<span class="id" title="var">v</span>??). <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">l</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">l</span>].<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> (<span class="id" title="var">mkInputList</span> (&lt;(<span class="id" title="var">v</span>, <span class="id" title="var">zeroTime</span>)&gt; :: <span class="id" title="var">l</span>)). <span class="id" title="tactic">constructor</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Semantics for the output list.
+</div>
+<div class="code">
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">stepOutputList</span> : <span class="id" title="var">OutputList</span> -&gt; <span class="id" title="var">ActTimedList</span> -&gt; <span class="id" title="var">OutputList</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;</div>
+
+<div class="doc">
+Buffer a message and stamp it with a timestamp of msgLatency.
+</div>
+<div class="code">
+&nbsp;&nbsp;| <span class="id" title="var">stepOlBuff</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">l</span> : <span class="id" title="var">TimedList</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">mkOutputList</span> <span class="id" title="var">l</span> -<span class="id" title="var">ol</span>- <span class="id" title="var">v</span>?? -<span class="id" title="var">ol</span>&gt; <span class="id" title="var">mkOutputList</span> (&lt;(<span class="id" title="var">v</span>, <span class="id" title="var">msgLatency</span>)&gt; :: <span class="id" title="var">l</span>)<br/>
+&nbsp;&nbsp;</div>
+
+<div class="doc">
+Lift the timed list semantics to these specialised semantics.
+</div>
+<div class="code">
+&nbsp;&nbsp;| <span class="id" title="var">stepOlLift</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">l</span> <span class="id" title="var">l'</span> : <span class="id" title="var">TimedList</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">ActTimedList</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">l</span> -<span class="id" title="var">tl</span>- <span class="id" title="var">a</span> -<span class="id" title="var">tl</span>&gt; <span class="id" title="var">l'</span> -&gt; <span class="id" title="var">mkOutputList</span> <span class="id" title="var">l</span> -<span class="id" title="var">ol</span>- <span class="id" title="var">a</span> -<span class="id" title="var">ol</span>&gt; <span class="id" title="var">mkOutputList</span> <span class="id" title="var">l'</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">where</span> &quot;l -ol- a -ol&gt; l'" := (<span class="id" title="var">stepOutputList</span> <span class="id" title="var">l</span> <span class="id" title="var">a</span> <span class="id" title="var">l'</span>).<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">delAddOutput</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">l</span> <span class="id" title="var">l'</span> <span class="id" title="var">l''</span> : <span class="id" title="var">OutputList</span>) (<span class="id" title="var">d</span> <span class="id" title="var">d'</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">l</span> -<span class="id" title="var">ol</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ol</span>&gt; <span class="id" title="var">l'</span> -&gt; <span class="id" title="var">l'</span> -<span class="id" title="var">ol</span>- <span class="id" title="var">d'</span> -<span class="id" title="var">ol</span>&gt; <span class="id" title="var">l''</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">l</span> -<span class="id" title="var">ol</span>- <span class="id" title="var">d</span> +<span class="id" title="var">d</span>+ <span class="id" title="var">d'</span> -<span class="id" title="var">ol</span>&gt; <span class="id" title="var">l''</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">H4</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">constructor</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">delAddTL</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H1</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Semantics for the notification list.
+</div>
+<div class="code">
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">stepNotifList</span> : <span class="id" title="var">NotifList</span> -&gt; <span class="id" title="var">ActTimedList</span> -&gt; <span class="id" title="var">NotifList</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;</div>
+
+<div class="doc">
+Buffer a message and stamp it with a timestamp of adaptNotif.
+</div>
+<div class="code">
+&nbsp;&nbsp;| <span class="id" title="var">stepNlBuff</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">l</span> : <span class="id" title="var">TimedList</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">mkNotifList</span> <span class="id" title="var">l</span> -<span class="id" title="var">nl</span>- <span class="id" title="var">v</span>?? -<span class="id" title="var">nl</span>&gt; <span class="id" title="var">mkNotifList</span> (&lt;(<span class="id" title="var">v</span>, <span class="id" title="var">adaptNotif</span>)&gt; :: <span class="id" title="var">l</span>)<br/>
+&nbsp;&nbsp;</div>
+
+<div class="doc">
+If the tail can delay to some l', and the head has timed out, then the whole
+  list can delay to l', essentially dropping the head.
+</div>
+<div class="code">
+&nbsp;&nbsp;| <span class="id" title="var">stepNlDrop</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">l</span> : <span class="id" title="var">TimedList</span>) (<span class="id" title="var">l'</span> : <span class="id" title="var">NotifList</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>), <span class="id" title="var">mkNotifList</span> <span class="id" title="var">l</span> -<span class="id" title="var">nl</span>- <span class="id" title="var">d</span> -<span class="id" title="var">nl</span>&gt; <span class="id" title="var">l'</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">mkNotifList</span> (&lt;(<span class="id" title="var">v</span>, <span class="id" title="var">zeroTime</span>)&gt; :: <span class="id" title="var">l</span>) -<span class="id" title="var">nl</span>- <span class="id" title="var">d</span> -<span class="id" title="var">nl</span>&gt; <span class="id" title="var">l'</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepNlDelAdd</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">l</span> <span class="id" title="var">l'</span> <span class="id" title="var">l''</span> : <span class="id" title="var">NotifList</span>) (<span class="id" title="var">d</span> <span class="id" title="var">d'</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">l</span> -<span class="id" title="var">nl</span>- <span class="id" title="var">d</span> -<span class="id" title="var">nl</span>&gt; <span class="id" title="var">l'</span> -&gt; <span class="id" title="var">l'</span> -<span class="id" title="var">nl</span>- <span class="id" title="var">d'</span> -<span class="id" title="var">nl</span>&gt; <span class="id" title="var">l''</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">l</span> -<span class="id" title="var">nl</span>- (<span class="id" title="var">d</span> +<span class="id" title="var">d</span>+ <span class="id" title="var">d'</span>) -<span class="id" title="var">nl</span>&gt; <span class="id" title="var">l''</span><br/>
+&nbsp;&nbsp;</div>
+
+<div class="doc">
+Lift the timed list semantics to these specialised semantics.
+</div>
+<div class="code">
+&nbsp;&nbsp;| <span class="id" title="var">stepNlLift</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">l</span> <span class="id" title="var">l'</span> : <span class="id" title="var">TimedList</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">ActTimedList</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">l</span> -<span class="id" title="var">tl</span>- <span class="id" title="var">a</span> -<span class="id" title="var">tl</span>&gt; <span class="id" title="var">l'</span> -&gt; <span class="id" title="var">mkNotifList</span> <span class="id" title="var">l</span> -<span class="id" title="var">nl</span>- <span class="id" title="var">a</span> -<span class="id" title="var">nl</span>&gt; <span class="id" title="var">mkNotifList</span> <span class="id" title="var">l'</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">where</span> &quot;l -nl- a -nl&gt; l'" := (<span class="id" title="var">stepNotifList</span> <span class="id" title="var">l</span> <span class="id" title="var">a</span> <span class="id" title="var">l'</span>).<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">R_scope</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">notifList_del_le</span> <span class="id" title="var">ln</span> <span class="id" title="var">ln'</span> <span class="id" title="var">d</span> <span class="id" title="var">v</span> <span class="id" title="var">t</span> <span class="id" title="var">q</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">ln</span> -<span class="id" title="var">nl</span>- <span class="id" title="var">atlDel</span> <span class="id" title="var">d</span> -<span class="id" title="var">nl</span>&gt; <span class="id" title="var">ln'</span> -&gt; &lt;( <span class="id" title="var">v</span>, <span class="id" title="var">t</span> )&gt; <span class="id" title="var">_</span>: <span class="id" title="var">notifList</span> <span class="id" title="var">ln</span> -&gt;<br/>
+&nbsp;&nbsp;&lt;( <span class="id" title="var">v</span>, <span class="id" title="var">minusTime</span> <span class="id" title="var">t</span> <span class="id" title="var">d</span> <span class="id" title="var">q</span> )&gt; <span class="id" title="var">_</span>: <span class="id" title="var">notifList</span> <span class="id" title="var">ln'</span>. <span class="id" title="var">introz</span> <span class="id" title="var">U</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">remember</span> (<span class="id" title="var">atlDel</span> <span class="id" title="var">d</span>). <span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">d</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">t</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">U</span>; <span class="id" title="tactic">intros</span> <span class="id" title="var">t</span> <span class="id" title="var">U0</span> <span class="id" title="var">d2</span> <span class="id" title="var">q</span> <span class="id" title="var">EQ</span>; <span class="id" title="tactic">subst</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">EQ</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">IHU</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">U0</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">clear</span> <span class="id" title="var">IHU</span>. <span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">H2</span> <span class="id" title="tactic">in</span> <span class="id" title="var">q</span>. <span class="id" title="var">false</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">Rle_not_lt</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">q</span>. <span class="id" title="var">delPos</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">EQ</span>. <span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">q</span>. <span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intro</span> <span class="id" title="var">q</span>. <span class="id" title="tactic">clear</span> <span class="id" title="var">EQ</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">atlDel</span> <span class="id" title="var">d</span> = <span class="id" title="var">atlDel</span> <span class="id" title="var">d</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">EQD</span>; [ <span class="id" title="tactic">reflexivity</span> |].<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">atlDel</span> <span class="id" title="var">d'</span> = <span class="id" title="var">atlDel</span> <span class="id" title="var">d'</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">EQD'</span>; [ <span class="id" title="tactic">reflexivity</span> |].<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">d</span> &lt;= <span class="id" title="var">t</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">DLE</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">Rle_trans</span>; [ | <span class="id" title="tactic">apply</span> <span class="id" title="var">q</span>].<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">simpl</span>. <span class="id" title="var">Rplus_le_tac</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">Rlt_le</span>. <span class="id" title="var">delPos</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">IH1</span> : <span class="id" title="var">IHU1</span> <span class="id" title="var">U0</span> <span class="id" title="var">DLE</span> <span class="id" title="var">EQD</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">d'</span> &lt;= <span class="id" title="var">minusTime</span> <span class="id" title="var">t</span> <span class="id" title="var">d</span> <span class="id" title="var">DLE</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">DLE'</span>. <span class="id" title="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_le_swap_lr</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">Rplus_comm</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">q</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">IH2</span> : <span class="id" title="var">IHU2</span> <span class="id" title="var">IH1</span> <span class="id" title="var">DLE'</span> <span class="id" title="var">EQD'</span>. <span class="id" title="var">my_applys_eq</span> <span class="id" title="var">IH2</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">f_equal</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">timeEqR</span>. <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">ring</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">timedList_del_le</span>; <span class="id" title="var">eassumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">timeSplit_inputList</span> <span class="id" title="var">l</span> <span class="id" title="var">l''</span> (<span class="id" title="var">d</span> <span class="id" title="var">d'</span> <span class="id" title="var">d''</span> : <span class="id" title="var">Delay</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">l</span> -<span class="id" title="var">il</span>- <span class="id" title="var">d''</span> -<span class="id" title="var">il</span>&gt; <span class="id" title="var">l''</span> -&gt; <span class="id" title="var">d''</span> = <span class="id" title="var">d</span> +<span class="id" title="var">d</span>+ <span class="id" title="var">d'</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">l'</span>, <span class="id" title="var">l</span> -<span class="id" title="var">il</span>- <span class="id" title="var">d</span> -<span class="id" title="var">il</span>&gt; <span class="id" title="var">l'</span> /\ <span class="id" title="var">l'</span> -<span class="id" title="var">il</span>- <span class="id" title="var">d'</span> -<span class="id" title="var">il</span>&gt; <span class="id" title="var">l''</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>. 
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">timeSplit_outputList</span> <span class="id" title="var">l</span> <span class="id" title="var">l''</span> (<span class="id" title="var">d</span> <span class="id" title="var">d'</span> <span class="id" title="var">d''</span>  : <span class="id" title="var">Delay</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">l</span> -<span class="id" title="var">ol</span>- <span class="id" title="var">d''</span> -<span class="id" title="var">ol</span>&gt; <span class="id" title="var">l''</span> -&gt; <span class="id" title="var">d''</span> = <span class="id" title="var">d</span> +<span class="id" title="var">d</span>+ <span class="id" title="var">d'</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">l'</span>, <span class="id" title="var">l</span> -<span class="id" title="var">ol</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ol</span>&gt; <span class="id" title="var">l'</span> /\ <span class="id" title="var">l'</span> -<span class="id" title="var">ol</span>- <span class="id" title="var">d'</span> -<span class="id" title="var">ol</span>&gt; <span class="id" title="var">l''</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>. 
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">timeSplit_notifList</span> <span class="id" title="var">l</span> <span class="id" title="var">l''</span> (<span class="id" title="var">d</span> <span class="id" title="var">d'</span> <span class="id" title="var">d''</span>  : <span class="id" title="var">Delay</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">l</span> -<span class="id" title="var">nl</span>- <span class="id" title="var">d''</span> -<span class="id" title="var">nl</span>&gt; <span class="id" title="var">l''</span> -&gt; <span class="id" title="var">d''</span> = <span class="id" title="var">d</span> +<span class="id" title="var">d</span>+ <span class="id" title="var">d'</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">l'</span>, <span class="id" title="var">l</span> -<span class="id" title="var">nl</span>- <span class="id" title="var">d</span> -<span class="id" title="var">nl</span>&gt; <span class="id" title="var">l'</span> /\ <span class="id" title="var">l'</span> -<span class="id" title="var">nl</span>- <span class="id" title="var">d'</span> -<span class="id" title="var">nl</span>&gt; <span class="id" title="var">l''</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>. 
+<br/>
+
+<br/>
+<span class="id" title="keyword">Record</span> <span class="id" title="var">Interface</span> : <span class="id" title="keyword">Type</span> := <span class="id" title="var">mkInterface</span><br/>
+{<br/>
+&nbsp;&nbsp;<span class="id" title="var">li</span> : <span class="id" title="var">InputList</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="var">lo</span> : <span class="id" title="var">OutputList</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="var">ln</span> : <span class="id" title="var">NotifList</span><br/>
+}.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Equality is decidable on interfaces.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">eqDecInterface</span> : <span class="id" title="var">eqDec</span> <span class="id" title="var">Interface</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">eqDec</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">x1</span>, <span class="id" title="var">x2</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">li0</span>, <span class="id" title="var">lo0</span>, <span class="id" title="var">ln0</span>, <span class="id" title="var">li1</span>, <span class="id" title="var">lo1</span>, <span class="id" title="var">ln1</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">addHyp</span> (<span class="id" title="var">list_eq_dec</span> <span class="id" title="var">eqDecTimedEl</span> <span class="id" title="var">inList0</span> <span class="id" title="var">inList1</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="var">addHyp</span> (<span class="id" title="var">list_eq_dec</span> <span class="id" title="var">eqDecTimedEl</span> <span class="id" title="var">outList0</span> <span class="id" title="var">outList1</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="var">addHyp</span> (<span class="id" title="var">list_eq_dec</span> <span class="id" title="var">eqDecTimedEl</span> <span class="id" title="var">notifList0</span> <span class="id" title="var">notifList1</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H0</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H1</span>. <span class="id" title="tactic">left</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">subst</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="tactic">right</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">not</span>. <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">H0</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H1</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="tactic">right</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">not</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="tactic">right</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">not</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H2</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Actions for the interface semantics. We have delay, input of a list of base values
+on a channel, output of the same, and finally output of a list of base values on a
+channel augmented with coverage information.
+</div>
+<div class="code">
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">ActInter</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">aiDel</span> :&gt; <span class="id" title="var">Delay</span> -&gt; <span class="id" title="var">ActInter</span> <br/>
+&nbsp;&nbsp;| <span class="id" title="var">aiIn</span> : <span class="id" title="var">Channel</span> -&gt; <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span> -&gt; <span class="id" title="var">ActInter</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">aiOut</span> : <span class="id" title="var">Channel</span> -&gt; <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span> -&gt; <span class="id" title="var">ActInter</span><br/>
+&nbsp;&nbsp;</div>
+
+<div class="doc">
+The final parameter is the coverage.
+</div>
+<div class="code">
+&nbsp;&nbsp;| <span class="id" title="var">aiOutCov</span> : <span class="id" title="var">Channel</span> -&gt; <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span> -&gt; <span class="id" title="var">Distance</span> -&gt; <span class="id" title="var">ActInter</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Notation</span> &quot;c !I!" := (<span class="id" title="var">aiOut</span> <span class="id" title="var">c</span> []) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 30).<br/>
+<span class="id" title="keyword">Notation</span> &quot;c {? v" := (<span class="id" title="var">aiIn</span> <span class="id" title="var">c</span> <span class="id" title="var">v</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 30).<br/>
+<span class="id" title="keyword">Notation</span> &quot;c {! v" := (<span class="id" title="var">aiOut</span> <span class="id" title="var">c</span> <span class="id" title="var">v</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 30).<br/>
+<span class="id" title="keyword">Notation</span> &quot;c _! v !_ r" := (<span class="id" title="var">aiOutCov</span> <span class="id" title="var">c</span> <span class="id" title="var">v</span> <span class="id" title="var">r</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 30).<br/>
+
+<br/>
+<span class="id" title="keyword">Reserved Notation</span> &quot;i -i- a -i&gt; i'" (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 75).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The semantics for the interface.
+</div>
+<div class="code">
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">stepInter</span> : <span class="id" title="var">Interface</span> -&gt; <span class="id" title="var">ActInter</span> -&gt; <span class="id" title="var">Interface</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepIntDel</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">l1</span> <span class="id" title="var">l1'</span>: <span class="id" title="var">InputList</span>) (<span class="id" title="var">l2</span> <span class="id" title="var">l2'</span>: <span class="id" title="var">OutputList</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">l3</span> <span class="id" title="var">l3'</span> : <span class="id" title="var">NotifList</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>), <span class="id" title="var">l1</span> -<span class="id" title="var">il</span>- <span class="id" title="var">d</span> -<span class="id" title="var">il</span>&gt; <span class="id" title="var">l1'</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">l2</span> -<span class="id" title="var">ol</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ol</span>&gt; <span class="id" title="var">l2'</span> -&gt; <span class="id" title="var">l3</span> -<span class="id" title="var">nl</span>- <span class="id" title="var">d</span> -<span class="id" title="var">nl</span>&gt; <span class="id" title="var">l3'</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">mkInterface</span> <span class="id" title="var">l1</span> <span class="id" title="var">l2</span> <span class="id" title="var">l3</span>) -<span class="id" title="var">i</span>- <span class="id" title="var">d</span> -<span class="id" title="var">i</span>&gt; (<span class="id" title="var">mkInterface</span> <span class="id" title="var">l1'</span> <span class="id" title="var">l2'</span> <span class="id" title="var">l3'</span>)<br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepIntBuffIn</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">l1</span> <span class="id" title="var">l1'</span>: <span class="id" title="var">InputList</span>) (<span class="id" title="var">l2</span> : <span class="id" title="var">OutputList</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">l3</span> : <span class="id" title="var">NotifList</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>), <span class="id" title="var">l1</span> -<span class="id" title="var">il</span>- <span class="id" title="var">v</span>?? -<span class="id" title="var">il</span>&gt; <span class="id" title="var">l1'</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">mkInterface</span> <span class="id" title="var">l1</span> <span class="id" title="var">l2</span> <span class="id" title="var">l3</span>) -<span class="id" title="var">i</span>- <span class="id" title="var">chanIOEnv</span> {? <span class="id" title="var">v</span> -<span class="id" title="var">i</span>&gt; (<span class="id" title="var">mkInterface</span> <span class="id" title="var">l1'</span> <span class="id" title="var">l2</span> <span class="id" title="var">l3</span>)<br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepIntFwdIn</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">l1</span> <span class="id" title="var">l1'</span>: <span class="id" title="var">InputList</span>) (<span class="id" title="var">l2</span> : <span class="id" title="var">OutputList</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">l3</span> : <span class="id" title="var">NotifList</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>), <span class="id" title="var">l1</span> -<span class="id" title="var">il</span>- <span class="id" title="var">v</span>!! -<span class="id" title="var">il</span>&gt; <span class="id" title="var">l1'</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">mkInterface</span> <span class="id" title="var">l1</span> <span class="id" title="var">l2</span> <span class="id" title="var">l3</span>) -<span class="id" title="var">i</span>- <span class="id" title="var">chanInProc</span> {! <span class="id" title="var">v</span> -<span class="id" title="var">i</span>&gt; (<span class="id" title="var">mkInterface</span> <span class="id" title="var">l1'</span> <span class="id" title="var">l2</span> <span class="id" title="var">l3</span>)<br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepIntBuffOut</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">l1</span> : <span class="id" title="var">InputList</span>) (<span class="id" title="var">l2</span> <span class="id" title="var">l2'</span> : <span class="id" title="var">OutputList</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">l3</span> : <span class="id" title="var">NotifList</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>), <span class="id" title="var">l2</span> -<span class="id" title="var">ol</span>- <span class="id" title="var">v</span>?? -<span class="id" title="var">ol</span>&gt; <span class="id" title="var">l2'</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">mkInterface</span> <span class="id" title="var">l1</span> <span class="id" title="var">l2</span> <span class="id" title="var">l3</span>) -<span class="id" title="var">i</span>- <span class="id" title="var">chanOutProc</span> {? <span class="id" title="var">v</span> -<span class="id" title="var">i</span>&gt; (<span class="id" title="var">mkInterface</span> <span class="id" title="var">l1</span> <span class="id" title="var">l2'</span> <span class="id" title="var">l3</span>)<br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepIntFwdOut</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">l1</span> : <span class="id" title="var">InputList</span>) (<span class="id" title="var">l2</span> <span class="id" title="var">l2'</span> : <span class="id" title="var">OutputList</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">l3</span> <span class="id" title="var">l3'</span> : <span class="id" title="var">NotifList</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>) (<span class="id" title="var">r</span> : <span class="id" title="var">Distance</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">l2</span> -<span class="id" title="var">ol</span>- <span class="id" title="var">v</span>!! -<span class="id" title="var">ol</span>&gt; <span class="id" title="var">l2'</span> -&gt; <span class="id" title="var">l3</span> -<span class="id" title="var">nl</span>- ((<span class="id" title="var">baseDistance</span> <span class="id" title="var">r</span>) :: <span class="id" title="var">v</span>) ?? -<span class="id" title="var">nl</span>&gt; <span class="id" title="var">l3'</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">mkInterface</span> <span class="id" title="var">l1</span> <span class="id" title="var">l2</span> <span class="id" title="var">l3</span>) -<span class="id" title="var">i</span>- <span class="id" title="var">chanIOEnv</span> <span class="id" title="var">_</span>! <span class="id" title="var">v</span> !<span class="id" title="var">_</span> <span class="id" title="var">r</span> -<span class="id" title="var">i</span>&gt; (<span class="id" title="var">mkInterface</span> <span class="id" title="var">l1</span> <span class="id" title="var">l2'</span> <span class="id" title="var">l3'</span>)<br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepIntFwdNotif</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">l1</span> : <span class="id" title="var">InputList</span>) (<span class="id" title="var">l2</span> : <span class="id" title="var">OutputList</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">l3</span> <span class="id" title="var">l3'</span> : <span class="id" title="var">NotifList</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>), <span class="id" title="var">l3</span> -<span class="id" title="var">nl</span>- <span class="id" title="var">v</span>!! -<span class="id" title="var">nl</span>&gt; <span class="id" title="var">l3'</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">mkInterface</span> <span class="id" title="var">l1</span> <span class="id" title="var">l2</span> <span class="id" title="var">l3</span>) -<span class="id" title="var">i</span>- <span class="id" title="var">chanAN</span> {! <span class="id" title="var">v</span> -<span class="id" title="var">i</span>&gt; (<span class="id" title="var">mkInterface</span> <span class="id" title="var">l1</span> <span class="id" title="var">l2</span> <span class="id" title="var">l3'</span>)<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">where</span> &quot;i -i- a -i&gt; i'" := (<span class="id" title="var">stepInter</span> <span class="id" title="var">i</span> <span class="id" title="var">a</span> <span class="id" title="var">i'</span>).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+An interface i is action enabled for the action a iff
+there is some derivative interface i' such that i transitions to i' via a.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">actEnabledInter</span> (<span class="id" title="var">i</span> : <span class="id" title="var">Interface</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">ActInter</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">i'</span>, <span class="id" title="var">i</span> -<span class="id" title="var">i</span>- <span class="id" title="var">a</span> -<span class="id" title="var">i</span>&gt; <span class="id" title="var">i'</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+incomingInter v i means v is in the incoming list of the interface i.
+</div>
+<div class="code">
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">incomingInter</span> (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>) : <span class="id" title="var">Interface</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">iciWitness</span> (<span class="id" title="var">li</span> : <span class="id" title="var">InputList</span>) (<span class="id" title="var">lo</span> : <span class="id" title="var">OutputList</span>) (<span class="id" title="var">ln</span> : <span class="id" title="var">NotifList</span>) :<br/>
+&nbsp;&nbsp;&lt;( <span class="id" title="var">v</span>, <span class="id" title="var">zeroTime</span> )&gt; <span class="id" title="var">_</span>: <span class="id" title="var">inList</span> <span class="id" title="var">li</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">incomingInter</span> <span class="id" title="var">v</span> (<span class="id" title="var">mkInterface</span> <span class="id" title="var">li</span> <span class="id" title="var">lo</span> <span class="id" title="var">ln</span>).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+An interface is enabled on a discrete action if it can perform a corresponding
+action. The actions in question can be input or output, but there will be no case
+for tau because interfaces can't do a tau action.
+</div>
+<div class="code">
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">discActEnabledInter</span> : <span class="id" title="var">DiscAct</span> -&gt; <span class="id" title="var">Interface</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">daeiIn</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">c</span> : <span class="id" title="var">Channel</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>) (<span class="id" title="var">i</span> <span class="id" title="var">i'</span> : <span class="id" title="var">Interface</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">i</span> -<span class="id" title="var">i</span>- <span class="id" title="var">c</span> {? <span class="id" title="var">v</span> -<span class="id" title="var">i</span>&gt; <span class="id" title="var">i'</span> -&gt; <span class="id" title="var">discActEnabledInter</span> (<span class="id" title="var">c</span> ;? <span class="id" title="var">v</span>) <span class="id" title="var">i</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">daeiOut</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">c</span> : <span class="id" title="var">Channel</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>) (<span class="id" title="var">i</span> <span class="id" title="var">i'</span> : <span class="id" title="var">Interface</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">i</span> -<span class="id" title="var">i</span>- <span class="id" title="var">c</span> {! <span class="id" title="var">v</span> -<span class="id" title="var">i</span>&gt; <span class="id" title="var">i'</span> -&gt; <span class="id" title="var">discActEnabledInter</span> (<span class="id" title="var">c</span> ;! <span class="id" title="var">v</span>) <span class="id" title="var">i</span>.<br/>
+
+<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+An interface is always enabled on an input on the channel chanIOEnv.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">interfaceInEnabled</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">i</span> : <span class="id" title="var">Interface</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">actEnabledInter</span> <span class="id" title="var">i</span> (<span class="id" title="var">chanIOEnv</span> {? <span class="id" title="var">v</span>). <span class="id" title="tactic">destruct</span> <span class="id" title="var">i</span>. <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">addHyp</span> (<span class="id" title="var">inListInEnabled</span> <span class="id" title="var">li0</span> <span class="id" title="var">v</span>). <span class="id" title="var">invertClear</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">rename</span> <span class="id" title="var">x</span> <span class="id" title="var">into</span> <span class="id" title="var">l'</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> ({| <span class="id" title="var">li</span> := <span class="id" title="var">l'</span>; <span class="id" title="var">lo</span> := <span class="id" title="var">lo0</span>; <span class="id" title="var">ln</span> := <span class="id" title="var">ln0</span> |}). <span class="id" title="tactic">constructor</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">delAddInter</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">i</span> <span class="id" title="var">i'</span> <span class="id" title="var">i''</span> : <span class="id" title="var">Interface</span>) (<span class="id" title="var">d</span> <span class="id" title="var">d'</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">i</span> -<span class="id" title="var">i</span>- <span class="id" title="var">d</span> -<span class="id" title="var">i</span>&gt; <span class="id" title="var">i'</span> -&gt; <span class="id" title="var">i'</span> -<span class="id" title="var">i</span>- <span class="id" title="var">d'</span> -<span class="id" title="var">i</span>&gt; <span class="id" title="var">i''</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">i</span> -<span class="id" title="var">i</span>- <span class="id" title="var">d</span> +<span class="id" title="var">d</span>+ <span class="id" title="var">d'</span> -<span class="id" title="var">i</span>&gt; <span class="id" title="var">i''</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">i</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">l1</span> <span class="id" title="var">l2</span> <span class="id" title="var">l3</span>]. <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">i'</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">l1'</span> <span class="id" title="var">l2'</span> <span class="id" title="var">l3'</span>]. <span class="id" title="tactic">destruct</span> <span class="id" title="var">i''</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">l1''</span> <span class="id" title="var">l2''</span> <span class="id" title="var">l3''</span>].<br/>
+&nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">constructor</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">delAddInput</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H6</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">delAddOutput</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H9</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">stepNlDelAdd</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H10</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Conjecture</span> <span class="id" title="var">outList_received_in</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">l</span> <span class="id" title="var">l'</span> : <span class="id" title="var">OutputList</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">l</span> -<span class="id" title="var">ol</span>- <span class="id" title="var">v</span> ?? -<span class="id" title="var">ol</span>&gt; <span class="id" title="var">l'</span> -&gt; &lt;(<span class="id" title="var">v</span>, <span class="id" title="var">msgLatency</span>)&gt; <span class="id" title="var">_</span>: <span class="id" title="var">outList</span> <span class="id" title="var">l'</span>.<br/>
+</div>
+
+<div class="doc">
+Proof: Obvious from outList semantics
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Conjecture</span> <span class="id" title="var">inList_received_in</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">l</span> <span class="id" title="var">l'</span> : <span class="id" title="var">InputList</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">l</span> -<span class="id" title="var">il</span>- <span class="id" title="var">v</span> ?? -<span class="id" title="var">il</span>&gt; <span class="id" title="var">l'</span> -&gt; &lt;(<span class="id" title="var">v</span>, <span class="id" title="var">msgLatency</span>)&gt; <span class="id" title="var">_</span>: <span class="id" title="var">inList</span> <span class="id" title="var">l'</span>.<br/>
+</div>
+
+<div class="doc">
+Proof: Obvious from inList semantics
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Conjecture</span> <span class="id" title="var">notifList_received_in</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">l</span> <span class="id" title="var">l'</span> : <span class="id" title="var">NotifList</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">l</span> -<span class="id" title="var">nl</span>- <span class="id" title="var">v</span> ?? -<span class="id" title="var">nl</span>&gt; <span class="id" title="var">l'</span> -&gt; &lt;(<span class="id" title="var">v</span>, <span class="id" title="var">msgLatency</span>)&gt; <span class="id" title="var">_</span>: <span class="id" title="var">notifList</span> <span class="id" title="var">l'</span>.<br/>
+</div>
+
+<div class="doc">
+Proof: Obvious from notifList semantics
+</div>
+<div class="code">
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">inList_pres_input</span> <span class="id" title="var">v</span> <span class="id" title="var">l</span> <span class="id" title="var">l'</span> <span class="id" title="var">a</span> :<br/>
+&nbsp;&nbsp;&lt;( <span class="id" title="var">v</span>, <span class="id" title="var">zeroTime</span> )&gt; <span class="id" title="var">_</span>: <span class="id" title="var">inList</span> <span class="id" title="var">l</span> -&gt; <span class="id" title="var">l</span> -<span class="id" title="var">il</span>- <span class="id" title="var">a</span> -<span class="id" title="var">il</span>&gt; <span class="id" title="var">l'</span> -&gt;<br/>
+&nbsp;&nbsp;&lt;( <span class="id" title="var">v</span>, <span class="id" title="var">zeroTime</span> )&gt; <span class="id" title="var">_</span>: <span class="id" title="var">inList</span> <span class="id" title="var">l'</span> \/ <span class="id" title="var">a</span> = <span class="id" title="var">v</span> !!. <span class="id" title="var">Admitted</span>. 
+<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">inList_inter_pres_input</span> <span class="id" title="var">v</span> <span class="id" title="var">lix</span> <span class="id" title="var">lox</span> <span class="id" title="var">lnx</span> <span class="id" title="var">lix'</span> <span class="id" title="var">lox'</span> <span class="id" title="var">lnx'</span> <span class="id" title="var">a</span> :<br/>
+&nbsp;&nbsp;(<span class="id" title="keyword">forall</span> <span class="id" title="var">d</span>, <span class="id" title="var">a</span> &lt;&gt; <span class="id" title="var">aiDel</span> <span class="id" title="var">d</span>) -&gt; &lt;(<span class="id" title="var">v</span>, <span class="id" title="var">zeroTime</span> )&gt; <span class="id" title="var">_</span>: <span class="id" title="var">inList</span> <span class="id" title="var">lix</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">mkInterface</span> <span class="id" title="var">lix</span> <span class="id" title="var">lox</span> <span class="id" title="var">lnx</span> -<span class="id" title="var">i</span>- <span class="id" title="var">a</span> -<span class="id" title="var">i</span>&gt; <span class="id" title="var">mkInterface</span> <span class="id" title="var">lix'</span> <span class="id" title="var">lox'</span> <span class="id" title="var">lnx'</span> -&gt;<br/>
+&nbsp;&nbsp;&lt;(<span class="id" title="var">v</span>, <span class="id" title="var">zeroTime</span> )&gt; <span class="id" title="var">_</span>: <span class="id" title="var">inList</span> <span class="id" title="var">lix'</span> \/<br/>
+&nbsp;&nbsp;<span class="id" title="var">a</span> = <span class="id" title="var">chanInProc</span>{! <span class="id" title="var">v</span>. <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H1</span>;<br/>
+&nbsp;&nbsp;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">try</span> (<span class="id" title="tactic">subst</span>; <span class="id" title="tactic">left</span>; <span class="id" title="tactic">assumption</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="var">false</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">IPI</span> : <span class="id" title="var">inList_pres_input</span> <span class="id" title="var">H0</span> <span class="id" title="var">H6</span>. <span class="id" title="var">elim_intro</span> <span class="id" title="var">IPI</span> <span class="id" title="var">IL</span> <span class="id" title="var">VEQ</span>;<br/>
+&nbsp;&nbsp;[<span class="id" title="tactic">left</span> | <span class="id" title="tactic">right</span>; <span class="id" title="tactic">inversion</span> <span class="id" title="var">VEQ</span>]; <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">IPI</span> : <span class="id" title="var">inList_pres_input</span> <span class="id" title="var">H0</span> <span class="id" title="var">H6</span>. <span class="id" title="var">elim_intro</span> <span class="id" title="var">IPI</span> <span class="id" title="var">IL</span> <span class="id" title="var">VEQ</span>;<br/>
+&nbsp;&nbsp;[<span class="id" title="tactic">left</span> | <span class="id" title="tactic">right</span>; <span class="id" title="tactic">inversion</span> <span class="id" title="var">VEQ</span>]. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">timeSplit_inter</span> (<span class="id" title="var">h</span> <span class="id" title="var">h''</span> : <span class="id" title="var">Interface</span>) (<span class="id" title="var">d</span> <span class="id" title="var">d'</span> <span class="id" title="var">d''</span> : <span class="id" title="var">Delay</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">h</span> -<span class="id" title="var">i</span>- <span class="id" title="var">d''</span> -<span class="id" title="var">i</span>&gt; <span class="id" title="var">h''</span> -&gt; <span class="id" title="var">d''</span> = <span class="id" title="var">d</span> +<span class="id" title="var">d</span>+ <span class="id" title="var">d'</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">h'</span>, <span class="id" title="var">h</span> -<span class="id" title="var">i</span>- <span class="id" title="var">d</span> -<span class="id" title="var">i</span>&gt; <span class="id" title="var">h'</span> /\ <span class="id" title="var">h'</span> -<span class="id" title="var">i</span>- <span class="id" title="var">d'</span> -<span class="id" title="var">i</span>&gt; <span class="id" title="var">h''</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">TSI</span> : <span class="id" title="var">timeSplit_inputList</span> <span class="id" title="var">H2</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">TSO</span> : <span class="id" title="var">timeSplit_outputList</span> <span class="id" title="var">H3</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">TSN</span> : <span class="id" title="var">timeSplit_notifList</span> <span class="id" title="var">H5</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">ex_flat</span>. <span class="id" title="var">or_flat</span>. <span class="id" title="var">and_flat</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> ({| <span class="id" title="var">li</span> := <span class="id" title="var">x1</span>; <span class="id" title="var">lo</span> := <span class="id" title="var">x0</span>; <span class="id" title="var">ln</span> := <span class="id" title="var">x</span> |}).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">split</span>; <span class="id" title="tactic">constructor</span>; <span class="id" title="var">eassumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">notif_timeout_enabled_aux</span> <span class="id" title="var">v</span> <span class="id" title="var">lnx</span> :<br/>
+&nbsp;&nbsp;&lt;( <span class="id" title="var">v</span>, <span class="id" title="var">zeroTime</span> )&gt; <span class="id" title="var">_</span>: <span class="id" title="var">notifList</span> <span class="id" title="var">lnx</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">lnx'</span>, <span class="id" title="var">lnx</span> -<span class="id" title="var">nl</span>- (<span class="id" title="var">v</span> !!) -<span class="id" title="var">nl</span>&gt; <span class="id" title="var">lnx'</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">introz</span> <span class="id" title="var">U</span>. <span class="id" title="var">lets</span> <span class="id" title="var">TTE</span> : <span class="id" title="var">timedList_timeout_enabled</span> <span class="id" title="var">U</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">ex_flat</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">lnx</span>. <span class="id" title="tactic">simpl</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">eexists</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">econstructor</span>. <span class="id" title="var">eassumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">notif_timeout_enabled</span> <span class="id" title="var">v</span> <span class="id" title="var">lix</span> <span class="id" title="var">lox</span> <span class="id" title="var">lnx</span> :<br/>
+&nbsp;&nbsp;&lt;( <span class="id" title="var">v</span>, <span class="id" title="var">zeroTime</span> )&gt; <span class="id" title="var">_</span>: <span class="id" title="var">notifList</span> <span class="id" title="var">lnx</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">discActEnabledInter</span> (<span class="id" title="var">chanAN</span> ;! <span class="id" title="var">v</span>) (<span class="id" title="var">mkInterface</span> <span class="id" title="var">lix</span> <span class="id" title="var">lox</span> <span class="id" title="var">lnx</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="var">introz</span> <span class="id" title="var">U</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="tactic">exists</span> <span class="id" title="var">lnx'</span>, <span class="id" title="var">lnx</span> -<span class="id" title="var">nl</span>- (<span class="id" title="var">v</span> !!) -<span class="id" title="var">nl</span>&gt; <span class="id" title="var">lnx'</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">EXL</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">notif_timeout_enabled_aux</span>; <span class="id" title="tactic">assumption</span>. <span class="id" title="var">ex_flat</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">daeiOut</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">stepIntFwdNotif</span>. <span class="id" title="var">eassumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">interface_outProc_in</span> (<span class="id" title="var">h</span> : <span class="id" title="var">Interface</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">discActEnabledInter</span> (<span class="id" title="var">chanOutProc</span> ;? <span class="id" title="var">v</span>) <span class="id" title="var">h</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">h</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">lo0</span>. <span class="id" title="tactic">repeat</span> <span class="id" title="tactic">econstructor</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">inter_mStable_in_not</span> <span class="id" title="var">h</span> <span class="id" title="var">h'</span> : <span class="id" title="var">h</span> -<span class="id" title="var">i</span>- <span class="id" title="var">chanMStable</span> {! [] -<span class="id" title="var">i</span>&gt; <span class="id" title="var">h'</span> -&gt; <span class="id" title="var">False</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">introz</span> <span class="id" title="var">U</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">U</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">inter_abort_in_not</span> <span class="id" title="var">h</span> <span class="id" title="var">h'</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">h</span> -<span class="id" title="var">i</span>- <span class="id" title="var">chanAbort</span> {?[] -<span class="id" title="var">i</span>&gt; <span class="id" title="var">h'</span> -&gt; <span class="id" title="var">False</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">introz</span> <span class="id" title="var">U</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">U</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">outList_in_input_pres</span> <span class="id" title="var">v</span> <span class="id" title="var">u</span> <span class="id" title="var">t</span> <span class="id" title="var">lo</span> <span class="id" title="var">lo'</span> :<br/>
+&nbsp;&nbsp;&lt;( <span class="id" title="var">v</span>, <span class="id" title="var">t</span> )&gt; <span class="id" title="var">_</span>: <span class="id" title="var">outList</span> <span class="id" title="var">lo</span> -&gt; <span class="id" title="var">outList</span> <span class="id" title="var">lo</span> -<span class="id" title="var">tl</span>- <span class="id" title="var">u</span> ?? -<span class="id" title="var">tl</span>&gt; <span class="id" title="var">outList</span> <span class="id" title="var">lo'</span> -&gt;<br/>
+&nbsp;&nbsp;&lt;( <span class="id" title="var">v</span>, <span class="id" title="var">t</span> )&gt; <span class="id" title="var">_</span>: <span class="id" title="var">outList</span> <span class="id" title="var">lo'</span>. <span class="id" title="var">Admitted</span>. 
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">outList_in_output_pres</span> <span class="id" title="var">v</span> <span class="id" title="var">u</span> <span class="id" title="var">t</span> <span class="id" title="var">lo</span> <span class="id" title="var">lo'</span> :<br/>
+&nbsp;&nbsp;&lt;( <span class="id" title="var">v</span>, <span class="id" title="var">t</span> )&gt; <span class="id" title="var">_</span>: <span class="id" title="var">outList</span> <span class="id" title="var">lo</span> -&gt; <span class="id" title="var">outList</span> <span class="id" title="var">lo</span> -<span class="id" title="var">tl</span>- <span class="id" title="var">u</span> !! -<span class="id" title="var">tl</span>&gt; <span class="id" title="var">outList</span> <span class="id" title="var">lo'</span> -&gt;<br/>
+&nbsp;&nbsp;0 &lt; <span class="id" title="var">t</span> -&gt; &lt;( <span class="id" title="var">v</span>, <span class="id" title="var">t</span> )&gt; <span class="id" title="var">_</span>: <span class="id" title="var">outList</span> <span class="id" title="var">lo'</span>. <span class="id" title="var">Admitted</span>. 
+<br/>
+</div>
+<hr/>This page has been generated by <a href="http://coq.inria.fr/">coqdoc</a>
+</div>
+
+</div>
+
+</body>
+</html>

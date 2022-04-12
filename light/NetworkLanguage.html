@@ -1,0 +1,771 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<title>NetworkLanguage</title>
+</head>
+
+<body>
+
+<div id="page">
+
+<div id="header">
+</div>
+
+<div id="main">
+
+<h1 class="libtitle">Library NetworkLanguage</h1>
+
+<div class="code">
+</div>
+
+<div class="doc">
+This file was written by Colm Bhandal, PhD student, Foundations and Methods group,
+School of Computer Science and Statistics, Trinity College, Dublin, Ireland.
+</div>
+<div class="code">
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">Coq.Program.Equality</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.Extras.LibTactics</span>.<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.GenTacs</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.StandardResults</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.ComhBasics</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Export</span> <span class="id" title="var">EntityLanguage</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.EntAuxResults</span>.<br/>
+
+<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+A network of entities is a list of entities.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">Network</span> : <span class="id" title="keyword">Type</span> := <span class="id" title="var">list</span> <span class="id" title="var">Entity</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Coercion</span> <span class="id" title="var">singNet</span> (<span class="id" title="var">e</span> : <span class="id" title="var">Entity</span>) : <span class="id" title="var">Network</span> := [<span class="id" title="var">e</span>].<br/>
+
+<br/>
+<span class="id" title="keyword">Reserved Notation</span> &quot;e @ i .: n" (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 50).<br/>
+</div>
+
+<div class="doc">
+e @ i :: n says that e is at position i in the network n.
+The first position is position 0.
+</div>
+<div class="code">
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">entInNet</span> (<span class="id" title="var">e</span> : <span class="id" title="var">Entity</span>) : <span class="id" title="var">nat</span> -&gt; <span class="id" title="var">Network</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">einConsLeft</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">e</span> @ 0 .: (<span class="id" title="var">e</span> :: <span class="id" title="var">n</span>)<br/>
+&nbsp;&nbsp;| <span class="id" title="var">einConsRight</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">e</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> -&gt; <span class="id" title="var">e</span> @ (<span class="id" title="var">S</span> <span class="id" title="var">i</span>) .: (<span class="id" title="var">e'</span> :: <span class="id" title="var">n</span>)<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">where</span> &quot;e @ i .: n" := (<span class="id" title="var">entInNet</span> <span class="id" title="var">e</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span>).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If an entity is in a network according to the definition of entInNet,
+then it is in the list according to In.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">entInNet_inList</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">e</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">e</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> -&gt; <span class="id" title="var">e</span> <span class="id" title="var">_</span>: <span class="id" title="var">n</span>. <br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If e is at i in n and so is e', then e = e'.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">entInNetUnique</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">e</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> -&gt; <span class="id" title="var">e'</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> -&gt; <span class="id" title="var">e</span> = <span class="id" title="var">e'</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">entnetuniq</span> <span class="id" title="var">U</span> <span class="id" title="var">e1</span> <span class="id" title="var">e2</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;[<span class="id" title="var">H1</span> : <span class="id" title="var">e1</span> @ ?<span class="id" title="var">i</span> .: ?<span class="id" title="var">n</span>, <span class="id" title="var">H2</span> : <span class="id" title="var">e2</span> @ ?<span class="id" title="var">i</span> .: ?<span class="id" title="var">n</span> |- <span class="id" title="var">_</span> ] =&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">U1</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span> <span class="id" title="var">lets</span> <span class="id" title="var">U1</span> : <span class="id" title="var">entInNetUnique</span> <span class="id" title="var">H1</span> <span class="id" title="var">H2</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">entnetuniq2</span> <span class="id" title="var">U</span> <span class="id" title="var">n</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;[<span class="id" title="var">H1</span> : <span class="id" title="var">_</span> @ <span class="id" title="var">_</span> .: <span class="id" title="var">n</span>, <span class="id" title="var">H2</span> : <span class="id" title="var">_</span> @ <span class="id" title="var">_</span> .: <span class="id" title="var">n</span> |- <span class="id" title="var">_</span> ] =&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">U1</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span> <span class="id" title="var">lets</span> <span class="id" title="var">U1</span> : <span class="id" title="var">entInNetUnique</span> <span class="id" title="var">H1</span> <span class="id" title="var">H2</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+There either exists an entity at position i or there doesn't.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">decEntInNet</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">decidable</span> (<span class="id" title="tactic">exists</span> <span class="id" title="var">e</span>, <span class="id" title="var">e</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span>). <br/>
+
+<br/>
+<span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">nat_scope</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+We define what it means for a network to be safe.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">safe</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) : <span class="id" title="keyword">Prop</span> := <br/>
+&nbsp;&nbsp;<span class="id" title="keyword">forall</span> (<span class="id" title="var">e1</span> <span class="id" title="var">e2</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">i</span> <span class="id" title="var">j</span> : <span class="id" title="var">nat</span>), (<span class="id" title="var">i</span> &lt; <span class="id" title="var">j</span>) -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">e1</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> -&gt; <span class="id" title="var">e2</span> @ <span class="id" title="var">j</span> .: <span class="id" title="var">n</span> -&gt; <span class="id" title="var">compatible</span> <span class="id" title="var">e1</span> <span class="id" title="var">e2</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+An alternative definition of safety. The only difference here is that
+i &lt;&gt; j rather than i &lt; j.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">safeAlt</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) : <span class="id" title="keyword">Prop</span> := <br/>
+&nbsp;&nbsp;<span class="id" title="keyword">forall</span> (<span class="id" title="var">e1</span> <span class="id" title="var">e2</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">i</span> <span class="id" title="var">j</span> : <span class="id" title="var">nat</span>), (<span class="id" title="var">i</span> &lt;&gt; <span class="id" title="var">j</span>) -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">e1</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> -&gt; <span class="id" title="var">e2</span> @ <span class="id" title="var">j</span> .: <span class="id" title="var">n</span> -&gt; <span class="id" title="var">compatible</span> <span class="id" title="var">e1</span> <span class="id" title="var">e2</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The two definitions of safe are the same.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">safeDefsEquiv</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">n</span> : <span class="id" title="var">Network</span>,<br/>
+&nbsp;&nbsp;<span class="id" title="var">safe</span> <span class="id" title="var">n</span> &lt;-&gt; <span class="id" title="var">safeAlt</span> <span class="id" title="var">n</span>. <br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Defining safety for a single entity in a network as follows: e is safe
+at i in the network n iff e is at i in n and forall entities e' at j in n
+for some j not equal i, e and e' are compatible.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">safeSing</span> (<span class="id" title="var">e</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) := <br/>
+&nbsp;&nbsp;<span class="id" title="var">e</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> /\<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">forall</span> (<span class="id" title="var">j</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>), <span class="id" title="var">j</span> &lt;&gt; <span class="id" title="var">i</span> -&gt; <span class="id" title="var">e'</span> @ <span class="id" title="var">j</span> .: <span class="id" title="var">n</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">e</span> ~~ <span class="id" title="var">e'</span>.<br/>
+<span class="id" title="keyword">Notation</span> &quot;e .! i .: n" := (<span class="id" title="var">safeSing</span> <span class="id" title="var">e</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 50, <span class="id" title="tactic">left</span> <span class="id" title="keyword">associativity</span>).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+A network n is safe iff every entity in the network is singularly
+safe.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">safeIffSafeSing</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">safe</span> <span class="id" title="var">n</span> &lt;-&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">forall</span> (<span class="id" title="var">e</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">e</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> -&gt; <span class="id" title="var">e</span> .! <span class="id" title="var">i</span> .: <span class="id" title="var">n</span>. <br/>
+
+<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+A discrete action is either the input, output or ignorance of a message, or
+it is the silent value tau. Notice that output actions are indexed by a natural
+number- this keeps track of which entity in the network performed the output.
+</div>
+<div class="code">
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">ActDiscNet</span> : <span class="id" title="keyword">Type</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">anOut</span> : <span class="id" title="var">Message</span> -&gt; <span class="id" title="var">nat</span> -&gt; <span class="id" title="var">ActDiscNet</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">anIn</span> : <span class="id" title="var">Message</span> -&gt; <span class="id" title="var">ActDiscNet</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">anIg</span> : <span class="id" title="var">Message</span> -&gt; <span class="id" title="var">ActDiscNet</span><br/>
+&nbsp;&nbsp;</div>
+
+<div class="doc">
+The accept relation is essentially the union of the input and output relations. Its purpose is purely to simplify the expression of the semantics.
+</div>
+<div class="code">
+&nbsp;&nbsp;| <span class="id" title="var">anAcc</span> : <span class="id" title="var">Message</span> -&gt; <span class="id" title="var">ActDiscNet</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">anTau</span> : <span class="id" title="var">ActDiscNet</span>.<br/>
+<span class="id" title="keyword">Notation</span> &quot;b /! i" := (<span class="id" title="var">anOut</span> <span class="id" title="var">b</span> <span class="id" title="var">i</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 30).<br/>
+<span class="id" title="keyword">Notation</span> &quot;b /?" := (<span class="id" title="var">anIn</span> <span class="id" title="var">b</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 30).<br/>
+<span class="id" title="keyword">Notation</span> &quot;b /:" := (<span class="id" title="var">anIg</span> <span class="id" title="var">b</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 30).<br/>
+<span class="id" title="keyword">Notation</span> &quot;b /?:" := (<span class="id" title="var">anAcc</span> <span class="id" title="var">b</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 30).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Convert an entity action to a network action
+</div>
+<div class="code">
+<span class="id" title="keyword">Coercion</span> <span class="id" title="var">entToNetAct</span> (<span class="id" title="var">a</span> : <span class="id" title="var">ActDiscEnt</span>) : <span class="id" title="var">ActDiscNet</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">a</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">aeTagOut</span> <span class="id" title="var">m</span> =&gt; <span class="id" title="var">anOut</span> <span class="id" title="var">m</span> 0<br/>
+&nbsp;&nbsp;| <span class="id" title="var">aeTagIn</span> <span class="id" title="var">m</span> =&gt; <span class="id" title="var">anIn</span> <span class="id" title="var">m</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">aeTagIg</span> <span class="id" title="var">m</span> =&gt; <span class="id" title="var">anIg</span> <span class="id" title="var">m</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">aeTau</span> =&gt; <span class="id" title="var">anTau</span> <br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Reserved Notation</span> &quot;n1 -NA- a -NA&gt; n2" (<span class="id" title="tactic">left</span> <span class="id" title="keyword">associativity</span>, <span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 50).<br/>
+<span class="id" title="keyword">Reserved Notation</span> &quot;n1 -ND- d -ND&gt; n2" (<span class="id" title="tactic">left</span> <span class="id" title="keyword">associativity</span>, <span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 50).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The discrete labelled transition relation on networks.
+</div>
+<div class="code">
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">stepDiscNet</span> : <span class="id" title="var">Network</span> -&gt; <span class="id" title="var">ActDiscNet</span> -&gt; <span class="id" title="var">Network</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;</div>
+
+<div class="doc">
+The empty network can ignore any value.
+</div>
+<div class="code">
+&nbsp;&nbsp;| <span class="id" title="var">stepDnEmpIg</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">m</span> : <span class="id" title="var">Message</span>, [] -<span class="id" title="var">NA</span>- <span class="id" title="var">m</span>/: -<span class="id" title="var">NA</span>&gt; []<br/>
+&nbsp;&nbsp;</div>
+
+<div class="doc">
+For every input, there is a corresponding accept.
+</div>
+<div class="code">
+&nbsp;&nbsp;| <span class="id" title="var">stepDnAccIn</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Message</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">m</span>/? -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">m</span>/?: -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span><br/>
+&nbsp;&nbsp;</div>
+
+<div class="doc">
+For every ignore, there is a corresponding accept.
+</div>
+<div class="code">
+&nbsp;&nbsp;| <span class="id" title="var">stepDnAccIg</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Message</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">m</span>/: -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">m</span>/?: -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepDnIgnore</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Message</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">m</span>#: -&gt;&gt; <span class="id" title="var">e'</span> -&gt; <span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">m</span>/: -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">e</span> :: <span class="id" title="var">n</span>) -<span class="id" title="var">NA</span>- <span class="id" title="var">m</span>/: -<span class="id" title="var">NA</span>&gt; (<span class="id" title="var">e'</span> :: <span class="id" title="var">n'</span>)<br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepDnOutHead</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Message</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">m</span>#! -&gt;&gt; <span class="id" title="var">e'</span> -&gt; <span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">m</span>/?: -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">e</span> :: <span class="id" title="var">n</span>) -<span class="id" title="var">NA</span>- <span class="id" title="var">m</span>/!0 -<span class="id" title="var">NA</span>&gt; (<span class="id" title="var">e'</span> :: <span class="id" title="var">n'</span>)<br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepDnOutInTail</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Message</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">m</span>#? -&gt;&gt; <span class="id" title="var">e'</span> -&gt; <span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">m</span>/!<span class="id" title="var">i</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">e</span> :: <span class="id" title="var">n</span>) -<span class="id" title="var">NA</span>- <span class="id" title="var">m</span>/!(<span class="id" title="var">S</span> <span class="id" title="var">i</span>) -<span class="id" title="var">NA</span>&gt; (<span class="id" title="var">e'</span> :: <span class="id" title="var">n'</span>)<br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepDnOutIgTail</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Message</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">m</span>#: -&gt;&gt; <span class="id" title="var">e'</span> -&gt; <span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">m</span>/!<span class="id" title="var">i</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">e</span> :: <span class="id" title="var">n</span>) -<span class="id" title="var">NA</span>- <span class="id" title="var">m</span>/!(<span class="id" title="var">S</span> <span class="id" title="var">i</span>) -<span class="id" title="var">NA</span>&gt; (<span class="id" title="var">e'</span> :: <span class="id" title="var">n'</span>)<br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepDnInHead</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Message</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">m</span>#? -&gt;&gt; <span class="id" title="var">e'</span> -&gt; <span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">m</span>/?: -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">e</span> :: <span class="id" title="var">n</span>) -<span class="id" title="var">NA</span>- <span class="id" title="var">m</span>/? -<span class="id" title="var">NA</span>&gt; (<span class="id" title="var">e'</span> :: <span class="id" title="var">n'</span>)<br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepDnInTail</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Message</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">m</span>#: -&gt;&gt; <span class="id" title="var">e'</span> -&gt; <span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">m</span>/? -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">e</span> :: <span class="id" title="var">n</span>) -<span class="id" title="var">NA</span>- <span class="id" title="var">m</span>/? -<span class="id" title="var">NA</span>&gt; (<span class="id" title="var">e'</span> :: <span class="id" title="var">n'</span>)<br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepDnTauHead</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">aeTau</span> -&gt;&gt; <span class="id" title="var">e'</span> -&gt; (<span class="id" title="var">e</span> :: <span class="id" title="var">n</span>) -<span class="id" title="var">NA</span>- <span class="id" title="var">anTau</span> -<span class="id" title="var">NA</span>&gt; (<span class="id" title="var">e'</span> :: <span class="id" title="var">n</span>)<br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepDnTauTail</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">e</span> : <span class="id" title="var">Entity</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">anTau</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt; (<span class="id" title="var">e</span> :: <span class="id" title="var">n</span>) -<span class="id" title="var">NA</span>- <span class="id" title="var">anTau</span> -<span class="id" title="var">NA</span>&gt; (<span class="id" title="var">e</span> :: <span class="id" title="var">n'</span>)<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">where</span> &quot;n1 -NA- a -NA&gt; n2" := (<span class="id" title="var">stepDiscNet</span> <span class="id" title="var">n1</span> <span class="id" title="var">a</span> <span class="id" title="var">n2</span>).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+An network n is discrete action enabled for the discrete action a iff
+there is some derivative network n' such that n transitions to n' via a.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">discActEnabledNet</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">ActDiscNet</span>) :=<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">n'</span>, <span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The time-labelled transition relation on networks.
+</div>
+<div class="code">
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">stepTimedNet</span> : <span class="id" title="var">Network</span> -&gt; <span class="id" title="var">Delay</span> -&gt; <span class="id" title="var">Network</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepTnEmp</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>), [] -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; []<br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepTnCons</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">e</span> -<span class="id" title="var">ED</span>- <span class="id" title="var">d</span> -&gt;&gt; <span class="id" title="var">e'</span> -&gt; <span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n'</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">e</span> :: <span class="id" title="var">n</span>) -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; (<span class="id" title="var">e'</span> :: <span class="id" title="var">n'</span>)<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">where</span> &quot;n1 -ND- d -ND&gt; n2" := (<span class="id" title="var">stepTimedNet</span> <span class="id" title="var">n1</span> <span class="id" title="var">d</span> <span class="id" title="var">n2</span>).<br/>
+
+<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+An accept action is always the result of an input or an ignore (as opposed
+to say a lift).
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">accInOrIg</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Message</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">m</span>/?: -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt; (<span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">m</span>/? -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span>) \/ (<span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">m</span>/: -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span>).<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">emptyNet</span> : <span class="id" title="var">Network</span> := [].<br/>
+<span class="id" title="keyword">Notation</span> &quot;[\]" := <span class="id" title="var">emptyNet</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Every non-null network is able to accept any message.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">accNet</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Message</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">discActEnabledNet</span> <span class="id" title="var">n</span> (<span class="id" title="var">m</span>/?:).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The ignore relation preserves networks.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">ignoreEqNet</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Message</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">m</span>/: -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">n</span> = <span class="id" title="var">n'</span>. <br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Membership of the singleton network enforces the obvious equality. Also,
+the index of the member entity is 0.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">entInNetSing</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">e</span> @ <span class="id" title="var">i</span> .: [<span class="id" title="var">e'</span>] -&gt; <span class="id" title="var">e</span> = <span class="id" title="var">e'</span> /\ <span class="id" title="var">i</span> = 0. <br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If a network ignores a value and there is an entity in the derivative network,
+then there was an entity in the original network that also ignores the value.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">ignoreLink</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">e</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Message</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">m</span>/: -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">e</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n'</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">e</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> /\ <span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">m</span>#: -&gt;&gt; <span class="id" title="var">e</span>. 
+<br/>
+</div>
+
+<div class="doc">
+If a network accepts a value, then the tail of that network accepts the value.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">acceptTail</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Message</span>),<br/>
+&nbsp;&nbsp;(<span class="id" title="var">e</span> :: <span class="id" title="var">n</span>) -<span class="id" title="var">NA</span>- <span class="id" title="var">m</span>/?: -<span class="id" title="var">NA</span>&gt; (<span class="id" title="var">e'</span> :: <span class="id" title="var">n'</span>) -&gt; <span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">m</span>/?: -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span>. <br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If a network is capable of accepting a message, and there is some entity in
+the network, then that entity can either input or ignore the message.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">acceptLink</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Message</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">m</span>/?: -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">e'</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n'</span> -&gt; <span class="id" title="tactic">exists</span> <span class="id" title="var">e</span>,<br/>
+&nbsp;&nbsp;<span class="id" title="var">e</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> /\ (<span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">m</span>#: -&gt;&gt; <span class="id" title="var">e'</span> \/ <span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">m</span>#? -&gt;&gt; <span class="id" title="var">e'</span>). </div>
+
+<div class="doc">
+Case: i is 0, entity is at the head of the list
+</div>
+<div class="code">
+</div>
+
+<div class="doc">
+Case: i is not 0, entity is within the smaller list- induct
+</div>
+<div class="code">
+<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If an network performs an output with index i, then there are entities e and e'
+at index i in both the source and derivative networks and e performs the output to
+become e'.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">outputMatch</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Message</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">m</span>/!<span class="id" title="var">i</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="tactic">exists</span> <span class="id" title="var">e</span> <span class="id" title="var">e'</span>,<br/>
+&nbsp;&nbsp;<span class="id" title="var">e</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> /\ <span class="id" title="var">e'</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n'</span> /\ <span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">m</span>#! -&gt;&gt; <span class="id" title="var">e'</span>. </div>
+
+<div class="doc">
+Case: head.
+</div>
+<div class="code">
+</div>
+
+<div class="doc">
+Case: out tail in head.
+</div>
+<div class="code">
+</div>
+
+<div class="doc">
+Case: out tail, ig head- the very same as before.
+</div>
+<div class="code">
+<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If an network performs an output with index i, and there is an entity in the
+derivative network at index i', with i &lt;&gt; i', then there is a corresponding entity
+at the index i' in the original network, and the two are linked by either an input
+or an ignore transition.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">outputMismatch</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">i</span> <span class="id" title="var">i'</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Message</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">m</span>/!<span class="id" title="var">i</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">e'</span> @ <span class="id" title="var">i'</span> .: <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">i</span> &lt;&gt; <span class="id" title="var">i'</span> -&gt; <span class="id" title="tactic">exists</span> <span class="id" title="var">e</span>,<br/>
+&nbsp;&nbsp;<span class="id" title="var">e</span> @ <span class="id" title="var">i'</span> .: <span class="id" title="var">n</span> /\ (<span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">m</span>#? -&gt;&gt; <span class="id" title="var">e'</span> \/ <span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">m</span>#: -&gt;&gt; <span class="id" title="var">e'</span>). </div>
+
+<div class="doc">
+Out head case (haha head-case).
+</div>
+<div class="code">
+</div>
+
+<div class="doc">
+Out tail, in head case.
+</div>
+<div class="code">
+</div>
+
+<div class="doc">
+Out tail, ig head case- almost the same as before.
+</div>
+<div class="code">
+<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If a network outputs a message and there is an entity in the derivative network,
+then there is an entity in the same position in the original network and that entity
+can either output, input or ignore the same message.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">outputLink</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">i</span> <span class="id" title="var">i'</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Message</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">m</span>/!<span class="id" title="var">i</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">e'</span> @ <span class="id" title="var">i'</span> .: <span class="id" title="var">n'</span> -&gt; <span class="id" title="tactic">exists</span> <span class="id" title="var">e</span>,<br/>
+&nbsp;&nbsp;<span class="id" title="var">e</span> @ <span class="id" title="var">i'</span> .: <span class="id" title="var">n</span> /\ (<span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">m</span>#! -&gt;&gt; <span class="id" title="var">e'</span> \/ <span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">m</span>#? -&gt;&gt; <span class="id" title="var">e'</span> \/ <span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">m</span>#: -&gt;&gt; <span class="id" title="var">e'</span>).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If a network performs a silent action, it is due to exactly one of its component
+entities performing a silent action. The rest of the entities remain the same,
+unscathed by the muffled action that they cannot see.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">tauLink</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">anTau</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="tactic">exists</span> <span class="id" title="var">i</span> <span class="id" title="var">e</span> <span class="id" title="var">e'</span>,<br/>
+&nbsp;&nbsp;<span class="id" title="var">e</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> /\ <span class="id" title="var">e'</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n'</span> /\ <span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">aeTau</span> -&gt;&gt; <span class="id" title="var">e'</span> /\<br/>
+&nbsp;&nbsp;(<span class="id" title="keyword">forall</span> (<span class="id" title="var">i'</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">e1</span> : <span class="id" title="var">Entity</span>), <span class="id" title="var">i</span> &lt;&gt; <span class="id" title="var">i'</span> -&gt; <span class="id" title="var">e1</span> @ <span class="id" title="var">i'</span> .: <span class="id" title="var">n'</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;<span class="id" title="var">e1</span> @ <span class="id" title="var">i'</span> .: <span class="id" title="var">n</span>). </div>
+
+<div class="doc">
+Case tau tail
+</div>
+<div class="code">
+<br/>
+
+<br/>
+<span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">R_scope</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If an entity evolves by time delay d, then the change in its
+position is bounded by d times the assumed maximum speed.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">boundedMovement</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">e</span> -<span class="id" title="var">ED</span>- <span class="id" title="var">d</span> -&gt;&gt; <span class="id" title="var">e'</span> -&gt; <span class="id" title="var">dist2d</span> <span class="id" title="var">e</span> <span class="id" title="var">e'</span> &lt;= (<span class="id" title="var">d</span> * <span class="id" title="var">speedMax</span>). <br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The discrete transition relation preserves the position of an entity.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">stepDiscPresPos</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">ActDiscEnt</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">a</span> -&gt;&gt; <span class="id" title="var">e'</span> -&gt; <span class="id" title="var">posEnt</span> <span class="id" title="var">e</span> = <span class="id" title="var">posEnt</span> <span class="id" title="var">e'</span>. 
+<br/>
+</div>
+
+<div class="doc">
+A discrete action that can be done by an entity can be lifted to
+the singleton network.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">liftDiscEntNet</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">ActDiscEnt</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">a</span> -&gt;&gt; <span class="id" title="var">e'</span> -&gt; [<span class="id" title="var">e</span>] -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; [<span class="id" title="var">e'</span>]. 
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">link_net_ent_disc_fwd</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">e</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">ActDiscNet</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">e</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">e'</span>, <span class="id" title="var">e'</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n'</span> /\ (<span class="id" title="var">e</span> = <span class="id" title="var">e'</span> \/ (<span class="id" title="tactic">exists</span> <span class="id" title="var">a'</span>, <span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">a'</span> -&gt;&gt; <span class="id" title="var">e'</span>)). </div>
+
+<div class="doc">
+Proof: Case analyse the network transition and this follows from the semantics
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">link_netentdiscfwd_tac0</span> <span class="id" title="var">e'</span> <span class="id" title="var">U</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H</span> : ?<span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- ?<span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; ?<span class="id" title="var">n'</span>, <span class="id" title="var">H0</span> : ?<span class="id" title="var">e</span> @ ?<span class="id" title="var">i</span> .: ?<span class="id" title="var">n</span> |- <span class="id" title="var">_</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">H1</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span> <span class="id" title="var">lets</span> <span class="id" title="var">H1</span> : <span class="id" title="var">link_net_ent_disc_fwd</span> <span class="id" title="var">H</span> <span class="id" title="var">H0</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">H2</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span> <span class="id" title="tactic">destruct</span> <span class="id" title="var">H1</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">e'</span> <span class="id" title="var">H2</span>];<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">U1</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span> <span class="id" title="keyword">let</span> <span class="id" title="var">H3</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">decompAnd2</span> <span class="id" title="var">H2</span> <span class="id" title="var">U1</span> <span class="id" title="var">H3</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">link_netentdiscfwd_tac</span> <span class="id" title="var">e'</span> <span class="id" title="var">b</span> <span class="id" title="var">U</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H</span> : ?<span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- ?<span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; ?<span class="id" title="var">n'</span>, <span class="id" title="var">H0</span> : ?<span class="id" title="var">e</span> @ ?<span class="id" title="var">i</span> .: ?<span class="id" title="var">n</span> |- <span class="id" title="var">_</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">H1</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span> <span class="id" title="var">lets</span> <span class="id" title="var">H1</span> : <span class="id" title="var">link_net_ent_disc_fwd</span> <span class="id" title="var">H</span> <span class="id" title="var">H0</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">H2</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span> <span class="id" title="tactic">destruct</span> <span class="id" title="var">H1</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">e'</span> <span class="id" title="var">H2</span>];<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">U1</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span> <span class="id" title="keyword">let</span> <span class="id" title="var">H3</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">decompAnd2</span> <span class="id" title="var">H2</span> <span class="id" title="var">U1</span> <span class="id" title="var">H3</span>; <span class="id" title="keyword">let</span> <span class="id" title="var">U2</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span> <span class="id" title="keyword">let</span> <span class="id" title="var">H4</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">elim_intro</span> <span class="id" title="var">H3</span> <span class="id" title="var">U2</span> <span class="id" title="var">H4</span>; <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;[ | <span class="id" title="keyword">let</span> <span class="id" title="var">U3</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span> <span class="id" title="var">invertClearAs2</span> <span class="id" title="var">H4</span> <span class="id" title="var">b</span> <span class="id" title="var">U3</span>]<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If a network performs a discrete step to another network, then for all entities
+e' in the derivative network, there is an entity e in the original at the same position
+as e', and e -a-&gt; e'.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">link_net_ent_disc_bkwd</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">ActDiscNet</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">e'</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n'</span> -&gt; <span class="id" title="tactic">exists</span> <span class="id" title="var">e</span>, <span class="id" title="var">e</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> /\<br/>
+&nbsp;&nbsp;(<span class="id" title="var">e</span> = <span class="id" title="var">e'</span> \/ <span class="id" title="tactic">exists</span> <span class="id" title="var">a'</span>, <span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">a'</span> -&gt;&gt; <span class="id" title="var">e'</span>). </div>
+
+<div class="doc">
+Output case.
+</div>
+<div class="code">
+</div>
+
+<div class="doc">
+Input case.
+</div>
+<div class="code">
+</div>
+
+<div class="doc">
+Ignore case- convert to accept and same as last time.
+</div>
+<div class="code">
+</div>
+
+<div class="doc">
+Accept case- same again.
+</div>
+<div class="code">
+</div>
+
+<div class="doc">
+Tau case.
+</div>
+<div class="code">
+<br/>
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">link_netentdiscbkwd_tac0</span> <span class="id" title="var">e</span> <span class="id" title="var">b</span> <span class="id" title="var">U</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H</span> : ?<span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- ?<span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; ?<span class="id" title="var">n'</span>, <span class="id" title="var">H0</span> : ?<span class="id" title="var">e'</span> @ ?<span class="id" title="var">i</span> .: ?<span class="id" title="var">n'</span> |- <span class="id" title="var">_</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">H1</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span> <span class="id" title="var">lets</span> <span class="id" title="var">H1</span> : <span class="id" title="var">link_net_ent_disc_bkwd</span> <span class="id" title="var">H</span> <span class="id" title="var">H0</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">H2</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span> <span class="id" title="tactic">destruct</span> <span class="id" title="var">H1</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">e</span> <span class="id" title="var">H2</span>];<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">U1</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span> <span class="id" title="keyword">let</span> <span class="id" title="var">H3</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">decompAnd2</span> <span class="id" title="var">H2</span> <span class="id" title="var">U1</span> <span class="id" title="var">H3</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">link_netentdiscbkwd_tac</span> <span class="id" title="var">e</span> <span class="id" title="var">b</span> <span class="id" title="var">U</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H</span> : ?<span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- ?<span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; ?<span class="id" title="var">n'</span>, <span class="id" title="var">H0</span> : ?<span class="id" title="var">e'</span> @ ?<span class="id" title="var">i</span> .: ?<span class="id" title="var">n'</span> |- <span class="id" title="var">_</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">H1</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span> <span class="id" title="var">lets</span> <span class="id" title="var">H1</span> : <span class="id" title="var">link_net_ent_disc_bkwd</span> <span class="id" title="var">H</span> <span class="id" title="var">H0</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">H2</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span> <span class="id" title="tactic">destruct</span> <span class="id" title="var">H1</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">e</span> <span class="id" title="var">H2</span>];<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">U1</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span> <span class="id" title="keyword">let</span> <span class="id" title="var">H3</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">decompAnd2</span> <span class="id" title="var">H2</span> <span class="id" title="var">U1</span> <span class="id" title="var">H3</span>; <span class="id" title="keyword">let</span> <span class="id" title="var">U2</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span> <span class="id" title="keyword">let</span> <span class="id" title="var">H4</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">elim_intro</span> <span class="id" title="var">H3</span> <span class="id" title="var">U2</span> <span class="id" title="var">H4</span>; <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;[ | <span class="id" title="keyword">let</span> <span class="id" title="var">U3</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span> <span class="id" title="var">invertClearAs2</span> <span class="id" title="var">H4</span> <span class="id" title="var">b</span> <span class="id" title="var">U3</span>]<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">link_net_ent_disc_bkwdW</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">ActDiscNet</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">e'</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n'</span> -&gt; <span class="id" title="tactic">exists</span> <span class="id" title="var">e</span>, <span class="id" title="var">e</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span>. <br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If a network performs a timed step to another network, then for all entities
+e' in the derivative network, there is an entity e in the original at the same position
+as e', and e can perform the same timed step to e'.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">link_net_ent_del_bkwd</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">e'</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n'</span> -&gt; <span class="id" title="tactic">exists</span> <span class="id" title="var">e</span>, <span class="id" title="var">e</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> /\ <span class="id" title="var">e</span> -<span class="id" title="var">ED</span>- <span class="id" title="var">d</span> -&gt;&gt; <span class="id" title="var">e'</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">link_netentdelbkwd_tac</span> <span class="id" title="var">e</span> <span class="id" title="var">U</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H</span> : ?<span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- ?<span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; ?<span class="id" title="var">n'</span>, <span class="id" title="var">H0</span> : ?<span class="id" title="var">e'</span> @ ?<span class="id" title="var">i</span> .: ?<span class="id" title="var">n'</span> |- <span class="id" title="var">_</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">H1</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span> <span class="id" title="var">lets</span> <span class="id" title="var">H1</span> : <span class="id" title="var">link_net_ent_del_bkwd</span> <span class="id" title="var">H</span> <span class="id" title="var">H0</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">H2</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span> <span class="id" title="tactic">destruct</span> <span class="id" title="var">H1</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">e</span> <span class="id" title="var">H2</span>];<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">U1</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span> <span class="id" title="keyword">let</span> <span class="id" title="var">U2</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">decompAnd2</span> <span class="id" title="var">H2</span> <span class="id" title="var">U1</span> <span class="id" title="var">U2</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+A weakened, but easier to use version of the timed linking theorem.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">link_net_ent_delW</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">e'</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">e</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> -&gt; <span class="id" title="var">e</span> -<span class="id" title="var">ED</span>- <span class="id" title="var">d</span> -&gt;&gt; <span class="id" title="var">e'</span>. 
+<br/>
+</div>
+
+<div class="doc">
+If a network performs a timed step to another network, then for all entities
+e' in the derivative network, there is an entity e in the original at the same position
+as e', and e can perform the same timed step to e'.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">link_net_ent_del_fwd</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">e</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">e</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> -&gt; <span class="id" title="tactic">exists</span> <span class="id" title="var">e'</span>, <span class="id" title="var">e'</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n'</span> /\ <span class="id" title="var">e</span> -<span class="id" title="var">ED</span>- <span class="id" title="var">d</span> -&gt;&gt; <span class="id" title="var">e'</span>.<br/>
+</div>
+
+<div class="doc">
+Proof: Straightforward from the semantics. Could do induction on the structure of n for the actual proof. Similar to
+link_net_ent_disc_fwd but probably simpler.
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">link_netentdelfwd_tac</span> <span class="id" title="var">e'</span> <span class="id" title="var">U</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H</span> : ?<span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- ?<span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; ?<span class="id" title="var">n'</span>, <span class="id" title="var">H0</span> : ?<span class="id" title="var">e</span> @ ?<span class="id" title="var">i</span> .: ?<span class="id" title="var">n</span> |- <span class="id" title="var">_</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">H1</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span> <span class="id" title="var">lets</span> <span class="id" title="var">H1</span> : <span class="id" title="var">link_net_ent_del_fwd</span> <span class="id" title="var">H</span> <span class="id" title="var">H0</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">H2</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span> <span class="id" title="tactic">destruct</span> <span class="id" title="var">H1</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">e'</span> <span class="id" title="var">H2</span>];<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">U1</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span> <span class="id" title="keyword">let</span> <span class="id" title="var">U2</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">decompAnd2</span> <span class="id" title="var">H2</span> <span class="id" title="var">U1</span> <span class="id" title="var">U2</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">link_netsoftdel_tac</span> <span class="id" title="var">U</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H</span> : ?<span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- ?<span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; ?<span class="id" title="var">n'</span>, <span class="id" title="var">H0</span> : [|?<span class="id" title="var">p</span>, ?<span class="id" title="var">l</span>, ?<span class="id" title="var">h</span>, ?<span class="id" title="var">k</span>|] @ ?<span class="id" title="var">i</span> .: ?<span class="id" title="var">n</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">H1</span> : [|?<span class="id" title="var">p'</span>, ?<span class="id" title="var">l'</span>, ?<span class="id" title="var">h'</span>, ?<span class="id" title="var">k'</span>|] @ ?<span class="id" title="var">i</span> .: ?<span class="id" title="var">n'</span> |- <span class="id" title="var">_</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">U1</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span> <span class="id" title="var">lets</span> <span class="id" title="var">U1</span> : <span class="id" title="var">link_net_ent_delW</span> <span class="id" title="var">H</span> <span class="id" title="var">H0</span> <span class="id" title="var">H1</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">link_ent_soft_del</span> <span class="id" title="tactic">in</span> <span class="id" title="var">U1</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">link_netmstatedel_tac</span> <span class="id" title="var">U</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H</span> : ?<span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- ?<span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; ?<span class="id" title="var">n'</span>, <span class="id" title="var">H0</span> : [|?<span class="id" title="var">p</span>, ?<span class="id" title="var">l</span>, ?<span class="id" title="var">h</span>, ?<span class="id" title="var">k</span>|] @ ?<span class="id" title="var">i</span> .: ?<span class="id" title="var">n</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">H1</span> : [|?<span class="id" title="var">p'</span>, ?<span class="id" title="var">l'</span>, ?<span class="id" title="var">h'</span>, ?<span class="id" title="var">k'</span>|] @ ?<span class="id" title="var">i</span> .: ?<span class="id" title="var">n'</span> |- <span class="id" title="var">_</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">U1</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span> <span class="id" title="var">lets</span> <span class="id" title="var">U1</span> : <span class="id" title="var">link_net_ent_delW</span> <span class="id" title="var">H</span> <span class="id" title="var">H0</span> <span class="id" title="var">H1</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">link_ent_mState_del</span> <span class="id" title="tactic">in</span> <span class="id" title="var">U1</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">link_netinterdel_tac</span> <span class="id" title="var">U</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H</span> : ?<span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- ?<span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; ?<span class="id" title="var">n'</span>, <span class="id" title="var">H0</span> : [|?<span class="id" title="var">p</span>, ?<span class="id" title="var">l</span>, ?<span class="id" title="var">h</span>, ?<span class="id" title="var">k</span>|] @ ?<span class="id" title="var">i</span> .: ?<span class="id" title="var">n</span>,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">H1</span> : [|?<span class="id" title="var">p'</span>, ?<span class="id" title="var">l'</span>, ?<span class="id" title="var">h'</span>, ?<span class="id" title="var">k'</span>|] @ ?<span class="id" title="var">i</span> .: ?<span class="id" title="var">n'</span> |- <span class="id" title="var">_</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">U1</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span> <span class="id" title="var">lets</span> <span class="id" title="var">U1</span> : <span class="id" title="var">link_net_ent_delW</span> <span class="id" title="var">H</span> <span class="id" title="var">H0</span> <span class="id" title="var">H1</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">link_ent_inter_del</span> <span class="id" title="tactic">in</span> <span class="id" title="var">U1</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If a network n delays by d to n', and e1 e2 are separated by x in n,
+then e1' e2' are separated by at least x - 2*smax*d in n'. Where e1' e2'
+are the derivatives of e1 and e2 respectively.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">bndDistLwr</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">e1</span> <span class="id" title="var">e2</span> <span class="id" title="var">e1'</span> <span class="id" title="var">e2'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">i</span> <span class="id" title="var">j</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">e1</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> -&gt; <span class="id" title="var">e1'</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">e2</span> @ <span class="id" title="var">j</span> .: <span class="id" title="var">n</span> -&gt; <span class="id" title="var">e2'</span> @ <span class="id" title="var">j</span> .: <span class="id" title="var">n'</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">dist2d</span> <span class="id" title="var">e1</span> <span class="id" title="var">e2</span> - (2*<span class="id" title="var">d</span>*<span class="id" title="var">speedMax</span>) &lt;= <span class="id" title="var">dist2d</span> <span class="id" title="var">e1'</span> <span class="id" title="var">e2'</span>. <br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If a network n delays by d to n', and e1 e2 are separated by x in n,
+then e1' e2' are separated by at most x + 2*smax*d in n'. Where e1' e2'
+are the derivatives of e1 and e2 respectively.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">bndDistUpper</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">e1</span> <span class="id" title="var">e2</span> <span class="id" title="var">e1'</span> <span class="id" title="var">e2'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">i</span> <span class="id" title="var">j</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">e1</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> -&gt; <span class="id" title="var">e1'</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">e2</span> @ <span class="id" title="var">j</span> .: <span class="id" title="var">n</span> -&gt; <span class="id" title="var">e2'</span> @ <span class="id" title="var">j</span> .: <span class="id" title="var">n'</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">dist2d</span> <span class="id" title="var">e1'</span> <span class="id" title="var">e2'</span> &lt;= <span class="id" title="var">dist2d</span> <span class="id" title="var">e1</span> <span class="id" title="var">e2</span> + (2*<span class="id" title="var">d</span>*<span class="id" title="var">speedMax</span>). <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">stepNet_tau_pres_pos</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">anTau</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">e</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> -&gt; <span class="id" title="var">e'</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">posEnt</span> <span class="id" title="var">e</span> = <span class="id" title="var">posEnt</span> <span class="id" title="var">e'</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">timeSplit_net</span> <span class="id" title="var">n</span> <span class="id" title="var">n''</span> <span class="id" title="var">d</span> <span class="id" title="var">d'</span> <span class="id" title="var">d''</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d''</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n''</span> -&gt; <span class="id" title="var">d''</span> = <span class="id" title="var">d</span> +<span class="id" title="var">d</span>+ <span class="id" title="var">d'</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">n'</span>, <span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n'</span> /\ <span class="id" title="var">n'</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d'</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n''</span>. </div>
+
+<div class="doc">
+Proof: Straightforward. Lift time split property for entities. Maybe induction on struct of n.</div>
+<div class="code">
+</div>
+<hr/>This page has been generated by <a href="http://coq.inria.fr/">coqdoc</a>
+</div>
+
+</div>
+
+</body>
+</html>

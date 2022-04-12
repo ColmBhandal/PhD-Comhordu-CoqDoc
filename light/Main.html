@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<title>Main</title>
+</head>
+
+<body>
+
+<div id="page">
+
+<div id="header">
+</div>
+
+<div id="main">
+
+<h1 class="libtitle">Library Main</h1>
+
+<div class="code">
+</div>
+
+<div class="doc">
+This file was written by Colm Bhandal, PhD student, Foundations and Methods group,
+School of Computer Science and Statistics, Trinity College, Dublin, Ireland.
+<div class="paragraph"> </div>
+
+ In this file is the main result. We could also include any other results of interest here
+if time allowed it.
+<div class="paragraph"> </div>
+
+*************************** Standard Imports 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">Reals</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.Extras.LibTactics</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.GenTacs</span>.<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.StandardResults</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.ComhBasics</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.LanguageFoundations</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.SoftwareLanguage</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.InterfaceLanguage</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.ModeStateLanguage</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.EntityLanguage</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.NetworkLanguage</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.NetAuxBasics</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.NetAuxDefs</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.NARNonFS_currSince</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.NARMisc</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.NARIncomp</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.NARTop</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Used to exploit a symmetry in the following proof, essentially continues on the proof
+from where it is applied
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">safety_aux</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">X</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) (<span class="id" title="var">e1</span> <span class="id" title="var">e2</span> : <span class="id" title="var">Entity</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">i</span> <span class="id" title="var">j</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">H</span> : (<span class="id" title="var">i</span> &lt;&gt; <span class="id" title="var">j</span>)%<span class="id" title="var">nat</span>) (<span class="id" title="var">H0</span> : <span class="id" title="var">e1</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span>) (<span class="id" title="var">H1</span> : <span class="id" title="var">e2</span> @ <span class="id" title="var">j</span> .: <span class="id" title="var">n</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">x</span> : <span class="id" title="var">Distance</span>) (<span class="id" title="var">Heqx</span> : <span class="id" title="var">x</span> = <span class="id" title="var">mkDistance</span> (<span class="id" title="var">dist2d</span> <span class="id" title="var">e1</span> <span class="id" title="var">e2</span>)) (<span class="id" title="var">mdc</span> : <span class="id" title="var">Distance</span>) (<span class="id" title="var">m1</span> : <span class="id" title="var">Mode</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">Heqm1</span> : <span class="id" title="var">m1</span> = <span class="id" title="var">e1</span>) (<span class="id" title="var">m2</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">Heqm2</span> : <span class="id" title="var">m2</span> = <span class="id" title="var">e2</span>) (<span class="id" title="var">Heqmdc</span> : <span class="id" title="var">mdc</span> = <span class="id" title="var">minDistComp</span> <span class="id" title="var">m1</span> <span class="id" title="var">m2</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">H2</span> : <span class="id" title="var">x</span> &lt; <span class="id" title="var">mdc</span>) (<span class="id" title="var">H3</span> : ~ <span class="id" title="var">failSafe</span> <span class="id" title="var">m1</span>) (<span class="id" title="var">H4</span> : ~ <span class="id" title="var">failSafe</span> <span class="id" title="var">m2</span>) (<span class="id" title="var">H5</span> : <span class="id" title="var">currModeNet</span> <span class="id" title="var">m1</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">H6</span> : <span class="id" title="var">currModeNet</span> <span class="id" title="var">m2</span> <span class="id" title="var">j</span> <span class="id" title="var">n</span>) (<span class="id" title="var">t1</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">H7</span> : <span class="id" title="var">currSince</span> <span class="id" title="var">m1</span> <span class="id" title="var">t1</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">X</span>) (<span class="id" title="var">t2</span> : <span class="id" title="keyword">Time</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">H8</span> : <span class="id" title="var">currSince</span> <span class="id" title="var">m2</span> <span class="id" title="var">t2</span> <span class="id" title="var">j</span> <span class="id" title="var">n</span> <span class="id" title="var">X</span>) (<span class="id" title="var">H9</span> : <span class="id" title="var">msgLatency</span> + <span class="id" title="var">Rmax</span> <span class="id" title="var">adaptNotif</span> <span class="id" title="var">transMax</span> &lt; <span class="id" title="var">t1</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">H10</span> : <span class="id" title="var">msgLatency</span> + <span class="id" title="var">Rmax</span> <span class="id" title="var">adaptNotif</span> <span class="id" title="var">transMax</span> &lt; <span class="id" title="var">t2</span>) (<span class="id" title="var">H11</span> : <span class="id" title="var">t1</span> &lt;= <span class="id" title="var">t2</span>) : <span class="id" title="var">False</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+This is the main result stating the correctness of the protocol. It says that if a network
+is reachable, then it is safe. To recap, what this means is that, if we start out a system in
+which all the entities are fail safe and running the protocol process as their software
+component, and we allow this system to evolve via any finite number of delays and discrete
+actions as per our transition semantics, then we end up with a network which is safe. Safety
+itself is defined elsewhere, but basically means that all pairs of entities in the network are
+separated by a sufficient distance to ensure that they are not incompatible according to their
+respective modes. The sufficiency of the distance in question is in turn decided by parameters
+of the specific system in question
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">safety</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">safe</span> <span class="id" title="var">n</span>.<br/>
+</div>
+
+<div class="doc">
+Proof is then continued by the auxiliary result safety_aux</div>
+<div class="code">
+ </div>
+<hr/>This page has been generated by <a href="http://coq.inria.fr/">coqdoc</a>
+</div>
+
+</div>
+
+</body>
+</html>

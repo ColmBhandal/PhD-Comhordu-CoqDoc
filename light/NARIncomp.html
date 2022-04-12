@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<title>NARIncomp</title>
+</head>
+
+<body>
+
+<div id="page">
+
+<div id="header">
+</div>
+
+<div id="main">
+
+<h1 class="libtitle">Library NARIncomp</h1>
+
+<div class="code">
+</div>
+
+<div class="doc">
+This file was written by Colm Bhandal, PhD student, Foundations and Methods group,
+School of Computer Science and Statistics, Trinity College, Dublin, Ireland.
+</div>
+<div class="code">
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">Coq.Program.Equality</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.Extras.LibTactics</span>.<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.GenTacs</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.StandardResults</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.ComhBasics</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.LanguageFoundations</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.SoftwareLanguage</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.InterfaceLanguage</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.ModeStateLanguage</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.EntityLanguage</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.ProtAuxDefs</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.ProtAuxResults</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.EntAuxDefs</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.EntAuxResults</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.NetworkLanguage</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.NetAuxBasics</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.NetAuxDefs</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.NARMisc</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">incomingNet_urgent</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">incomingNet</span> <span class="id" title="var">v</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; ~<span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n'</span>. </div>
+
+<div class="doc">
+Proof: First we show by inversion on incomingNet v i n that there is some e @ i .: n.
+Now assume there was such a del towards a contradiction. Then by (del_listening) we'd have
+listeningState i n. But then it can be shown by (...listening-inProc...) that the software
+component is capable of consuming any pending message. So a tau can happen by synchronidastion
+with the incomingNet message- this may be a separate result. So by <span class="inlinecode"><span class="id" title="var">maximal</span></span> <span class="inlinecode"><span class="id" title="tactic">progress</span>-</span> <span class="inlinecode"><span class="id" title="var">salvaged</span>?</span>
+<span class="inlinecode"><span class="id" title="var">a</span></span> <span class="inlinecode"><span class="id" title="var">delay</span></span> <span class="inlinecode"><span class="id" title="keyword">is</span></span> <span class="inlinecode"><span class="id" title="var">not</span></span> <span class="inlinecode"><span class="id" title="var">possible</span>,</span> <span class="inlinecode"><span class="id" title="var">contradicting</span></span> <span class="inlinecode"><span class="id" title="var">the</span></span> <span class="inlinecode"><span class="id" title="var">earlier</span></span> <span class="inlinecode"><span class="id" title="var">assumtion</span></span>
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Theorem</span>. <span class="id" title="var">incomp_incomingNet_bad</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">ActDiscNet</span>) (<span class="id" title="var">l</span> <span class="id" title="var">l'</span> : <span class="id" title="var">Position</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">m</span> <span class="id" title="var">m'</span> : <span class="id" title="var">Mode</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">inPosNet</span> <span class="id" title="var">l</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">currModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">incomingNet</span> [<span class="id" title="var">baseMode</span> <span class="id" title="var">m'</span>, <span class="id" title="var">basePosition</span> <span class="id" title="var">l'</span>] <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">dist2d</span> <span class="id" title="var">l</span> <span class="id" title="var">l'</span> -<span class="id" title="var">nn</span>- <span class="id" title="var">speedMax</span> *<span class="id" title="var">nn</span>* <span class="id" title="var">msgLatency</span> &lt; <span class="id" title="var">possIncDist</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">incomingNet</span> [<span class="id" title="var">baseMode</span> <span class="id" title="var">m'</span>, <span class="id" title="var">basePosition</span> <span class="id" title="var">l'</span>] <span class="id" title="var">i</span> <span class="id" title="var">n'</span> \/<br/>
+&nbsp;&nbsp;<span class="id" title="var">msgBadPathNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If an incomingNet message is incompatible with the
+next mode &amp; the position, then in the next state, it is either still incomingNet
+or we have entered the msgAbortPath.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">incomp_incomingNet_abort</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">ActDiscNet</span>) (<span class="id" title="var">l</span> <span class="id" title="var">l'</span> : <span class="id" title="var">Position</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">m</span> <span class="id" title="var">m'</span> : <span class="id" title="var">Mode</span>) : <span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">inPosNet</span> <span class="id" title="var">l</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">nextModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">incomingNet</span> [<span class="id" title="var">baseMode</span> <span class="id" title="var">m'</span>, <span class="id" title="var">basePosition</span> <span class="id" title="var">l'</span>] <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">dist2d</span> <span class="id" title="var">l</span> <span class="id" title="var">l'</span> -<span class="id" title="var">nn</span>- <span class="id" title="var">speedMax</span> *<span class="id" title="var">nn</span>* <span class="id" title="var">msgLatency</span> &lt; <span class="id" title="var">possIncDist</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">incomingNet</span> [<span class="id" title="var">baseMode</span> <span class="id" title="var">m'</span>, <span class="id" title="var">basePosition</span> <span class="id" title="var">l'</span>] <span class="id" title="var">i</span> <span class="id" title="var">n'</span> \/ <span class="id" title="var">msgAbortPathNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span>.<br/>
+</div>
+
+<div class="doc">
+Proof: Analogous to incomp_incomingNet_bad.
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">msgAbort_not_nextSince</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">ActDiscNet</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">rn</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">msgAbortPathNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt; <br/>
+&nbsp;&nbsp;<span class="id" title="var">msgAbortPathNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span> \/ ~<span class="id" title="var">nextSinceStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span>. </div>
+
+<div class="doc">
+This case is almost identical to the case for notifAbortPath_not_nextSince.
+</div>
+<div class="code">
+<br/>
+
+<br/>
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">instant_incomp_abort</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">l</span> <span class="id" title="var">l'</span> : <span class="id" title="var">Position</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">m</span> <span class="id" title="var">m'</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">nextSince</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">inPosNet</span> <span class="id" title="var">l</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; 0 &lt; <span class="id" title="var">t</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">received</span> [<span class="id" title="var">baseMode</span> <span class="id" title="var">m'</span>, <span class="id" title="var">basePosition</span> <span class="id" title="var">l'</span>] <span class="id" title="var">zeroTime</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">dist2d</span> <span class="id" title="var">l</span> <span class="id" title="var">l'</span> -<span class="id" title="var">nn</span>- <span class="id" title="var">speedMax</span> *<span class="id" title="var">nn</span>* <span class="id" title="var">msgLatency</span> &lt; <span class="id" title="var">possIncDist</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">incomingNet</span> [<span class="id" title="var">baseMode</span> <span class="id" title="var">m'</span>, <span class="id" title="var">basePosition</span> <span class="id" title="var">l'</span>] <span class="id" title="var">i</span> <span class="id" title="var">n</span>  \/<br/>
+&nbsp;&nbsp;<span class="id" title="var">msgAbortPathNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If a message was received some non-zero time t' ago and for longer than this time
+we have been pending transition to a mode which threatens to be incompatible with
+the received mode, given our current position &amp; adjusting for time, the we get a
+contradiction.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">incomp_abort</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">t</span> <span class="id" title="var">t'</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">l</span> <span class="id" title="var">l'</span> : <span class="id" title="var">Position</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">m</span> <span class="id" title="var">m'</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">nextSince</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">inPosNet</span> <span class="id" title="var">l</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">received</span> [<span class="id" title="var">baseMode</span> <span class="id" title="var">m'</span>, <span class="id" title="var">basePosition</span> <span class="id" title="var">l'</span>] <span class="id" title="var">t'</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">zeroTime</span> &lt; <span class="id" title="var">t'</span> -&gt; <span class="id" title="var">t'</span> &lt; <span class="id" title="var">t</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">dist2d</span> <span class="id" title="var">l</span> <span class="id" title="var">l'</span> -<span class="id" title="var">nn</span>- <span class="id" title="var">speedMax</span> *<span class="id" title="var">nn</span>* <span class="id" title="var">msgLatency</span> + <span class="id" title="var">speedMax</span>*<span class="id" title="var">t'</span> &lt; <span class="id" title="var">possIncDist</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">False</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">instant_incomp_tfs</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">l</span> <span class="id" title="var">l'</span> : <span class="id" title="var">Position</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">m</span> <span class="id" title="var">m'</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">currSince</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">inPosNet</span> <span class="id" title="var">l</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; 0 &lt; <span class="id" title="var">t</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">received</span> [<span class="id" title="var">baseMode</span> <span class="id" title="var">m'</span>, <span class="id" title="var">basePosition</span> <span class="id" title="var">l'</span>] <span class="id" title="var">zeroTime</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">dist2d</span> <span class="id" title="var">l</span> <span class="id" title="var">l'</span> -<span class="id" title="var">nn</span>- <span class="id" title="var">speedMax</span> *<span class="id" title="var">nn</span>* <span class="id" title="var">msgLatency</span> &lt; <span class="id" title="var">possIncDist</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">incomingNet</span> [<span class="id" title="var">baseMode</span> <span class="id" title="var">m'</span>, <span class="id" title="var">basePosition</span> <span class="id" title="var">l'</span>] <span class="id" title="var">i</span> <span class="id" title="var">n</span> \/<br/>
+&nbsp;&nbsp;<span class="id" title="var">msgBadPathNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> \/ <span class="id" title="var">tfs</span> <span class="id" title="var">m</span> <span class="id" title="var">zeroTime</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">incomp_tfs</span>  (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">t</span> <span class="id" title="var">t'</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">l</span> <span class="id" title="var">l'</span> : <span class="id" title="var">Position</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">m</span> <span class="id" title="var">m'</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">currSince</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">inPosNet</span> <span class="id" title="var">l</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">received</span> [<span class="id" title="var">baseMode</span> <span class="id" title="var">m'</span>, <span class="id" title="var">basePosition</span> <span class="id" title="var">l'</span>] <span class="id" title="var">t'</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">zeroTime</span> &lt; <span class="id" title="var">t'</span> -&gt; <span class="id" title="var">t'</span> &lt; <span class="id" title="var">t</span>  -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">dist2d</span> <span class="id" title="var">l</span> <span class="id" title="var">l'</span> -<span class="id" title="var">nn</span>- <span class="id" title="var">speedMax</span>*<span class="id" title="var">nn</span>*<span class="id" title="var">msgLatency</span> + <span class="id" title="var">speedMax</span>*<span class="id" title="var">t'</span> &lt; <span class="id" title="var">possIncDist</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">tfs</span> <span class="id" title="var">m</span> <span class="id" title="var">t'</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span>.  </div>
+<hr/>This page has been generated by <a href="http://coq.inria.fr/">coqdoc</a>
+</div>
+
+</div>
+
+</body>
+</html>

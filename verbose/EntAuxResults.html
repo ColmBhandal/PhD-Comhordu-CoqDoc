@@ -1,0 +1,706 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<title>EntAuxResults</title>
+</head>
+
+<body>
+
+<div id="page">
+
+<div id="header">
+</div>
+
+<div id="main">
+
+<h1 class="libtitle">Library EntAuxResults</h1>
+
+<div class="code">
+</div>
+
+<div class="doc">
+This file was written by Colm Bhandal, PhD student, Foundations and Methods group,
+School of Computer Science and Statistics, Trinity College, Dublin, Ireland.
+</div>
+<div class="code">
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.Extras.LibTactics</span>.<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.GenTacs</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.StandardResults</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.ComhBasics</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.LanguageFoundations</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.InterfaceLanguage</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.ModeStateLanguage</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.SoftwareLanguage</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.EntityLanguage</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.ProtAuxDefs</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.EntAuxDefs</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.ProtAuxResults</span>.<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">reachable_ent_prot</span> <span class="id" title="var">p</span> <span class="id" title="var">l</span> <span class="id" title="var">h</span> <span class="id" title="var">k</span> : <span class="id" title="var">reachableEnt</span> ([| <span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span> |]) -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">reachableProt</span> <span class="id" title="var">p</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="var">Admitted</span>. 
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">nextModeEnt_not_stable</span> <span class="id" title="var">m1</span> <span class="id" title="var">m2</span> <span class="id" title="var">p</span> <span class="id" title="var">l</span> <span class="id" title="var">h</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">nextModeEnt</span> <span class="id" title="var">m1</span> ([|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">m2</span>|]) -&gt; <span class="id" title="var">False</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="var">Admitted</span>. 
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">mst_tout_mCurr_in</span> <span class="id" title="var">m1</span> <span class="id" title="var">m2</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">discActEnabledMState</span> (<span class="id" title="var">chanMCurr</span> *?) (&lt;| <span class="id" title="var">m1</span>, <span class="id" title="var">m2</span>, <span class="id" title="var">zeroTime</span> |&gt;). <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">repeat</span> <span class="id" title="tactic">econstructor</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">tfsNext_prev_ent</span> <span class="id" title="var">m</span> <span class="id" title="var">e</span> <span class="id" title="var">e'</span> <span class="id" title="var">a</span> : <span class="id" title="var">tfsNextStateEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">e'</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">a</span> -&gt;&gt; <span class="id" title="var">e'</span> -&gt; <span class="id" title="var">tfsNextStateEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">e</span> \/ <span class="id" title="var">tfsStartStateEnt</span> <span class="id" title="var">e</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>. 
+<br/>
+</div>
+
+<div class="doc">
+In here, I'd like results that relate the states of things within a reachable entity e.g. the state of the software component and the mode state.
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">currEq_mode</span> <span class="id" title="var">m</span> <span class="id" title="var">m''</span> <span class="id" title="var">e</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">currEqStateEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">m''</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">m</span> = <span class="id" title="var">currModeEnt</span> <span class="id" title="var">e</span>. <span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">ovAbort_unstable</span> <span class="id" title="var">e</span> : <span class="id" title="var">reachableEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">ovAbortStateEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">unstable</span> (<span class="id" title="var">mstEnt</span> <span class="id" title="var">e</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="var">introz</span> <span class="id" title="var">U</span>. <span class="id" title="var">Admitted</span>. 
+<br/>
+</div>
+
+<div class="doc">
+If an entity is in the tfsCurr state, then the mext mode exists and is failsafe.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">tfsCurr_failSafe</span> (<span class="id" title="var">e</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">tfsCurrStateEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="tactic">exists</span> <span class="id" title="var">m</span>, <span class="id" title="var">nextModeEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">e</span> /\ <span class="id" title="var">failSafe</span> <span class="id" title="var">m</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>. </div>
+
+<div class="doc">
+GENERAL TACTICS WOULD BE USEFUL HERE, BECAUSE THERE ARE 3 FAIRLY SMILAR THEOREMS TO COME.
+Proof: Look at the overlap component. Upon entering this state, it must have written out a fail safe mode
+to the mode state- in particular, the successor to the current mode.
+</div>
+<div class="code">
+
+<br/>
+</div>
+
+<div class="doc">
+If an entity is in the tfsBc state, then the current mode of that entity
+is failsafe.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">tfsBc_failSafe</span> (<span class="id" title="var">e</span> : <span class="id" title="var">Entity</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">tfsBcStateEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">failSafe</span> (<span class="id" title="var">currModeEnt</span> <span class="id" title="var">e</span>).<br/>
+</div>
+
+<div class="doc">
+Proof: Backtracking gives that the previous state was tfsCurrState
+</div>
+<div class="code">
+&nbsp;&nbsp;<span class="id" title="var">introz</span> <span class="id" title="var">U</span>. <span class="id" title="var">Admitted</span>. 
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">tfsNext_currMode</span> <span class="id" title="var">e</span> <span class="id" title="var">m</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">reachableEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">tfsNextStateEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">currModeEnt</span> <span class="id" title="var">e</span> = <span class="id" title="var">m</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">introz</span> <span class="id" title="var">U</span>.<br/>
+ <span class="id" title="var">Admitted</span>. 
+<br/>
+</div>
+
+<div class="doc">
+If we're in the state switchCurr m', then the next mode is m'.
+Corollary: switchCurr is urgent.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">switchCurr_mState</span> (<span class="id" title="var">e</span> : <span class="id" title="var">Entity</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">reachableEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">switchCurrStateEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="tactic">exists</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span>,<br/>
+&nbsp;&nbsp;<span class="id" title="var">mstEnt</span> <span class="id" title="var">e</span> = &lt;| <span class="id" title="var">m</span>, <span class="id" title="var">m'</span>, <span class="id" title="var">zeroTime</span> |&gt;. <span class="id" title="var">Admitted</span>. </div>
+
+<div class="doc">
+Proof: Inductgion on reachabledEnt.
+Relies on a chain of support of similar results for switchBc, ovWait,
+ovReady and init. Each one relying on the last. The ovWait and ovReady ones
+would need to be proved by mutual induction.
+<div class="paragraph"> </div>
+
+ If an entity is in a state ready to output some m l from the broadcast component,
+then it is in the position l.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">bcReady_pos</span> (<span class="id" title="var">e</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">reachableEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">bcReadyStateEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">l</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">inPosEnt</span> <span class="id" title="var">l</span> <span class="id" title="var">e</span>. <span class="id" title="var">Admitted</span>. </div>
+
+<div class="doc">
+Proof: Induction on reachableEnt. The only way to enter bcReady m l is
+by reading the current position l, and by urgency no time can pass in the state,
+and then by disc_pre_pos <span class="inlinecode"><span class="id" title="var">salvaged</span></span> the position is the same. 
+<div class="paragraph"> </div>
+
+ If an entity is in a state ready to output some m l from the overlap component,
+then it is in the position l.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">ovReady_pos</span> (<span class="id" title="var">e</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">reachableEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">ovReadyStateEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">l</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">inPosEnt</span> <span class="id" title="var">l</span> <span class="id" title="var">e</span>. <span class="id" title="var">Admitted</span>. </div>
+
+<div class="doc">
+Proof: Analogous to that of bcReady_pos.
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">tfsListen_paused</span> <span class="id" title="var">p1</span> <span class="id" title="var">p2</span> <span class="id" title="var">p3</span> :<br/>
+&nbsp;&nbsp;&nbsp;<span class="id" title="var">tfsListenStateProt</span> (<span class="id" title="var">p1</span> $||$ <span class="id" title="var">p2</span> $||$ <span class="id" title="var">p3</span>) -&gt; <span class="id" title="var">pausedStateProt</span> (<span class="id" title="var">p1</span> $||$ <span class="id" title="var">p2</span> $||$ <span class="id" title="var">p3</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>. 
+<br/>
+</div>
+
+<div class="doc">
+If an entity inputs a message then that message is incoming.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">input_incomingEnt</span> (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>) (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>) (<span class="id" title="var">r</span> : <span class="id" title="var">Distance</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- ([-<span class="id" title="var">v</span>, <span class="id" title="var">l</span>, <span class="id" title="var">r</span>-]) #? -&gt;&gt; <span class="id" title="var">e'</span> -&gt; <span class="id" title="var">incomingEnt</span> <span class="id" title="var">v</span> <span class="id" title="var">e'</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">introz</span> <span class="id" title="var">U</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">U</span>. <span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H5</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H8</span>. <span class="id" title="tactic">constructor</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">reflexivity</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H10</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Here we prove simple urgency results which will refer to individual states rather
+than more complicated predicates such as msgBadPath. The urgency results usually follow
+one of two patterns. Either a synchronisation happens between two of the sub-terms in
+the software process, or it happens between the software process and another component
+i.e. the mode state or the interface component.
+<div class="paragraph"> </div>
+
+ Urgency Pre-processing Tactics 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">urgency_pre_tac</span> := <br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">U</span> := <span class="id" title="tactic">fresh</span> "U" <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;(<span class="id" title="tactic">try</span> <span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span> [ |- <span class="id" title="keyword">forall</span> <span class="id" title="var">e</span> : <span class="id" title="var">Entity</span>, <span class="id" title="var">_</span>] =&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">e</span> <span class="id" title="var">e'</span> <span class="id" title="var">d</span>; <span class="id" title="var">introz</span> <span class="id" title="var">U</span> <span class="id" title="keyword">end</span>); <span class="id" title="var">destrEnts_norm</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span> [ <span class="id" title="var">RE</span> : <span class="id" title="var">reachableEnt</span> <span class="id" title="var">_</span> |- <span class="id" title="var">_</span>] =&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">reachable_ent_prot</span> <span class="id" title="tactic">in</span> <span class="id" title="var">RE</span> <span class="id" title="keyword">end</span>; <span class="id" title="keyword">let</span> <span class="id" title="var">q</span> := <span class="id" title="tactic">fresh</span> "Q" <span class="id" title="tactic">in</span> <span class="id" title="var">reachprot</span> <span class="id" title="var">q</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">q</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">p1</span> <span class="id" title="var">p2</span> <span class="id" title="var">p3</span> <span class="id" title="var">BC</span> <span class="id" title="var">OV</span> <span class="id" title="var">LI</span> <span class="id" title="var">TR</span>]; <span class="id" title="tactic">symmetry</span> <span class="id" title="tactic">in</span> <span class="id" title="var">TR</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+SE SP and S are the names of the state predicates involved- the entity,
+the protocol and the standard ones respectively.
+</div>
+<div class="code">
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">urgency_pre_tac2</span> <span class="id" title="var">SE</span> <span class="id" title="var">SP</span> <span class="id" title="var">S</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">urgency_pre_tac</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">_</span> : <span class="id" title="var">SE</span> ([|?<span class="id" title="var">p0</span>, ?<span class="id" title="var">l0</span>, ?<span class="id" title="var">h0</span>, ?<span class="id" title="var">k0</span>|]) |- <span class="id" title="var">_</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">SP</span> <span class="id" title="var">p0</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">TP</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;[<span class="id" title="tactic">inversion</span> <span class="id" title="var">U0</span>; <span class="id" title="tactic">assumption</span> | ];<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;| [ <span class="id" title="var">TR</span> : <span class="id" title="var">p0</span> = ?<span class="id" title="var">p1</span> $||$ ?<span class="id" title="var">p2</span> $||$ ?<span class="id" title="var">p3</span>, <span class="id" title="var">TP</span> : <span class="id" title="var">SP</span> <span class="id" title="var">p0</span> |- <span class="id" title="var">_</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">TR</span> <span class="id" title="tactic">in</span> <span class="id" title="var">TP</span> <span class="id" title="keyword">end</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span> [ <span class="id" title="var">_</span> : <span class="id" title="var">SP</span> (?<span class="id" title="var">p1</span> $||$ ?<span class="id" title="var">p2</span> $||$ ?<span class="id" title="var">p3</span>) |- <span class="id" title="var">_</span>]<br/>
+&nbsp;&nbsp;<br/>
+&nbsp;&nbsp;=&gt; <span class="id" title="tactic">try</span> (<span class="id" title="tactic">assert</span> (<span class="id" title="var">S</span> <span class="id" title="var">p1</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">TS</span>; [<span class="id" title="tactic">inversion</span> <span class="id" title="var">TP</span>; <span class="id" title="tactic">assumption</span> | ]);<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">try</span> (<span class="id" title="tactic">assert</span> (<span class="id" title="var">S</span> <span class="id" title="var">p2</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">TS</span>; [<span class="id" title="tactic">inversion</span> <span class="id" title="var">TP</span>; <span class="id" title="tactic">assumption</span> | ]);<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">try</span> (<span class="id" title="tactic">assert</span> (<span class="id" title="var">S</span> <span class="id" title="var">p3</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">TS</span>; [<span class="id" title="tactic">inversion</span> <span class="id" title="var">TP</span>; <span class="id" title="tactic">assumption</span> | ]) <span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Same as urgency_pre_tac2 but the state predicate has 1 parameter.
+</div>
+<div class="code">
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">urgency_pre_tac2_1</span> <span class="id" title="var">SE</span> <span class="id" title="var">SP</span> <span class="id" title="var">S</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">urgency_pre_tac</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">_</span> : <span class="id" title="var">SE</span> ?<span class="id" title="var">x1</span> ([|?<span class="id" title="var">p0</span>, ?<span class="id" title="var">l0</span>, ?<span class="id" title="var">h0</span>, ?<span class="id" title="var">k0</span>|]) |- <span class="id" title="var">_</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">SP</span> <span class="id" title="var">x1</span> <span class="id" title="var">p0</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">TP</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;[<span class="id" title="tactic">inversion</span> <span class="id" title="var">U0</span>; <span class="id" title="tactic">assumption</span> | ];<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;| [ <span class="id" title="var">TR</span> : <span class="id" title="var">p0</span> = ?<span class="id" title="var">p1</span> $||$ ?<span class="id" title="var">p2</span> $||$ ?<span class="id" title="var">p3</span>, <span class="id" title="var">TP</span> : <span class="id" title="var">SP</span> <span class="id" title="var">x1</span> <span class="id" title="var">p0</span> |- <span class="id" title="var">_</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">TR</span> <span class="id" title="tactic">in</span> <span class="id" title="var">TP</span> <span class="id" title="keyword">end</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span> [ <span class="id" title="var">_</span> : <span class="id" title="var">SP</span> ?<span class="id" title="var">x1</span> (?<span class="id" title="var">p1</span> $||$ ?<span class="id" title="var">p2</span> $||$ ?<span class="id" title="var">p3</span>) |- <span class="id" title="var">_</span>]<br/>
+&nbsp;&nbsp;<br/>
+&nbsp;&nbsp;=&gt; <span class="id" title="tactic">try</span> (<span class="id" title="tactic">assert</span> (<span class="id" title="var">S</span> <span class="id" title="var">x1</span> <span class="id" title="var">p1</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">TS</span>; [<span class="id" title="tactic">inversion</span> <span class="id" title="var">TP</span>; <span class="id" title="tactic">assumption</span> | ]);<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">try</span> (<span class="id" title="tactic">assert</span> (<span class="id" title="var">S</span> <span class="id" title="var">x1</span> <span class="id" title="var">p2</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">TS</span>; [<span class="id" title="tactic">inversion</span> <span class="id" title="var">TP</span>; <span class="id" title="tactic">assumption</span> | ]);<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">try</span> (<span class="id" title="tactic">assert</span> (<span class="id" title="var">S</span> <span class="id" title="var">x1</span> <span class="id" title="var">p3</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">TS</span>; [<span class="id" title="tactic">inversion</span> <span class="id" title="var">TP</span>; <span class="id" title="tactic">assumption</span> | ]) <span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Same as urgency_pre_tac2 but the state predicate has 2 parameters.
+</div>
+<div class="code">
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">urgency_pre_tac2_2</span> <span class="id" title="var">SE</span> <span class="id" title="var">SP</span> <span class="id" title="var">S</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">urgency_pre_tac</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">_</span> : <span class="id" title="var">SE</span> ?<span class="id" title="var">x1</span> ?<span class="id" title="var">x2</span> ([|?<span class="id" title="var">p0</span>, ?<span class="id" title="var">l0</span>, ?<span class="id" title="var">h0</span>, ?<span class="id" title="var">k0</span>|]) |- <span class="id" title="var">_</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">SP</span> <span class="id" title="var">x1</span> <span class="id" title="var">x2</span> <span class="id" title="var">p0</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">TP</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;[<span class="id" title="tactic">inversion</span> <span class="id" title="var">U0</span>; <span class="id" title="tactic">assumption</span> | ];<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;| [ <span class="id" title="var">TR</span> : <span class="id" title="var">p0</span> = ?<span class="id" title="var">p1</span> $||$ ?<span class="id" title="var">p2</span> $||$ ?<span class="id" title="var">p3</span>, <span class="id" title="var">TP</span> : <span class="id" title="var">SP</span> <span class="id" title="var">x1</span> <span class="id" title="var">x2</span> <span class="id" title="var">p0</span> |- <span class="id" title="var">_</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">TR</span> <span class="id" title="tactic">in</span> <span class="id" title="var">TP</span> <span class="id" title="keyword">end</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span> [ <span class="id" title="var">_</span> : <span class="id" title="var">SP</span> ?<span class="id" title="var">x1</span> ?<span class="id" title="var">x2</span> (?<span class="id" title="var">p1</span> $||$ ?<span class="id" title="var">p2</span> $||$ ?<span class="id" title="var">p3</span>) |- <span class="id" title="var">_</span>]<br/>
+&nbsp;&nbsp;<br/>
+&nbsp;&nbsp;=&gt; <span class="id" title="tactic">try</span> (<span class="id" title="tactic">assert</span> (<span class="id" title="var">S</span> <span class="id" title="var">x1</span> <span class="id" title="var">x2</span> <span class="id" title="var">p1</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">TS</span>; [<span class="id" title="tactic">inversion</span> <span class="id" title="var">TP</span>; <span class="id" title="tactic">assumption</span> | ]);<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">try</span> (<span class="id" title="tactic">assert</span> (<span class="id" title="var">S</span> <span class="id" title="var">x1</span> <span class="id" title="var">x2</span> <span class="id" title="var">p2</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">TS</span>; [<span class="id" title="tactic">inversion</span> <span class="id" title="var">TP</span>; <span class="id" title="tactic">assumption</span> | ]);<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">try</span> (<span class="id" title="tactic">assert</span> (<span class="id" title="var">S</span> <span class="id" title="var">x1</span> <span class="id" title="var">x2</span> <span class="id" title="var">p3</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">TS</span>; [<span class="id" title="tactic">inversion</span> <span class="id" title="var">TP</span>; <span class="id" title="tactic">assumption</span> | ]) <span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Urgency Results 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">gotMsgStateEnt_urgent</span> (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>) <span class="id" title="var">m</span> <span class="id" title="var">l</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">reachableEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">gotMsgStateEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">l</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">e</span> -<span class="id" title="var">ED</span>- <span class="id" title="var">d</span> -&gt;&gt; <span class="id" title="var">e'</span> -&gt; <span class="id" title="var">False</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">gotRangeStateEnt_urgent</span> (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>) <span class="id" title="var">m</span> <span class="id" title="var">r</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">reachableEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">gotRangeStateEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">r</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">e</span> -<span class="id" title="var">ED</span>- <span class="id" title="var">d</span> -&gt;&gt; <span class="id" title="var">e'</span> -&gt; <span class="id" title="var">False</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">currCompStateEnt_urgent</span> (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>) <span class="id" title="var">m</span> <span class="id" title="var">r</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">reachableEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">currCompStateEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">r</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">e</span> -<span class="id" title="var">ED</span>- <span class="id" title="var">d</span> -&gt;&gt; <span class="id" title="var">e'</span> -&gt; <span class="id" title="var">False</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>. 
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">abortOvlpStateEnt_urgent</span> (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">reachableEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">abortOvlpStateEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">e</span> -<span class="id" title="var">ED</span>- <span class="id" title="var">d</span> -&gt;&gt; <span class="id" title="var">e'</span> -&gt; <span class="id" title="var">False</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">tfsStartStateEnt_urgent</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">reachableEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">tfsStartStateEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">e</span> -<span class="id" title="var">ED</span>- <span class="id" title="var">d</span> -&gt;&gt; <span class="id" title="var">e'</span> -&gt; <span class="id" title="var">False</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">urgency_pre_tac2</span> <span class="id" title="var">tfsStartStateEnt</span> <span class="id" title="var">tfsStartStateProt</span> <span class="id" title="var">tfsStartState</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">MC</span> : <span class="id" title="var">modeState_curr_enabled</span> <span class="id" title="var">k0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">remember</span> (<span class="id" title="var">chanMCurr</span> ;? [<span class="id" title="var">baseMode</span> (<span class="id" title="var">currModeMState</span> <span class="id" title="var">k0</span>)]) <span class="id" title="keyword">as</span> <span class="id" title="var">a</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">discActEnabled</span> <span class="id" title="var">p2</span> <span class="id" title="var">a</span>). <span class="id" title="tactic">rewrite</span> <span class="id" title="var">Heqa</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">tfsStart_mCurr_in</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">del_noSyncNow_tac</span> <span class="id" title="var">NS</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">NS</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">TR</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">daeParR</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">daeParL</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">Heqa</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">tfsListen_urgent</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">reachableEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">tfsListenStateEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">e</span> -<span class="id" title="var">ED</span>- <span class="id" title="var">d</span> -&gt;&gt; <span class="id" title="var">e'</span> <br/>
+&nbsp;&nbsp;-&gt; <span class="id" title="var">False</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">urgency_pre_tac2</span> <span class="id" title="var">tfsListenStateEnt</span> <span class="id" title="var">tfsListenStateProt</span> <span class="id" title="var">tfsListenState</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">del_triple_sort_tac</span>.<br/>
+</div>
+
+<div class="doc">
+It can be shown that tfsListen is only reached by the overlap when the listener
+  component is paused. This in turn implies the listener component is listening on the
+  channel unpause. Since the overlap component can clearly output on this channel, a
+  synch is possible, and so by maximal progress delay cannot happen.
+</div>
+<div class="code">
+&nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">PA</span> : <span class="id" title="var">tfsListen_paused</span> <span class="id" title="var">TP</span>. <span class="id" title="tactic">assert</span> (<span class="id" title="var">pausedState</span> <span class="id" title="var">p3</span>). <span class="id" title="tactic">inversion</span> <span class="id" title="var">PA</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="var">lets</span> <span class="id" title="var">PAP</span> : <span class="id" title="var">paused_unpause_in_sort</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">TAP</span> : <span class="id" title="var">tfsListen_unpause_out_sort</span> <span class="id" title="var">TS</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">SORT2_3</span> <span class="id" title="tactic">in</span> <span class="id" title="var">TAP</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">TAP</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">PAP</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">tfsNext_urgent</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">reachableEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">tfsNextStateEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">e</span> -<span class="id" title="var">ED</span>- <span class="id" title="var">d</span> -&gt;&gt; <span class="id" title="var">e'</span> -&gt; <span class="id" title="var">False</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intro</span> <span class="id" title="var">m</span>. <span class="id" title="tactic">intros</span> <span class="id" title="var">e</span> <span class="id" title="var">e'</span> <span class="id" title="var">d</span>. <span class="id" title="var">introz</span> <span class="id" title="var">U</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">TCM</span> : <span class="id" title="var">tfsNext_currMode</span> <span class="id" title="var">U</span> <span class="id" title="var">U0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">urgency_pre_tac2_1</span> <span class="id" title="var">tfsNextStateEnt</span> <span class="id" title="var">tfsNextStateProt</span> <span class="id" title="var">tfsNextState</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">FS</span> : <span class="id" title="var">failSafeSucc_successor</span> <span class="id" title="var">m</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">k0</span> -<span class="id" title="var">mtr</span>-&gt; <span class="id" title="var">failSafeSucc</span> <span class="id" title="var">m</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">FS2</span>. <span class="id" title="tactic">simpl</span> <span class="id" title="tactic">in</span> <span class="id" title="var">TCM</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">TCM</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">MS</span> : <span class="id" title="var">mState_stable_next_enabled</span> <span class="id" title="var">FS2</span>. <span class="id" title="var">noSyncNow_tac</span>.<br/>
+ <span class="id" title="var">elim_intro</span> <span class="id" title="var">MS</span> <span class="id" title="var">MS1</span> <span class="id" title="var">MS2</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">TF</span> : <span class="id" title="var">tfsNext_mStable_out</span> <span class="id" title="var">TS</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">discActEnabled</span> <span class="id" title="var">p0</span> (<span class="id" title="var">chanMStable</span>;! [])) <span class="id" title="keyword">as</span> <span class="id" title="var">DA</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">TR</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">parTriple_dae_intro2</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">NS</span> <span class="id" title="tactic">in</span> <span class="id" title="var">DA</span>. <span class="id" title="var">decompAnd2</span> <span class="id" title="var">DA</span> <span class="id" title="var">NDA1</span> <span class="id" title="var">NDA2</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">NDA2</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">TF</span> : <span class="id" title="var">tfsNext_mNext_out</span> <span class="id" title="var">TS</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">discActEnabled</span> <span class="id" title="var">p0</span> (<span class="id" title="var">chanMNext</span>;! [<span class="id" title="var">baseMode</span> (<span class="id" title="var">failSafeSucc</span> <span class="id" title="var">m</span>)]))<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">as</span> <span class="id" title="var">DA</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">TR</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">parTriple_dae_intro2</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">NS</span> <span class="id" title="tactic">in</span> <span class="id" title="var">DA</span>. <span class="id" title="var">decompAnd2</span> <span class="id" title="var">DA</span> <span class="id" title="var">NDA1</span> <span class="id" title="var">NDA2</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">NDA2</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">MS2</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">bcReady_urgent</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>) : <span class="id" title="keyword">forall</span> (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">reachableEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">bcReadyStateEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">l</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">e</span> -<span class="id" title="var">ED</span>- <span class="id" title="var">d</span> -&gt;&gt; <span class="id" title="var">e'</span> <br/>
+&nbsp;&nbsp;-&gt; <span class="id" title="var">False</span>. <span class="id" title="var">urgency_pre_tac2_2</span> <span class="id" title="var">bcReadyStateEnt</span> <span class="id" title="var">bcReadyStateProt</span> <span class="id" title="var">bcReadyState</span>.<br/>
+</div>
+
+<div class="doc">
+Proof: By activation, the bcReady state can be shown to be capable of outputting on
+  chanOutProc. Separately, the interface component can be shown to always be available for
+  input on this channel, i.e. it can always buffer a message from the software component.
+  Thus, a synch between software and interface is possible, violating the "noSynch" condition
+  that must hold for the entity to delay. Hence delay cannot happen.
+</div>
+<div class="code">
+&nbsp;&nbsp;<span class="id" title="var">noSyncNow_tac</span>. <span class="id" title="var">lets</span> <span class="id" title="var">BO</span> : <span class="id" title="var">bcReady_outProc_out</span> <span class="id" title="var">TS</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">discActEnabled</span> <span class="id" title="var">p0</span> (<span class="id" title="var">chanOutProc</span>;! [<span class="id" title="var">baseMode</span> <span class="id" title="var">m</span>, <span class="id" title="var">basePosition</span> <span class="id" title="var">l</span>])) <span class="id" title="keyword">as</span> <span class="id" title="var">DA</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">TR</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">parTriple_dae_intro1</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">IO</span> : <span class="id" title="var">interface_outProc_in</span> <span class="id" title="var">h0</span> [<span class="id" title="var">baseMode</span> <span class="id" title="var">m</span>, <span class="id" title="var">basePosition</span> <span class="id" title="var">l</span>].<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">NS</span> <span class="id" title="tactic">in</span> <span class="id" title="var">DA</span>. <span class="id" title="var">decompAnd2</span> <span class="id" title="var">DA</span> <span class="id" title="var">NDA1</span> <span class="id" title="var">NDA2</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">NDA1</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">ovAbort_urgent</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">reachableEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">ovAbortStateEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">e</span> -<span class="id" title="var">ED</span>- <span class="id" title="var">d</span> -&gt;&gt; <span class="id" title="var">e'</span> <br/>
+&nbsp;&nbsp;-&gt; <span class="id" title="var">False</span>. <span class="id" title="tactic">intros</span> <span class="id" title="var">e</span> <span class="id" title="var">e'</span> <span class="id" title="var">d</span>. <span class="id" title="var">introz</span> <span class="id" title="var">U</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">OUS</span> : <span class="id" title="var">ovAbort_unstable</span> <span class="id" title="var">U</span> <span class="id" title="var">U0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">urgency_pre_tac2</span> <span class="id" title="var">ovAbortStateEnt</span> <span class="id" title="var">ovAbortStateProt</span> <span class="id" title="var">ovAbortState</span>.<br/>
+</div>
+
+<div class="doc">
+Proof: Show that the mode state is not stable whenever we
+  get into this state, which will require showing that the mode state is unstable
+  for init, ovWait, and ovReady- by induction on reachableEnt I suppose. Then
+  we show that stable! is activated on ovAbort, and hence a synch can happen with
+  the mode state, so by progress there is no delay possible.
+</div>
+<div class="code">
+&nbsp;&nbsp;<span class="id" title="var">noSyncNow_tac</span>. <span class="id" title="var">lets</span> <span class="id" title="var">OAS</span> : <span class="id" title="var">ovAbort_stable_out</span> <span class="id" title="var">TS</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">US</span> : <span class="id" title="var">unstable_stable_in</span> <span class="id" title="var">OUS</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">discActEnabled</span> <span class="id" title="var">p0</span> (<span class="id" title="var">chanMStable</span> *!)) <span class="id" title="keyword">as</span> <span class="id" title="var">DA</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">TR</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">parTriple_dae_intro2</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">NS</span> <span class="id" title="tactic">in</span> <span class="id" title="var">DA</span>. <span class="id" title="var">decompAnd2</span> <span class="id" title="var">DA</span> <span class="id" title="var">NDA1</span> <span class="id" title="var">NDA2</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">NDA2</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">tfsBc_urgent</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">reachableEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">tfsBcStateEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">e</span> -<span class="id" title="var">ED</span>- <span class="id" title="var">d</span> -&gt;&gt; <span class="id" title="var">e'</span> <br/>
+&nbsp;&nbsp;-&gt; <span class="id" title="var">False</span>. <span class="id" title="tactic">intros</span> <span class="id" title="var">e</span> <span class="id" title="var">e'</span> <span class="id" title="var">d</span>. <span class="id" title="var">introz</span> <span class="id" title="var">U</span>. <span class="id" title="var">lets</span> <span class="id" title="var">Q</span> : <span class="id" title="var">U</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">urgency_pre_tac2</span> <span class="id" title="var">tfsBcStateEnt</span> <span class="id" title="var">tfsBcStateProt</span> <span class="id" title="var">tfsBcState</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">TOT</span> : <span class="id" title="var">tfsBc_trans_out</span> <span class="id" title="var">TS</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">BC</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">BIT</span> : <span class="id" title="var">bcWait_trans_in</span> <span class="id" title="var">H</span>. <span class="id" title="var">del_triple_sort_tac</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">enabledInSort_in</span> <span class="id" title="tactic">in</span> <span class="id" title="var">BIT</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">SORT1_2</span> <span class="id" title="tactic">in</span> <span class="id" title="var">BIT</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">BIT</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">enabledInSort_out</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">SIT</span> : <span class="id" title="var">sleep_trans_in</span> <span class="id" title="var">H</span>. <span class="id" title="var">del_triple_sort_tac</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">enabledInSort_in</span> <span class="id" title="tactic">in</span> <span class="id" title="var">SIT</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">SORT1_2</span> <span class="id" title="tactic">in</span> <span class="id" title="var">SIT</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">SIT</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">enabledInSort_out</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">bcReadyStateEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">l1</span> ([|<span class="id" title="var">p0</span>, <span class="id" title="var">l0</span>, <span class="id" title="var">h0</span>, <span class="id" title="var">k0</span>|])) <span class="id" title="keyword">as</span> <span class="id" title="var">BCE</span>. <span class="id" title="tactic">constructor</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">TR</span>. <span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="var">lets</span> <span class="id" title="var">BCU</span> : <span class="id" title="var">bcReady_urgent</span> <span class="id" title="var">U</span> <span class="id" title="var">BCE</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">BCU</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">U1</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">switchBc_urgent</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) : <span class="id" title="keyword">forall</span> (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">reachableEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">switchBcStateEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">e</span> -<span class="id" title="var">ED</span>- <span class="id" title="var">d</span> -&gt;&gt; <span class="id" title="var">e'</span> <br/>
+&nbsp;&nbsp;-&gt; <span class="id" title="var">False</span>. <span class="id" title="tactic">intros</span> <span class="id" title="var">e</span> <span class="id" title="var">e'</span> <span class="id" title="var">d</span>. <span class="id" title="var">introz</span> <span class="id" title="var">U</span>. <span class="id" title="var">lets</span> <span class="id" title="var">Q</span> : <span class="id" title="var">U</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">urgency_pre_tac2_1</span> <span class="id" title="var">switchBcStateEnt</span> <span class="id" title="var">switchBcStateProt</span> <span class="id" title="var">switchBcState</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">TOT</span> : <span class="id" title="var">switchBc_wake_out</span> <span class="id" title="var">TS</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">BC</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">BIT</span> : <span class="id" title="var">bcWait_wake_in</span> <span class="id" title="var">H</span>. <span class="id" title="var">del_triple_sort_tac</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">enabledInSort_in</span> <span class="id" title="tactic">in</span> <span class="id" title="var">BIT</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">SORT1_2</span> <span class="id" title="tactic">in</span> <span class="id" title="var">BIT</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">BIT</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">enabledInSort_out</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">TOT</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">SIT</span> : <span class="id" title="var">sleeping_wake_in</span> <span class="id" title="var">H</span>. <span class="id" title="var">del_triple_sort_tac</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">enabledInSort_in</span> <span class="id" title="tactic">in</span> <span class="id" title="var">SIT</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">SORT1_2</span> <span class="id" title="tactic">in</span> <span class="id" title="var">SIT</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">SIT</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">enabledInSort_out</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">TOT</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">bcReadyStateEnt</span> <span class="id" title="var">m0</span> <span class="id" title="var">l1</span> ([|<span class="id" title="var">p0</span>, <span class="id" title="var">l0</span>, <span class="id" title="var">h0</span>, <span class="id" title="var">k0</span>|])) <span class="id" title="keyword">as</span> <span class="id" title="var">BCE</span>. <span class="id" title="tactic">constructor</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">TR</span>. <span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="var">lets</span> <span class="id" title="var">BCU</span> : <span class="id" title="var">bcReady_urgent</span> <span class="id" title="var">U</span> <span class="id" title="var">BCE</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">BCU</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">U1</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">swithcCurr_urgent</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) : <span class="id" title="keyword">forall</span> (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">reachableEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">switchCurrStateEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">e</span> -<span class="id" title="var">ED</span>- <span class="id" title="var">d</span> -&gt;&gt; <span class="id" title="var">e'</span> <br/>
+&nbsp;&nbsp;-&gt; <span class="id" title="var">False</span>. <span class="id" title="tactic">intros</span> <span class="id" title="var">e</span> <span class="id" title="var">e'</span> <span class="id" title="var">d</span>. <span class="id" title="var">introz</span> <span class="id" title="var">U</span>. <span class="id" title="var">lets</span> <span class="id" title="var">Q</span> : <span class="id" title="var">U</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">urgency_pre_tac2</span> <span class="id" title="var">switchCurrStateEnt</span> <span class="id" title="var">switchCurrStateProt</span> <span class="id" title="var">switchCurrState</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">SMS</span> : <span class="id" title="var">switchCurr_mState</span> <span class="id" title="var">U</span> <span class="id" title="var">U0</span>. <span class="id" title="var">decompEx2</span> <span class="id" title="var">SMS</span> <span class="id" title="var">m1</span> <span class="id" title="var">m2</span> <span class="id" title="var">MS</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">NIM</span> : <span class="id" title="var">mst_tout_mCurr_in</span> <span class="id" title="var">m1</span> <span class="id" title="var">m2</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">SOM</span> : <span class="id" title="var">switchCurr_mCurr_out</span> <span class="id" title="var">TS</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">discActEnabled</span> <span class="id" title="var">p0</span> (<span class="id" title="var">chanMCurr</span> *!)) <span class="id" title="keyword">as</span> <span class="id" title="var">DA</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">TR</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">parTriple_dae_intro2</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">noSyncNow_tac</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">NS</span> <span class="id" title="tactic">in</span> <span class="id" title="var">DA</span>. <span class="id" title="var">decompAnd2</span> <span class="id" title="var">DA</span> <span class="id" title="var">NDA1</span> <span class="id" title="var">NDA2</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">NDA2</span>. <span class="id" title="tactic">simpl</span> <span class="id" title="tactic">in</span> <span class="id" title="var">MS</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">MS</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">switchListen_urgent</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">reachableEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">switchListenStateEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">e</span> -<span class="id" title="var">ED</span>- <span class="id" title="var">d</span> -&gt;&gt; <span class="id" title="var">e'</span> <br/>
+&nbsp;&nbsp;-&gt; <span class="id" title="var">False</span>. <span class="id" title="var">urgency_pre_tac2</span> <span class="id" title="var">switchListenStateEnt</span> <span class="id" title="var">switchListenStateProt</span><br/>
+&nbsp;&nbsp;<span class="id" title="var">switchListenState</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">switchStateProt</span> <span class="id" title="var">p0</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">SP</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">TR</span>. <span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">switLisSt</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="var">lets</span> <span class="id" title="var">PS</span> : <span class="id" title="var">paused_switch</span> <span class="id" title="var">U</span>. <span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">PS</span> <span class="id" title="tactic">in</span> <span class="id" title="var">SP</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">TR</span> <span class="id" title="tactic">in</span> <span class="id" title="var">SP</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">del_triple_sort_tac</span>. <span class="id" title="tactic">assert</span> (<span class="id" title="var">pausedState</span> <span class="id" title="var">p3</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">PS3</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">SP</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">PIU</span> : <span class="id" title="var">paused_unpause_in_sort</span> <span class="id" title="var">PS3</span>. <span class="id" title="var">lets</span> <span class="id" title="var">SOU</span> : <span class="id" title="var">switchListen_unpause_out_sort</span> <span class="id" title="var">TS</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">SORT2_3</span> <span class="id" title="tactic">in</span> <span class="id" title="var">SOU</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">SOU</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">PIU</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+In here, results about the path predicates. Mostly what we're concerned
+with is preservation of the path predicates.
+</div>
+<div class="code">
+
+<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">msgAbortPathEnt_urgent</span> <span class="id" title="var">e</span> <span class="id" title="var">e'</span> <span class="id" title="var">d</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">reachableEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">msgAbortPathEnt</span> <span class="id" title="var">e</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">e</span> -<span class="id" title="var">ED</span>- <span class="id" title="var">d</span> -&gt;&gt; <span class="id" title="var">e'</span> -&gt; <span class="id" title="var">False</span>. <span class="id" title="tactic">intro</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">introz</span> <span class="id" title="var">U</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">U</span>; <span class="id" title="tactic">subst</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">gotMsgStateEnt</span> <span class="id" title="var">m''</span> <span class="id" title="var">l'</span> ([|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|])).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">econstructor</span>; <span class="id" title="var">eassumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">gotMsgStateEnt_urgent</span>; <span class="id" title="var">eassumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">gotRangeStateEnt</span> <span class="id" title="var">m''</span> <span class="id" title="var">r</span> ([|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|])).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">econstructor</span>; <span class="id" title="var">eassumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">gotRangeStateEnt_urgent</span>; <span class="id" title="var">eassumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">currCompStateEnt</span> <span class="id" title="var">m''</span> <span class="id" title="var">r</span> ([|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|])).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">econstructor</span>; <span class="id" title="var">eassumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">currCompStateEnt_urgent</span>; <span class="id" title="var">eassumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">abortOvlpStateEnt</span> ([|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|])).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">econstructor</span>; <span class="id" title="var">eassumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">abortOvlpStateEnt_urgent</span>; <span class="id" title="var">eassumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The interface component is irrelevant to the msgAbortPath.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">msgAbort_inter_irrel</span> <span class="id" title="var">p</span> <span class="id" title="var">l</span> <span class="id" title="var">h</span> <span class="id" title="var">h'</span> <span class="id" title="var">k</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">msgAbortPathEnt</span> ([|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|]) -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">msgAbortPathEnt</span> ([|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h'</span>, <span class="id" title="var">k</span>|]). <span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+A reachable entity that can delay is in the listening state.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">del_listening_pre</span> (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">reachableEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">e</span> -<span class="id" title="var">ED</span>- <span class="id" title="var">d</span> -&gt;&gt; <span class="id" title="var">e'</span> -&gt; <br/>
+&nbsp;&nbsp;<span class="id" title="var">abortOvlpStateEnt</span> <span class="id" title="var">e</span> \/ <span class="id" title="var">badOvlpStateEnt</span> <span class="id" title="var">e</span> \/ <span class="id" title="var">listeningStateEnt</span> <span class="id" title="var">e</span> \/ <span class="id" title="var">pausedStateEnt</span> <span class="id" title="var">e</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">introz</span> <span class="id" title="var">U</span>. <span class="id" title="var">Admitted</span>. </div>
+
+<div class="doc">
+Proof: Since the entity is reachable, we know it has a listener
+component (...reachableProt_triple...), so we do a case analysis as to what the location
+of the listener component is. In most cases, we can show by simple urgency results that
+a discrete action is possible via the listener synchronising with another component of
+the entity. The remaining cases that aren't urgent are exactly the conclusion to this
+result, and we're done.
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">del_ovlp</span> (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>) : <br/>
+&nbsp;&nbsp;<span class="id" title="var">reachableEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">e</span> -<span class="id" title="var">ED</span>- <span class="id" title="var">d</span> -&gt;&gt; <span class="id" title="var">e'</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">dormantStateEnt</span> <span class="id" title="var">e</span> \/ <span class="id" title="var">tfsCurrStateEnt</span> <span class="id" title="var">e</span> \/<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">m</span>, <span class="id" title="tactic">exists</span> <span class="id" title="var">t</span>, <span class="id" title="tactic">exists</span> <span class="id" title="var">x</span>, <span class="id" title="tactic">exists</span> <span class="id" title="var">y</span>, <span class="id" title="var">ovWaitStateEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">e</span> . <span class="id" title="var">Admitted</span>. </div>
+
+<div class="doc">
+Proof: Case analyse the overlap component of the software
+process in e and eliminate most other possibilities by simple urgency results.
+For the tfsListen case, apply (del_listening_pre). A corollary of this is that
+the listener component is always capable of input on unpause or output on bad
+or abort, and since tfsListen can do all three, a synch is always possible,
+hence our urgency by progress. This should cover all states except those in our
+conclusion, and we're done.
+<div class="paragraph"> </div>
+
+ A reachable entity that can delay is in the listening state.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">del_listening</span> (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">reachableEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">e</span> -<span class="id" title="var">ED</span>- <span class="id" title="var">d</span> -&gt;&gt; <span class="id" title="var">e'</span> -&gt; <span class="id" title="var">listeningStateEnt</span> <span class="id" title="var">e</span>. <span class="id" title="var">Admitted</span>. </div>
+
+<div class="doc">
+Proof: First we apply (del_listening_pre), to get that
+we are either in abortOvlp, badOvlp, paused or listening. If the last case
+is true, then we are done. From here, we apply (del_ovlp) to further get
+dormant, tfsCurr or ovWait as possibilities for the current state. Now,
+if we are paused, then by (paused_switch) we are switchState- but this
+contradicts the three possibilities for an overlap state, so it must be
+thrown away. Hence we are either abortOvlp or badOvlp. But all three overlap
+possibilities can input on both abort and bad, so in all six cases a synchronisation
+is possible. Hence we arrive at our contradiction and conclude listening.
+&gt;Could use more automation in the tactic maybe? Pull out the software component,
+apply the two previous results, and run some sort of auto that eliminates all the
+cases that can synch.
+</div>
+<div class="code">
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">switchCurr_switch_ent</span> (<span class="id" title="var">e</span> : <span class="id" title="var">Entity</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">switchCurrStateEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">switchStateEnt</span> <span class="id" title="var">e</span>. <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">do</span> 2 <span class="id" title="tactic">constructor</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">switCurSt</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If the software components of an entity transition are not equal, then
+the transition is necessarily a tau action, and either the process performs a tau,
+synchs with the interface, synchs with the mode state or reads the current position.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">link_ent_proc_neq_disc</span> <span class="id" title="var">p</span> <span class="id" title="var">p'</span> <span class="id" title="var">h</span> <span class="id" title="var">h'</span> <span class="id" title="var">l</span> <span class="id" title="var">l'</span> <span class="id" title="var">k</span> <span class="id" title="var">k'</span> <span class="id" title="var">a</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> &lt;&gt; <span class="id" title="var">p'</span> -&gt; [|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|] -<span class="id" title="var">EA</span>- <span class="id" title="var">a</span> -&gt;&gt; [|<span class="id" title="var">p'</span>, <span class="id" title="var">l'</span>, <span class="id" title="var">h'</span>, <span class="id" title="var">k'</span>|] -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">a</span> = <span class="id" title="var">aeTau</span> /\ ( <br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">tauAct</span> -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> \/<br/>
+&nbsp;&nbsp;(<span class="id" title="tactic">exists</span> <span class="id" title="var">h'</span> <span class="id" title="var">c</span> <span class="id" title="var">v</span>, <span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">c</span> ;! <span class="id" title="var">v</span> -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> /\ <span class="id" title="var">h</span> -<span class="id" title="var">i</span>- <span class="id" title="var">c</span> {? <span class="id" title="var">v</span> -<span class="id" title="var">i</span>&gt; <span class="id" title="var">h'</span>) \/<br/>
+&nbsp;&nbsp;(<span class="id" title="tactic">exists</span> <span class="id" title="var">h'</span> <span class="id" title="var">c</span> <span class="id" title="var">v</span>, <span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">c</span> ;? <span class="id" title="var">v</span> -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> /\ <span class="id" title="var">h</span> -<span class="id" title="var">i</span>- <span class="id" title="var">c</span> {! <span class="id" title="var">v</span> -<span class="id" title="var">i</span>&gt; <span class="id" title="var">h'</span>) \/<br/>
+&nbsp;&nbsp;(<span class="id" title="tactic">exists</span> <span class="id" title="var">k'</span> <span class="id" title="var">c</span> <span class="id" title="var">m</span>, <span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">c</span> ;! [<span class="id" title="var">baseMode</span> <span class="id" title="var">m</span>] -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> /\ <span class="id" title="var">k</span> -<span class="id" title="var">ms</span>- <span class="id" title="var">c</span> .? <span class="id" title="var">m</span> -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">k'</span>) \/<br/>
+&nbsp;&nbsp;(<span class="id" title="tactic">exists</span> <span class="id" title="var">k'</span> <span class="id" title="var">c</span> <span class="id" title="var">m</span>, <span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">c</span> ;? [<span class="id" title="var">baseMode</span> <span class="id" title="var">m</span>] -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> /\ <span class="id" title="var">k</span> -<span class="id" title="var">ms</span>- <span class="id" title="var">c</span> .! <span class="id" title="var">m</span> -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">k'</span>) \/<br/>
+&nbsp;&nbsp;(<span class="id" title="tactic">exists</span> <span class="id" title="var">k'</span> <span class="id" title="var">c</span>, <span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">c</span> *! -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> /\ <span class="id" title="var">k</span> -<span class="id" title="var">ms</span>- <span class="id" title="var">c</span> @? -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">k'</span>) \/<br/>
+&nbsp;&nbsp;(<span class="id" title="tactic">exists</span> <span class="id" title="var">k'</span> <span class="id" title="var">c</span>, <span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">c</span> *? -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> /\ <span class="id" title="var">k</span> -<span class="id" title="var">ms</span>- <span class="id" title="var">c</span> @! -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">k'</span>) \/<br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">chanPos</span> ;? [<span class="id" title="var">basePosition</span> <span class="id" title="var">l</span>] -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>; (<span class="id" title="tactic">split</span>;[ <span class="id" title="tactic">try</span> <span class="id" title="tactic">reflexivity</span> | ]);<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">try</span> (<span class="id" title="tactic">subst</span>; <span class="id" title="var">contradict</span> <span class="id" title="var">H</span>; <span class="id" title="tactic">reflexivity</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">left</span>; <span class="id" title="tactic">repeat</span> <span class="id" title="tactic">eexists</span>; <span class="id" title="var">eassumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">right</span>; <span class="id" title="tactic">left</span>; <span class="id" title="tactic">repeat</span> <span class="id" title="tactic">eexists</span>; <span class="id" title="var">eassumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">right</span>. <span class="id" title="tactic">right</span>. <span class="id" title="tactic">left</span>. <span class="id" title="tactic">repeat</span> <span class="id" title="tactic">eexists</span>; <span class="id" title="var">eassumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">right</span>. <span class="id" title="tactic">right</span>. <span class="id" title="tactic">left</span>. <span class="id" title="tactic">repeat</span> <span class="id" title="tactic">eexists</span>; <span class="id" title="var">eassumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">do</span> 6 <span class="id" title="tactic">right</span>. <span class="id" title="tactic">left</span>. <span class="id" title="tactic">repeat</span> <span class="id" title="tactic">eexists</span>; <span class="id" title="var">eassumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">do</span> 5 <span class="id" title="tactic">right</span>. <span class="id" title="tactic">left</span>. <span class="id" title="tactic">repeat</span> <span class="id" title="tactic">eexists</span>; <span class="id" title="var">eassumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">do</span> 4 <span class="id" title="tactic">right</span>. <span class="id" title="tactic">left</span>. <span class="id" title="tactic">repeat</span> <span class="id" title="tactic">eexists</span>; <span class="id" title="var">eassumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">do</span> 3 <span class="id" title="tactic">right</span>. <span class="id" title="tactic">left</span>. <span class="id" title="tactic">repeat</span> <span class="id" title="tactic">eexists</span>; <span class="id" title="var">eassumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">do</span> 4 <span class="id" title="tactic">right</span>. <span class="id" title="tactic">left</span>. <span class="id" title="tactic">repeat</span> <span class="id" title="tactic">eexists</span>; <span class="id" title="var">eassumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">repeat</span> <span class="id" title="tactic">right</span>. <span class="id" title="tactic">repeat</span> <span class="id" title="tactic">eexists</span>; <span class="id" title="var">eassumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">nextEq_mode</span> (<span class="id" title="var">m'</span> <span class="id" title="var">m''</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">e</span> : <span class="id" title="var">Entity</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">nextEqStateEnt</span> <span class="id" title="var">m'</span> <span class="id" title="var">m''</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">nextModeEnt</span> <span class="id" title="var">m'</span> <span class="id" title="var">e</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">introz</span> <span class="id" title="var">U</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">U</span>. <span class="id" title="var">Admitted</span>. 
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">nextMode_ent_mState</span> <span class="id" title="var">p</span> <span class="id" title="var">l</span> <span class="id" title="var">h</span> <span class="id" title="var">k</span> <span class="id" title="var">m</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">nextModeEnt</span> <span class="id" title="var">m</span> ([|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|]) -&gt; <span class="id" title="var">nextModeMState</span> <span class="id" title="var">k</span> = <span class="id" title="var">Some</span> <span class="id" title="var">m</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">introz</span> <span class="id" title="var">U</span>. <span class="id" title="var">Admitted</span>. 
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">stepEnt_disc_pres_pos</span> (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) <span class="id" title="var">a</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">a</span> -&gt;&gt; <span class="id" title="var">e'</span> -&gt; <span class="id" title="var">posEnt</span> <span class="id" title="var">e</span> = <span class="id" title="var">posEnt</span> <span class="id" title="var">e'</span>. <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">e</span>, <span class="id" title="var">e'</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>; <span class="id" title="tactic">reflexivity</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">ent_disc_pres_pos_tac</span> := <span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;[<span class="id" title="var">V</span> : [|<span class="id" title="var">_</span>, ?<span class="id" title="var">l</span>, <span class="id" title="var">_</span>, <span class="id" title="var">_</span>|] -<span class="id" title="var">EA</span>- ?<span class="id" title="var">b</span> -&gt;&gt; [|<span class="id" title="var">_</span>, ?<span class="id" title="var">l'</span>, <span class="id" title="var">_</span>, <span class="id" title="var">_</span>|] |- <span class="id" title="var">_</span> ] =&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">EDP</span> := <span class="id" title="tactic">fresh</span> "EDP" <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">EDP</span> : <span class="id" title="var">stepEnt_disc_pres_pos</span> <span class="id" title="var">V</span>; <span class="id" title="tactic">simpl</span> <span class="id" title="tactic">in</span> <span class="id" title="var">EDP</span> <span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">gotMsg_gotRange_track_ent</span> (<span class="id" title="var">m</span> <span class="id" title="var">m'</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">l</span> <span class="id" title="var">l'</span> <span class="id" title="var">l1</span> : <span class="id" title="var">Position</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">r</span> : <span class="id" title="var">Distance</span>) (<span class="id" title="var">p</span> <span class="id" title="var">p'</span> : <span class="id" title="var">ProcTerm</span>) <span class="id" title="var">h</span> <span class="id" title="var">h'</span> <span class="id" title="var">k</span> <span class="id" title="var">k'</span> <span class="id" title="var">a</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">gotMsgStateEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">l1</span> ([|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|]) -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">gotRangeStateEnt</span> <span class="id" title="var">m'</span> <span class="id" title="var">r</span> ([|<span class="id" title="var">p'</span>, <span class="id" title="var">l'</span>, <span class="id" title="var">h'</span>, <span class="id" title="var">k'</span>|]) -&gt;<br/>
+&nbsp;&nbsp;[|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|] -<span class="id" title="var">EA</span>- <span class="id" title="var">a</span> -&gt;&gt; [|<span class="id" title="var">p'</span>, <span class="id" title="var">l'</span>, <span class="id" title="var">h'</span>, <span class="id" title="var">k'</span>|] -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">l</span> = <span class="id" title="var">l'</span> /\ <span class="id" title="var">m</span> = <span class="id" title="var">m'</span> /\<br/>
+&nbsp;&nbsp;<span class="id" title="var">r</span> = {| <span class="id" title="var">distance</span> := <span class="id" title="var">dist2d</span> <span class="id" title="var">l</span> <span class="id" title="var">l1</span> -<span class="id" title="var">nn</span>- <span class="id" title="var">speedMax</span> *<span class="id" title="var">nn</span>* <span class="id" title="var">msgLatency</span> |}.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>.<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">gotRange_currPincCheck_track_ent</span> (<span class="id" title="var">m2</span> <span class="id" title="var">m1'</span> <span class="id" title="var">m2'</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">l</span> <span class="id" title="var">l'</span> : <span class="id" title="var">Position</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">r</span> <span class="id" title="var">r'</span> : <span class="id" title="var">Distance</span>) (<span class="id" title="var">p</span> <span class="id" title="var">p'</span> : <span class="id" title="var">ProcTerm</span>) <span class="id" title="var">h</span> <span class="id" title="var">h'</span> <span class="id" title="var">k</span> <span class="id" title="var">k'</span> <span class="id" title="var">a</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">gotRangeStateEnt</span> <span class="id" title="var">m2</span> <span class="id" title="var">r</span> ([|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|]) -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">currPincCheckStateEnt</span> <span class="id" title="var">m1'</span> <span class="id" title="var">m2'</span> <span class="id" title="var">r'</span> ([|<span class="id" title="var">p'</span>, <span class="id" title="var">l'</span>, <span class="id" title="var">h'</span>, <span class="id" title="var">k'</span>|]) -&gt;<br/>
+&nbsp;&nbsp;[|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|] -<span class="id" title="var">EA</span>- <span class="id" title="var">a</span> -&gt;&gt; [|<span class="id" title="var">p'</span>, <span class="id" title="var">l'</span>, <span class="id" title="var">h'</span>, <span class="id" title="var">k'</span>|] -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">m2</span> = <span class="id" title="var">m2'</span> /\ <span class="id" title="var">r</span> = <span class="id" title="var">r'</span> /\ <span class="id" title="var">m1'</span> = <span class="id" title="var">currModeMState</span> <span class="id" title="var">k</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>.<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">currComp_listening_track_ent</span> <span class="id" title="var">m''</span> <span class="id" title="var">r</span> <span class="id" title="var">l</span> <span class="id" title="var">l'</span> <span class="id" title="var">p</span> <span class="id" title="var">p'</span> <span class="id" title="var">h</span> <span class="id" title="var">h'</span> <span class="id" title="var">k</span> <span class="id" title="var">k'</span> <span class="id" title="var">a</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">currCompStateEnt</span> <span class="id" title="var">m''</span> <span class="id" title="var">r</span> ([|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|]) -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">listeningStateEnt</span> ([|<span class="id" title="var">p'</span>, <span class="id" title="var">l'</span>, <span class="id" title="var">h'</span>, <span class="id" title="var">k'</span>|]) -&gt;<br/>
+&nbsp;&nbsp;[|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|] -<span class="id" title="var">EA</span>- <span class="id" title="var">a</span> -&gt;&gt; [|<span class="id" title="var">p'</span>, <span class="id" title="var">l'</span>, <span class="id" title="var">h'</span>, <span class="id" title="var">k'</span>|] -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">k</span> -<span class="id" title="var">ms</span>- <span class="id" title="var">chanMStable</span> @! -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">k'</span> /\ <span class="id" title="var">h</span> = <span class="id" title="var">h'</span>. <span class="id" title="var">Admitted</span>.<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">currComp_nextPincCheck_track_ent</span> (<span class="id" title="var">m2</span> <span class="id" title="var">m1'</span> <span class="id" title="var">m2'</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">l</span> <span class="id" title="var">l'</span> : <span class="id" title="var">Position</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">r</span> <span class="id" title="var">r'</span> : <span class="id" title="var">Distance</span>) (<span class="id" title="var">p</span> <span class="id" title="var">p'</span> : <span class="id" title="var">ProcTerm</span>) <span class="id" title="var">h</span> <span class="id" title="var">h'</span> <span class="id" title="var">k</span> <span class="id" title="var">k'</span> <span class="id" title="var">a</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">currCompStateEnt</span> <span class="id" title="var">m2</span> <span class="id" title="var">r</span> ([|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|]) -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">nextPincCheckStateEnt</span> <span class="id" title="var">m1'</span> <span class="id" title="var">m2'</span> <span class="id" title="var">r'</span> ([|<span class="id" title="var">p'</span>, <span class="id" title="var">l'</span>, <span class="id" title="var">h'</span>, <span class="id" title="var">k'</span>|]) -&gt;<br/>
+&nbsp;&nbsp;[|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|] -<span class="id" title="var">EA</span>- <span class="id" title="var">a</span> -&gt;&gt; [|<span class="id" title="var">p'</span>, <span class="id" title="var">l'</span>, <span class="id" title="var">h'</span>, <span class="id" title="var">k'</span>|] -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">m2</span> = <span class="id" title="var">m2'</span> /\ <span class="id" title="var">r</span> = <span class="id" title="var">r'</span> /\ <span class="id" title="var">nextModeMState</span> <span class="id" title="var">k</span> = <span class="id" title="var">Some</span> <span class="id" title="var">m1'</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">ovReady_ovWait_track_ent</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span> <span class="id" title="var">t</span> <span class="id" title="var">t'</span> <span class="id" title="var">x'</span> <span class="id" title="var">y'</span> <span class="id" title="var">l0</span> <span class="id" title="var">a</span><br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> <span class="id" title="var">p'</span> <span class="id" title="var">l</span> <span class="id" title="var">l'</span> <span class="id" title="var">h</span> <span class="id" title="var">h'</span> <span class="id" title="var">k</span> <span class="id" title="var">k'</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">ovReadyStateEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">l0</span> ([|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|]) -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">ovWaitStateEnt</span> <span class="id" title="var">m'</span> <span class="id" title="var">t'</span> <span class="id" title="var">x'</span> <span class="id" title="var">y'</span> ([|<span class="id" title="var">p'</span>, <span class="id" title="var">l'</span>, <span class="id" title="var">h'</span>, <span class="id" title="var">k'</span>|]) -&gt;<br/>
+&nbsp;&nbsp;[|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|] -<span class="id" title="var">EA</span>- <span class="id" title="var">a</span> -&gt;&gt; [|<span class="id" title="var">p'</span>, <span class="id" title="var">l'</span>, <span class="id" title="var">h'</span>, <span class="id" title="var">k'</span>|] -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">chanOutProc</span> ;! [<span class="id" title="var">baseMode</span> <span class="id" title="var">m</span>, <span class="id" title="var">basePosition</span> <span class="id" title="var">l0</span>] -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> /\<br/>
+&nbsp;&nbsp;<span class="id" title="var">h</span> -<span class="id" title="var">i</span>- <span class="id" title="var">chanOutProc</span> {? [<span class="id" title="var">baseMode</span> <span class="id" title="var">m</span>, <span class="id" title="var">basePosition</span> <span class="id" title="var">l0</span>] -<span class="id" title="var">i</span>&gt; <span class="id" title="var">h'</span> /\<br/>
+&nbsp;&nbsp;<span class="id" title="var">k</span> = <span class="id" title="var">k'</span> /\ <span class="id" title="var">m</span> = <span class="id" title="var">m'</span> /\ <span class="id" title="var">l</span> = <span class="id" title="var">l0</span>.<br/>
+<span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">tfsStart_next_ent</span> <span class="id" title="var">e</span> <span class="id" title="var">e'</span> <span class="id" title="var">a</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">a</span> -&gt;&gt; <span class="id" title="var">e'</span> -&gt; <span class="id" title="var">tfsStartStateEnt</span> <span class="id" title="var">e</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">tfsStartStateEnt</span> <span class="id" title="var">e'</span> \/ <span class="id" title="tactic">exists</span> <span class="id" title="var">m</span>, <span class="id" title="var">tfsNextStateEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">e'</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>. 
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">tfsNext_next_ent</span> <span class="id" title="var">e</span> <span class="id" title="var">e'</span> <span class="id" title="var">a</span> <span class="id" title="var">m</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">a</span> -&gt;&gt; <span class="id" title="var">e'</span> -&gt; <span class="id" title="var">tfsNextStateEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">e</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">tfsNextStateEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">e'</span> \/ <span class="id" title="var">tfsCurrStateEnt</span> <span class="id" title="var">e'</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>. 
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">tfsCurr_next_ent</span> <span class="id" title="var">e</span> <span class="id" title="var">e'</span> <span class="id" title="var">a</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">a</span> -&gt;&gt; <span class="id" title="var">e'</span> -&gt; <span class="id" title="var">tfsCurrStateEnt</span> <span class="id" title="var">e</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">tfsCurrStateEnt</span> <span class="id" title="var">e'</span> \/ <span class="id" title="var">tfsBcStateEnt</span> <span class="id" title="var">e'</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>. 
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">tfsBc_next_ent</span> <span class="id" title="var">e</span> <span class="id" title="var">e'</span> <span class="id" title="var">a</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">a</span> -&gt;&gt; <span class="id" title="var">e'</span> -&gt; <span class="id" title="var">tfsBcStateEnt</span> <span class="id" title="var">e</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">tfsBcStateEnt</span> <span class="id" title="var">e'</span> \/ <span class="id" title="var">tfsListenStateEnt</span> <span class="id" title="var">e'</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>. 
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">tfsListen_next_ent</span> <span class="id" title="var">e</span> <span class="id" title="var">e'</span> <span class="id" title="var">a</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">a</span> -&gt;&gt; <span class="id" title="var">e'</span> -&gt; <span class="id" title="var">tfsListenStateEnt</span> <span class="id" title="var">e</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">tfsListenStateEnt</span> <span class="id" title="var">e'</span> \/ <span class="id" title="var">dormantStateEnt</span> <span class="id" title="var">e'</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>. 
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">link_ent_outList</span> <span class="id" title="var">p</span> <span class="id" title="var">p'</span> <span class="id" title="var">l</span> <span class="id" title="var">l'</span> <span class="id" title="var">k</span> <span class="id" title="var">k'</span> <span class="id" title="var">li</span> <span class="id" title="var">li'</span> <span class="id" title="var">lo</span> <span class="id" title="var">lo'</span> <span class="id" title="var">ln</span> <span class="id" title="var">ln'</span> <span class="id" title="var">b</span> :<br/>
+&nbsp;&nbsp;[|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, {| <span class="id" title="var">li</span> := <span class="id" title="var">li</span>; <span class="id" title="var">lo</span> := <span class="id" title="var">lo</span>; <span class="id" title="var">ln</span> := <span class="id" title="var">ln</span> |}, <span class="id" title="var">k</span>|] -<span class="id" title="var">EA</span>- <span class="id" title="var">b</span> -&gt;&gt;<br/>
+&nbsp;&nbsp;[|<span class="id" title="var">p'</span>, <span class="id" title="var">l'</span>, {| <span class="id" title="var">li</span> := <span class="id" title="var">li'</span>; <span class="id" title="var">lo</span> := <span class="id" title="var">lo'</span>; <span class="id" title="var">ln</span> := <span class="id" title="var">ln'</span> |}, <span class="id" title="var">k'</span>|] -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">lo</span> = <span class="id" title="var">lo'</span> \/ <span class="id" title="tactic">exists</span> <span class="id" title="var">v</span>, <span class="id" title="var">outList</span> <span class="id" title="var">lo</span> -<span class="id" title="var">tl</span>- <span class="id" title="var">v</span> ?? -<span class="id" title="var">tl</span>&gt; <span class="id" title="var">outList</span> <span class="id" title="var">lo'</span><br/>
+&nbsp;&nbsp;\/ <span class="id" title="var">outList</span> <span class="id" title="var">lo</span> -<span class="id" title="var">tl</span>- <span class="id" title="var">v</span> !! -<span class="id" title="var">tl</span>&gt; <span class="id" title="var">outList</span> <span class="id" title="var">lo'</span>. <span class="id" title="var">Admitted</span>. 
+<br/>
+</div>
+<hr/>This page has been generated by <a href="http://coq.inria.fr/">coqdoc</a>
+</div>
+
+</div>
+
+</body>
+</html>

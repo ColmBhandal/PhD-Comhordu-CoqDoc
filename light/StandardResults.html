@@ -1,0 +1,1256 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<title>StandardResults</title>
+</head>
+
+<body>
+
+<div id="page">
+
+<div id="header">
+</div>
+
+<div id="main">
+
+<h1 class="libtitle">Library StandardResults</h1>
+
+<div class="code">
+</div>
+
+<div class="doc">
+This file was written by Colm Bhandal, PhD student, Foundations and Methods group,
+School of Computer Science and Statistics, Trinity College, Dublin, Ireland.
+<div class="paragraph"> </div>
+
+ Theorems about Real numbers, distances, intervals.
+</div>
+<div class="code">
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.Extras.LibTactics</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Export</span> <span class="id" title="var">Reals</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Export</span> <span class="id" title="var">Logic.ProofIrrelevance</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.GenTacs</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">R_scope</span>.<br/>
+
+<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Equality is decidable on the set X.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">eqDec</span> (<span class="id" title="var">X</span> : <span class="id" title="keyword">Type</span>) := <span class="id" title="keyword">forall</span> <span class="id" title="var">x1</span> <span class="id" title="var">x2</span> : <span class="id" title="var">X</span>,<br/>
+&nbsp;&nbsp;{<span class="id" title="var">x1</span> = <span class="id" title="var">x2</span>} + {<span class="id" title="var">x1</span> &lt;&gt; <span class="id" title="var">x2</span>}.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">notEq_symm</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">X</span> : <span class="id" title="keyword">Type</span>) (<span class="id" title="var">x1</span> <span class="id" title="var">x2</span> : <span class="id" title="var">X</span>), ~<span class="id" title="var">x1</span> = <span class="id" title="var">x2</span> -&gt; ~<span class="id" title="var">x2</span> = <span class="id" title="var">x1</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">two_nonneg</span> : 0 &lt;= 2. <br/>
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">Rmult_le_zero</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| [ |- 0 &lt;= ?<span class="id" title="var">y1</span> * ?<span class="id" title="var">y2</span>] =&gt; <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">replace</span> 0 <span class="id" title="keyword">with</span> (0 * 0);[ | <span class="id" title="tactic">ring</span>];<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rmult_le_compat</span>;[<span class="id" title="tactic">apply</span> <span class="id" title="var">Rle_refl</span> | <span class="id" title="tactic">apply</span> <span class="id" title="var">Rle_refl</span> | ..]<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">Rplus3_swap_2_3</span> <span class="id" title="var">a</span> <span class="id" title="var">b</span> <span class="id" title="var">c</span> := <span class="id" title="tactic">replace</span> (<span class="id" title="var">a</span> + <span class="id" title="var">b</span> + <span class="id" title="var">c</span>) <span class="id" title="keyword">with</span> (<span class="id" title="var">a</span> + <span class="id" title="var">c</span> + <span class="id" title="var">b</span>); [ | <span class="id" title="tactic">ring</span>].<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">Rminus_plus_zero</span> <span class="id" title="var">a</span> <span class="id" title="var">b</span> := <span class="id" title="tactic">replace</span> (<span class="id" title="var">a</span> - <span class="id" title="var">b</span>) <span class="id" title="keyword">with</span> (<span class="id" title="var">a</span> + (0 - <span class="id" title="var">b</span>));[ | <span class="id" title="tactic">ring</span>].<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Splits the goal into 2 subgoals based on d &lt;= t or t &lt; d
+</div>
+<div class="code">
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">Rleltcases</span> <span class="id" title="var">d</span> <span class="id" title="var">t</span> <span class="id" title="var">U</span> :=  <span class="id" title="keyword">let</span> <span class="id" title="var">H</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span> <span class="id" title="var">lets</span> <span class="id" title="var">H</span> : <span class="id" title="var">Rle_or_lt</span> <span class="id" title="var">d</span> <span class="id" title="var">t</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">U1</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span> <span class="id" title="var">elim_intro</span> <span class="id" title="var">H</span> <span class="id" title="var">U1</span> <span class="id" title="var">U1</span>.<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">not_Rle_lt</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">r1</span> <span class="id" title="var">r2</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;~<span class="id" title="var">r1</span> &lt;= <span class="id" title="var">r2</span> -&gt; <span class="id" title="var">r2</span> &lt; <span class="id" title="var">r1</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">RltMinusBothSides</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">r1</span> <span class="id" title="var">r2</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">r2</span> &lt; <span class="id" title="var">r1</span> -&gt; 0 &lt; (<span class="id" title="var">r1</span> - <span class="id" title="var">r2</span>).<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">Rle_trans_red</span> := <br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| [<span class="id" title="var">H1</span> : ?<span class="id" title="var">r1</span> &lt;= ?<span class="id" title="var">r2</span>, <span class="id" title="var">H2</span> : ?<span class="id" title="var">r2</span> &lt;= ?<span class="id" title="var">r3</span> |- ?<span class="id" title="var">r1</span> &lt;= ?<span class="id" title="var">r3</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">Rle_trans</span>;[<span class="id" title="tactic">apply</span> <span class="id" title="var">H1</span> | <span class="id" title="tactic">apply</span> <span class="id" title="var">H2</span>]<br/>
+&nbsp;&nbsp;| [<span class="id" title="var">H1</span> : ?<span class="id" title="var">r1</span> &lt;= ?<span class="id" title="var">r2</span> |- ?<span class="id" title="var">r1</span> &lt;= ?<span class="id" title="var">r3</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">Rle_trans</span>;[<span class="id" title="tactic">apply</span> <span class="id" title="var">H1</span> | ]<br/>
+&nbsp;&nbsp;| [<span class="id" title="var">H2</span> : ?<span class="id" title="var">r2</span> &lt;= ?<span class="id" title="var">r3</span> |- ?<span class="id" title="var">r1</span> &lt;= ?<span class="id" title="var">r3</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">Rle_trans</span>;[ | <span class="id" title="tactic">apply</span> <span class="id" title="var">H2</span>]<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">Rle_trans_rev_red</span> := <br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">reverse</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| [<span class="id" title="var">H1</span> : ?<span class="id" title="var">r1</span> &lt;= ?<span class="id" title="var">r2</span>, <span class="id" title="var">H2</span> : ?<span class="id" title="var">r2</span> &lt;= ?<span class="id" title="var">r3</span> |- ?<span class="id" title="var">r1</span> &lt;= ?<span class="id" title="var">r3</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">Rle_trans</span>;[<span class="id" title="tactic">apply</span> <span class="id" title="var">H1</span> | <span class="id" title="tactic">apply</span> <span class="id" title="var">H2</span>]<br/>
+&nbsp;&nbsp;| [<span class="id" title="var">H1</span> : ?<span class="id" title="var">r1</span> &lt;= ?<span class="id" title="var">r2</span> |- ?<span class="id" title="var">r1</span> &lt;= ?<span class="id" title="var">r3</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">Rle_trans</span>;[<span class="id" title="tactic">apply</span> <span class="id" title="var">H1</span> | ]<br/>
+&nbsp;&nbsp;| [<span class="id" title="var">H2</span> : ?<span class="id" title="var">r2</span> &lt;= ?<span class="id" title="var">r3</span> |- ?<span class="id" title="var">r1</span> &lt;= ?<span class="id" title="var">r3</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">Rle_trans</span>;[ | <span class="id" title="tactic">apply</span> <span class="id" title="var">H2</span>]<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">Rplus_le_cancel_middle</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| [ |- ?<span class="id" title="var">x1</span> + ?<span class="id" title="var">r</span> + ?<span class="id" title="var">x2</span> &lt;= ?<span class="id" title="var">y1</span> + ?<span class="id" title="var">r</span> + ?<span class="id" title="var">y2</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">replace</span> (<span class="id" title="var">x1</span> + <span class="id" title="var">r</span> + <span class="id" title="var">x2</span>) <span class="id" title="keyword">with</span> (<span class="id" title="var">x1</span> + <span class="id" title="var">x2</span> + <span class="id" title="var">r</span>);[ | <span class="id" title="tactic">ring</span>];<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">replace</span> (<span class="id" title="var">y1</span> + <span class="id" title="var">r</span> + <span class="id" title="var">y2</span>) <span class="id" title="keyword">with</span> (<span class="id" title="var">y1</span> + <span class="id" title="var">y2</span> + <span class="id" title="var">r</span>);[ | <span class="id" title="tactic">ring</span>];<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_le_compat_r</span><br/>
+&nbsp;&nbsp;| [ |- ?<span class="id" title="var">x1</span> + ?<span class="id" title="var">r</span> &lt;= ?<span class="id" title="var">y1</span> + ?<span class="id" title="var">r</span> + ?<span class="id" title="var">y2</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">replace</span> (<span class="id" title="var">y1</span> + <span class="id" title="var">r</span> + <span class="id" title="var">y2</span>) <span class="id" title="keyword">with</span> (<span class="id" title="var">y1</span> + <span class="id" title="var">y2</span> + <span class="id" title="var">r</span>);[ | <span class="id" title="tactic">ring</span>];<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_le_compat_r</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">Rle_ring_solve</span> := <span class="id" title="tactic">apply</span> <span class="id" title="var">Req_le</span>; <span class="id" title="tactic">simpl</span>; <span class="id" title="tactic">ring</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">Rle_refl_solve</span> := <span class="id" title="tactic">apply</span> <span class="id" title="var">Rle_refl</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rle_plus_r</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">x</span> <span class="id" title="var">y</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;0 &lt;= <span class="id" title="var">y</span> -&gt; <span class="id" title="var">x</span> &lt;= <span class="id" title="var">x</span> + <span class="id" title="var">y</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rle_plus_l</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">x</span> <span class="id" title="var">y</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;0 &lt;= <span class="id" title="var">y</span> -&gt; <span class="id" title="var">x</span> &lt;= <span class="id" title="var">y</span> + <span class="id" title="var">x</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">RleMinusBothSides</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">r1</span> <span class="id" title="var">r2</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">r2</span> &lt;= <span class="id" title="var">r1</span> -&gt; 0 &lt;= (<span class="id" title="var">r1</span> - <span class="id" title="var">r2</span>). <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rmult_le_0_compat</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">r1</span> <span class="id" title="var">r2</span> : <span class="id" title="var">R</span>,<br/>
+&nbsp;&nbsp;0 &lt;= <span class="id" title="var">r1</span> -&gt; 0 &lt;= <span class="id" title="var">r2</span> -&gt; 0 &lt;= <span class="id" title="var">r1</span> * <span class="id" title="var">r2</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rle_zero_plus</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">r1</span> <span class="id" title="var">r2</span> : <span class="id" title="var">R</span>,<br/>
+&nbsp;&nbsp;0 &lt;= <span class="id" title="var">r1</span> -&gt; 0 &lt;= <span class="id" title="var">r2</span> -&gt; 0 &lt;= <span class="id" title="var">r1</span> + <span class="id" title="var">r2</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rle_zero_mult</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">r1</span> <span class="id" title="var">r2</span> : <span class="id" title="var">R</span>,<br/>
+&nbsp;&nbsp;0 &lt;= <span class="id" title="var">r1</span> -&gt; 0 &lt;= <span class="id" title="var">r2</span> -&gt; 0 &lt;= <span class="id" title="var">r1</span> * <span class="id" title="var">r2</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">RlePlusExistsR</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">r1</span> <span class="id" title="var">r2</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">r1</span> &lt;= <span class="id" title="var">r2</span> -&gt; <span class="id" title="tactic">exists</span> <span class="id" title="var">r3</span>, <span class="id" title="var">r2</span> = <span class="id" title="var">r1</span> + <span class="id" title="var">r3</span> /\ 0 &lt;= <span class="id" title="var">r3</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">RlePlusExistsL</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">r1</span> <span class="id" title="var">r2</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">r1</span> &lt;= <span class="id" title="var">r2</span> -&gt; <span class="id" title="tactic">exists</span> <span class="id" title="var">r3</span>, <span class="id" title="var">r2</span> = <span class="id" title="var">r3</span> + <span class="id" title="var">r1</span> /\ 0 &lt;= <span class="id" title="var">r3</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rle_or_le</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">r1</span> <span class="id" title="var">r2</span> : <span class="id" title="var">R</span>), <span class="id" title="var">r1</span> &lt;= <span class="id" title="var">r2</span> \/ <span class="id" title="var">r2</span> &lt;= <span class="id" title="var">r1</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rplus_le_swap_rr</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">z</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">x</span> &lt;= <span class="id" title="var">y</span> + <span class="id" title="var">z</span> -&gt; <span class="id" title="var">x</span> - <span class="id" title="var">z</span> &lt;= <span class="id" title="var">y</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rplus_le_swap_rl</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">z</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">x</span> &lt;= <span class="id" title="var">y</span> + <span class="id" title="var">z</span> -&gt; <span class="id" title="var">x</span> - <span class="id" title="var">y</span> &lt;= <span class="id" title="var">z</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rplus_le_swap_lr</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">z</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">x</span> + <span class="id" title="var">y</span> &lt;= <span class="id" title="var">z</span> -&gt; <span class="id" title="var">x</span> &lt;= <span class="id" title="var">z</span> - <span class="id" title="var">y</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rplus_le_swap_ll</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">z</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">x</span> + <span class="id" title="var">y</span> &lt;= <span class="id" title="var">z</span> -&gt; <span class="id" title="var">y</span> &lt;= <span class="id" title="var">z</span> - <span class="id" title="var">x</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rminus_le_swap_rr</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">z</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">x</span> &lt;= <span class="id" title="var">y</span> - <span class="id" title="var">z</span> -&gt; <span class="id" title="var">x</span> + <span class="id" title="var">z</span> &lt;= <span class="id" title="var">y</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rminus_le_swap_lr</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">z</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">x</span> - <span class="id" title="var">y</span> &lt;= <span class="id" title="var">z</span> -&gt; <span class="id" title="var">x</span> &lt;= <span class="id" title="var">z</span> + <span class="id" title="var">y</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rplus_le_weaken_lr</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">z</span> : <span class="id" title="var">R</span>), <span class="id" title="var">x</span> + <span class="id" title="var">y</span> &lt;= <span class="id" title="var">z</span> -&gt; 0 &lt;= <span class="id" title="var">y</span> -&gt; <span class="id" title="var">x</span> &lt;= <span class="id" title="var">z</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rplus_le_weaken_ll</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">z</span> : <span class="id" title="var">R</span>), <span class="id" title="var">x</span> + <span class="id" title="var">y</span> &lt;= <span class="id" title="var">z</span> -&gt; 0 &lt;= <span class="id" title="var">x</span> -&gt; <span class="id" title="var">y</span> &lt;= <span class="id" title="var">z</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rplus_le_weaken_rr</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">z</span> : <span class="id" title="var">R</span>), 0 &lt;= <span class="id" title="var">z</span> -&gt; <span class="id" title="var">x</span> &lt;= <span class="id" title="var">y</span> -&gt; <span class="id" title="var">x</span> &lt;= <span class="id" title="var">y</span> + <span class="id" title="var">z</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rplus_le_weaken_rl</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">z</span> : <span class="id" title="var">R</span>), 0 &lt;= <span class="id" title="var">y</span> -&gt; <span class="id" title="var">x</span> &lt;= <span class="id" title="var">z</span> -&gt; <span class="id" title="var">x</span> &lt;= <span class="id" title="var">y</span> + <span class="id" title="var">z</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rminus_le_weaken_lr</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">z</span> : <span class="id" title="var">R</span>), 0 &lt;= <span class="id" title="var">y</span> -&gt; <span class="id" title="var">x</span> &lt;= <span class="id" title="var">z</span> -&gt; <span class="id" title="var">x</span> - <span class="id" title="var">y</span> &lt;= <span class="id" title="var">z</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Tries to solve an inequality on real numbers.
+</div>
+<div class="code">
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">Rplus_le_tac</span> := <br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H1</span> : ?<span class="id" title="var">r1</span> &lt;= ?<span class="id" title="var">r3</span>, <span class="id" title="var">H2</span> : ?<span class="id" title="var">r2</span> &lt;= ?<span class="id" title="var">r4</span> |- ?<span class="id" title="var">r1</span> + ?<span class="id" title="var">r2</span> &lt;= ?<span class="id" title="var">r3</span> + ?<span class="id" title="var">r4</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_le_compat</span>;[<span class="id" title="tactic">apply</span> <span class="id" title="var">H1</span> | <span class="id" title="tactic">apply</span> <span class="id" title="var">H2</span>]<br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H1</span> : ?<span class="id" title="var">r1</span> &lt;= ?<span class="id" title="var">r3</span>, <span class="id" title="var">H2</span> : ?<span class="id" title="var">r2</span> &lt;= ?<span class="id" title="var">r4</span> |- ?<span class="id" title="var">r2</span> + ?<span class="id" title="var">r1</span> &lt;= ?<span class="id" title="var">r3</span> + ?<span class="id" title="var">r4</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">Rplus_comm</span>; <span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_le_compat</span>;[<span class="id" title="tactic">apply</span> <span class="id" title="var">H1</span> | <span class="id" title="tactic">apply</span> <span class="id" title="var">H2</span>]<br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H1</span> : ?<span class="id" title="var">r1</span> &lt;= ?<span class="id" title="var">r2</span>|- ?<span class="id" title="var">r</span> + ?<span class="id" title="var">r1</span> &lt;= ?<span class="id" title="var">r</span> + ?<span class="id" title="var">r2</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_le_compat_l</span>;<span class="id" title="tactic">apply</span> <span class="id" title="var">H1</span><br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H1</span> : ?<span class="id" title="var">r1</span> &lt;= ?<span class="id" title="var">r2</span>|- ?<span class="id" title="var">r1</span> + ?<span class="id" title="var">r</span> &lt;= ?<span class="id" title="var">r2</span> + ?<span class="id" title="var">r</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_le_compat_r</span>;<span class="id" title="tactic">apply</span> <span class="id" title="var">H1</span><br/>
+&nbsp;&nbsp;| [ |- ?<span class="id" title="var">r</span> + ?<span class="id" title="var">r1</span> &lt;= ?<span class="id" title="var">r</span> + ?<span class="id" title="var">r2</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_le_compat_l</span><br/>
+&nbsp;&nbsp;| [ |- ?<span class="id" title="var">r1</span> + ?<span class="id" title="var">r</span> &lt;= ?<span class="id" title="var">r2</span> + ?<span class="id" title="var">r</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_le_compat_r</span><br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H</span> : ?<span class="id" title="var">r1</span> + ?<span class="id" title="var">r</span> &lt;= ?<span class="id" title="var">r2</span> + ?<span class="id" title="var">r</span> |- ?<span class="id" title="var">r1</span> &lt;= ?<span class="id" title="var">r2</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_le_reg_l</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>; <span class="id" title="tactic">assumption</span><br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H</span> : ?<span class="id" title="var">r</span> + ?<span class="id" title="var">r1</span> &lt;= ?<span class="id" title="var">r</span> + ?<span class="id" title="var">r2</span> |- ?<span class="id" title="var">r1</span> &lt;= ?<span class="id" title="var">r2</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_le_reg_r</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>; <span class="id" title="tactic">assumption</span><br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H</span> : ?<span class="id" title="var">x</span> &lt;= ?<span class="id" title="var">y</span> + ?<span class="id" title="var">z</span> |- ?<span class="id" title="var">x</span> - ?<span class="id" title="var">z</span> &lt;= ?<span class="id" title="var">y</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_le_swap_rr</span>; <span class="id" title="tactic">assumption</span><br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H</span> : ?<span class="id" title="var">x</span> + ?<span class="id" title="var">y</span> &lt;= ?<span class="id" title="var">z</span> |- ?<span class="id" title="var">y</span> &lt;= ?<span class="id" title="var">z</span> - ?<span class="id" title="var">x</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_le_swap_ll</span>; <span class="id" title="tactic">assumption</span><br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H</span> : ?<span class="id" title="var">x</span> + ?<span class="id" title="var">y</span> &lt;= ?<span class="id" title="var">z</span> |- ?<span class="id" title="var">x</span> &lt;= ?<span class="id" title="var">z</span> - ?<span class="id" title="var">y</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_le_swap_lr</span>; <span class="id" title="tactic">assumption</span><br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H</span> : ?<span class="id" title="var">x</span> &lt;= ?<span class="id" title="var">y</span> + ?<span class="id" title="var">z</span> |- ?<span class="id" title="var">x</span> - ?<span class="id" title="var">y</span> &lt;= ?<span class="id" title="var">z</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_le_swap_rl</span>; <span class="id" title="tactic">assumption</span><br/>
+&nbsp;&nbsp;| [ |- ?<span class="id" title="var">r1</span> &lt;= ?<span class="id" title="var">r1</span> + <span class="id" title="var">_</span>] =&gt; <span class="id" title="tactic">apply</span> <span class="id" title="var">Rle_plus_r</span><br/>
+&nbsp;&nbsp;| [ |- ?<span class="id" title="var">r1</span> &lt;= <span class="id" title="var">_</span> + ?<span class="id" title="var">r1</span>] =&gt; <span class="id" title="tactic">apply</span> <span class="id" title="var">Rle_plus_l</span><br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H</span> : ?<span class="id" title="var">x</span> + ?<span class="id" title="var">y</span> &lt;= ?<span class="id" title="var">z</span> |- ?<span class="id" title="var">x</span> &lt;= ?<span class="id" title="var">z</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">Rplus_le_weaken_lr</span>; <span class="id" title="tactic">apply</span> <span class="id" title="var">H</span><br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H</span> : ?<span class="id" title="var">x</span> + ?<span class="id" title="var">y</span> &lt;= ?<span class="id" title="var">z</span> |- ?<span class="id" title="var">y</span> &lt;= ?<span class="id" title="var">z</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">Rplus_le_weaken_ll</span>; <span class="id" title="tactic">apply</span> <span class="id" title="var">H</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">Rlt_trans_red</span> := <br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| [<span class="id" title="var">H1</span> : ?<span class="id" title="var">r1</span> &lt; ?<span class="id" title="var">r2</span>, <span class="id" title="var">H2</span> : ?<span class="id" title="var">r2</span> &lt; ?<span class="id" title="var">r3</span> |- ?<span class="id" title="var">r1</span> &lt; ?<span class="id" title="var">r3</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">Rlt_trans</span>;[<span class="id" title="tactic">apply</span> <span class="id" title="var">H1</span> | <span class="id" title="tactic">apply</span> <span class="id" title="var">H2</span>]<br/>
+&nbsp;&nbsp;| [<span class="id" title="var">H1</span> : ?<span class="id" title="var">r1</span> &lt; ?<span class="id" title="var">r2</span> |- ?<span class="id" title="var">r1</span> &lt; ?<span class="id" title="var">r3</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">Rlt_trans</span>;[<span class="id" title="tactic">apply</span> <span class="id" title="var">H1</span> | ]<br/>
+&nbsp;&nbsp;| [<span class="id" title="var">H2</span> : ?<span class="id" title="var">r2</span> &lt; ?<span class="id" title="var">r3</span> |- ?<span class="id" title="var">r1</span> &lt; ?<span class="id" title="var">r3</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">Rlt_trans</span>;[ | <span class="id" title="tactic">apply</span> <span class="id" title="var">H2</span>]<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">Rlt_trans_rev_red</span> := <br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">reverse</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| [<span class="id" title="var">H1</span> : ?<span class="id" title="var">r1</span> &lt; ?<span class="id" title="var">r2</span>, <span class="id" title="var">H2</span> : ?<span class="id" title="var">r2</span> &lt; ?<span class="id" title="var">r3</span> |- ?<span class="id" title="var">r1</span> &lt; ?<span class="id" title="var">r3</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">Rlt_trans</span>;[<span class="id" title="tactic">apply</span> <span class="id" title="var">H1</span> | <span class="id" title="tactic">apply</span> <span class="id" title="var">H2</span>]<br/>
+&nbsp;&nbsp;| [<span class="id" title="var">H1</span> : ?<span class="id" title="var">r1</span> &lt; ?<span class="id" title="var">r2</span> |- ?<span class="id" title="var">r1</span> &lt; ?<span class="id" title="var">r3</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">Rlt_trans</span>;[<span class="id" title="tactic">apply</span> <span class="id" title="var">H1</span> | ]<br/>
+&nbsp;&nbsp;| [<span class="id" title="var">H2</span> : ?<span class="id" title="var">r2</span> &lt; ?<span class="id" title="var">r3</span> |- ?<span class="id" title="var">r1</span> &lt; ?<span class="id" title="var">r3</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">Rlt_trans</span>;[ | <span class="id" title="tactic">apply</span> <span class="id" title="var">H2</span>]<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">Rplus_lt_cancel_middle</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| [ |- ?<span class="id" title="var">x1</span> + ?<span class="id" title="var">r</span> + ?<span class="id" title="var">x2</span> &lt; ?<span class="id" title="var">y1</span> + ?<span class="id" title="var">r</span> + ?<span class="id" title="var">y2</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">replace</span> (<span class="id" title="var">x1</span> + <span class="id" title="var">r</span> + <span class="id" title="var">x2</span>) <span class="id" title="keyword">with</span> (<span class="id" title="var">x1</span> + <span class="id" title="var">x2</span> + <span class="id" title="var">r</span>);[ | <span class="id" title="tactic">ring</span>];<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">replace</span> (<span class="id" title="var">y1</span> + <span class="id" title="var">r</span> + <span class="id" title="var">y2</span>) <span class="id" title="keyword">with</span> (<span class="id" title="var">y1</span> + <span class="id" title="var">y2</span> + <span class="id" title="var">r</span>);[ | <span class="id" title="tactic">ring</span>];<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_lt_compat_r</span><br/>
+&nbsp;&nbsp;| [ |- ?<span class="id" title="var">x1</span> + ?<span class="id" title="var">r</span> &lt; ?<span class="id" title="var">y1</span> + ?<span class="id" title="var">r</span> + ?<span class="id" title="var">y2</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">replace</span> (<span class="id" title="var">y1</span> + <span class="id" title="var">r</span> + <span class="id" title="var">y2</span>) <span class="id" title="keyword">with</span> (<span class="id" title="var">y1</span> + <span class="id" title="var">y2</span> + <span class="id" title="var">r</span>);[ | <span class="id" title="tactic">ring</span>];<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_lt_compat_r</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rlt_plus_r</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">x</span> <span class="id" title="var">y</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;0 &lt; <span class="id" title="var">y</span> -&gt; <span class="id" title="var">x</span> &lt; <span class="id" title="var">x</span> + <span class="id" title="var">y</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rlt_plus_l</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">x</span> <span class="id" title="var">y</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;0 &lt; <span class="id" title="var">y</span> -&gt; <span class="id" title="var">x</span> &lt; <span class="id" title="var">y</span> + <span class="id" title="var">x</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rlt_zero_plus</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">r1</span> <span class="id" title="var">r2</span> : <span class="id" title="var">R</span>,<br/>
+&nbsp;&nbsp;0 &lt; <span class="id" title="var">r1</span> -&gt; 0 &lt; <span class="id" title="var">r2</span> -&gt; 0 &lt; <span class="id" title="var">r1</span> + <span class="id" title="var">r2</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">RltPlusExistsR</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">r1</span> <span class="id" title="var">r2</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">r1</span> &lt; <span class="id" title="var">r2</span> -&gt; <span class="id" title="tactic">exists</span> <span class="id" title="var">r3</span>, <span class="id" title="var">r2</span> = <span class="id" title="var">r1</span> + <span class="id" title="var">r3</span> /\ 0 &lt; <span class="id" title="var">r3</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">RltPlusExistsL</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">r1</span> <span class="id" title="var">r2</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">r1</span> &lt; <span class="id" title="var">r2</span> -&gt; <span class="id" title="tactic">exists</span> <span class="id" title="var">r3</span>, <span class="id" title="var">r2</span> = <span class="id" title="var">r3</span> + <span class="id" title="var">r1</span> /\ 0 &lt; <span class="id" title="var">r3</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">RltExistsBetween</span> (<span class="id" title="var">r1</span> <span class="id" title="var">r2</span> : <span class="id" title="var">R</span>) : <span class="id" title="var">r1</span> &lt; <span class="id" title="var">r2</span> -&gt; <span class="id" title="tactic">exists</span> <span class="id" title="var">r3</span>,<br/>
+&nbsp;&nbsp;<span class="id" title="var">r1</span> &lt; <span class="id" title="var">r3</span> &lt; <span class="id" title="var">r2</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rplus_lt_swap_rl</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">z</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">x</span> &lt; <span class="id" title="var">y</span> + <span class="id" title="var">z</span> -&gt; <span class="id" title="var">x</span> - <span class="id" title="var">y</span> &lt; <span class="id" title="var">z</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rplus_lt_swap_rr</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">z</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">x</span> &lt; <span class="id" title="var">y</span> + <span class="id" title="var">z</span> -&gt; <span class="id" title="var">x</span> - <span class="id" title="var">z</span> &lt; <span class="id" title="var">y</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rplus_lt_swap_ll</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">z</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">x</span> + <span class="id" title="var">y</span> &lt; <span class="id" title="var">z</span> -&gt; <span class="id" title="var">y</span> &lt; <span class="id" title="var">z</span> - <span class="id" title="var">x</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rplus_lt_swap_lr</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">z</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">x</span> + <span class="id" title="var">y</span> &lt; <span class="id" title="var">z</span> -&gt; <span class="id" title="var">x</span> &lt; <span class="id" title="var">z</span> - <span class="id" title="var">y</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rminus_lt_swap_rr</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">z</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">x</span> &lt; <span class="id" title="var">y</span> - <span class="id" title="var">z</span> -&gt; <span class="id" title="var">x</span> + <span class="id" title="var">z</span> &lt; <span class="id" title="var">y</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rminus_lt_swap_lr</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">z</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">x</span> - <span class="id" title="var">y</span> &lt; <span class="id" title="var">z</span> -&gt; <span class="id" title="var">x</span> &lt; <span class="id" title="var">z</span> + <span class="id" title="var">y</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rplus_lt_reg_l</span>: <span class="id" title="keyword">forall</span> <span class="id" title="var">r</span> <span class="id" title="var">r1</span> <span class="id" title="var">r2</span> : <span class="id" title="var">R</span>, <span class="id" title="var">r1</span> + <span class="id" title="var">r</span> &lt; <span class="id" title="var">r2</span> + <span class="id" title="var">r</span> -&gt; <span class="id" title="var">r1</span> &lt; <span class="id" title="var">r2</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rplus_lt_reg_r</span>: <span class="id" title="keyword">forall</span> <span class="id" title="var">r</span> <span class="id" title="var">r1</span> <span class="id" title="var">r2</span> : <span class="id" title="var">R</span>, <span class="id" title="var">r</span> + <span class="id" title="var">r1</span> &lt; <span class="id" title="var">r</span> + <span class="id" title="var">r2</span> -&gt; <span class="id" title="var">r1</span> &lt; <span class="id" title="var">r2</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rplus_lt_weaken_lr</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">z</span> : <span class="id" title="var">R</span>), <span class="id" title="var">x</span> + <span class="id" title="var">y</span> &lt; <span class="id" title="var">z</span> -&gt; 0 &lt;= <span class="id" title="var">y</span> -&gt; <span class="id" title="var">x</span> &lt; <span class="id" title="var">z</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rplus_lt_weaken_ll</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">z</span> : <span class="id" title="var">R</span>), <span class="id" title="var">x</span> + <span class="id" title="var">y</span> &lt; <span class="id" title="var">z</span> -&gt; 0 &lt;= <span class="id" title="var">x</span> -&gt; <span class="id" title="var">y</span> &lt; <span class="id" title="var">z</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rplus_lt_weaken_rr</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">z</span> : <span class="id" title="var">R</span>), 0 &lt;= <span class="id" title="var">z</span> -&gt; <span class="id" title="var">x</span> &lt; <span class="id" title="var">y</span> -&gt; <span class="id" title="var">x</span> &lt; <span class="id" title="var">y</span> + <span class="id" title="var">z</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rplus_lt_weaken_rl</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">z</span> : <span class="id" title="var">R</span>), 0 &lt;= <span class="id" title="var">y</span> -&gt; <span class="id" title="var">x</span> &lt; <span class="id" title="var">z</span> -&gt; <span class="id" title="var">x</span> &lt; <span class="id" title="var">y</span> + <span class="id" title="var">z</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rminus_lt_weaken_lr</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">z</span> : <span class="id" title="var">R</span>), 0 &lt;= <span class="id" title="var">y</span> -&gt; <span class="id" title="var">x</span> &lt; <span class="id" title="var">z</span> -&gt; <span class="id" title="var">x</span> - <span class="id" title="var">y</span> &lt; <span class="id" title="var">z</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Tries to solve an inequality on real numbers.
+</div>
+<div class="code">
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">Rplus_lt_tac</span> := <br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H1</span> : ?<span class="id" title="var">r1</span> &lt; ?<span class="id" title="var">r3</span>, <span class="id" title="var">H2</span> : ?<span class="id" title="var">r2</span> &lt; ?<span class="id" title="var">r4</span> |- ?<span class="id" title="var">r1</span> + ?<span class="id" title="var">r2</span> &lt; ?<span class="id" title="var">r3</span> + ?<span class="id" title="var">r4</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_lt_compat</span>;[<span class="id" title="tactic">apply</span> <span class="id" title="var">H1</span> | <span class="id" title="tactic">apply</span> <span class="id" title="var">H2</span>]<br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H1</span> : ?<span class="id" title="var">r1</span> &lt;= ?<span class="id" title="var">r3</span>, <span class="id" title="var">H2</span> : ?<span class="id" title="var">r2</span> &lt; ?<span class="id" title="var">r4</span> |- ?<span class="id" title="var">r1</span> + ?<span class="id" title="var">r2</span> &lt; ?<span class="id" title="var">r3</span> + ?<span class="id" title="var">r4</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_le_lt_compat</span>;[<span class="id" title="tactic">apply</span> <span class="id" title="var">H1</span> | <span class="id" title="tactic">apply</span> <span class="id" title="var">H2</span>]<br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H1</span> : ?<span class="id" title="var">r1</span> &lt; ?<span class="id" title="var">r3</span>, <span class="id" title="var">H2</span> : ?<span class="id" title="var">r2</span> &lt;= ?<span class="id" title="var">r4</span> |- ?<span class="id" title="var">r1</span> + ?<span class="id" title="var">r2</span> &lt; ?<span class="id" title="var">r3</span> + ?<span class="id" title="var">r4</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_lt_le_compat</span>;[<span class="id" title="tactic">apply</span> <span class="id" title="var">H1</span> | <span class="id" title="tactic">apply</span> <span class="id" title="var">H2</span>]<br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H1</span> : ?<span class="id" title="var">r1</span> &lt; ?<span class="id" title="var">r3</span>, <span class="id" title="var">H2</span> : ?<span class="id" title="var">r2</span> &lt; ?<span class="id" title="var">r4</span> |- ?<span class="id" title="var">r2</span> + ?<span class="id" title="var">r1</span> &lt; ?<span class="id" title="var">r3</span> + ?<span class="id" title="var">r4</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">Rplus_comm</span>; <span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_lt_compat</span>;[<span class="id" title="tactic">apply</span> <span class="id" title="var">H1</span> | <span class="id" title="tactic">apply</span> <span class="id" title="var">H2</span>]<br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H1</span> : ?<span class="id" title="var">r1</span> &lt; ?<span class="id" title="var">r2</span>|- ?<span class="id" title="var">r</span> + ?<span class="id" title="var">r1</span> &lt; ?<span class="id" title="var">r</span> + ?<span class="id" title="var">r2</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_lt_compat_l</span>;<span class="id" title="tactic">apply</span> <span class="id" title="var">H1</span><br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H1</span> : ?<span class="id" title="var">r1</span> &lt; ?<span class="id" title="var">r2</span>|- ?<span class="id" title="var">r1</span> + ?<span class="id" title="var">r</span> &lt; ?<span class="id" title="var">r2</span> + ?<span class="id" title="var">r</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_lt_compat_r</span>;<span class="id" title="tactic">apply</span> <span class="id" title="var">H1</span><br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H</span> : ?<span class="id" title="var">r1</span> + ?<span class="id" title="var">r</span> &lt; ?<span class="id" title="var">r2</span> + ?<span class="id" title="var">r</span> |- ?<span class="id" title="var">r1</span> &lt; ?<span class="id" title="var">r2</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_lt_reg_l</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>; <span class="id" title="tactic">assumption</span><br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H</span> : ?<span class="id" title="var">r</span> + ?<span class="id" title="var">r1</span> &lt; ?<span class="id" title="var">r</span> + ?<span class="id" title="var">r2</span> |- ?<span class="id" title="var">r1</span> &lt; ?<span class="id" title="var">r2</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_lt_reg_r</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>; <span class="id" title="tactic">assumption</span><br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H</span> : ?<span class="id" title="var">x</span> &lt; ?<span class="id" title="var">y</span> + ?<span class="id" title="var">z</span> |- ?<span class="id" title="var">x</span> - ?<span class="id" title="var">z</span> &lt; ?<span class="id" title="var">y</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_lt_swap_rr</span>; <span class="id" title="tactic">assumption</span><br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H</span> : ?<span class="id" title="var">x</span> + ?<span class="id" title="var">y</span> &lt; ?<span class="id" title="var">z</span> |- ?<span class="id" title="var">y</span> &lt; ?<span class="id" title="var">z</span> - ?<span class="id" title="var">x</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_lt_swap_ll</span>; <span class="id" title="tactic">assumption</span><br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H</span> : ?<span class="id" title="var">x</span> &lt; ?<span class="id" title="var">y</span> + ?<span class="id" title="var">z</span> |- ?<span class="id" title="var">x</span> - ?<span class="id" title="var">y</span> &lt; ?<span class="id" title="var">z</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_lt_swap_rl</span>; <span class="id" title="tactic">assumption</span><br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H</span> : ?<span class="id" title="var">x</span> + ?<span class="id" title="var">y</span> &lt; ?<span class="id" title="var">z</span> |- ?<span class="id" title="var">x</span> &lt; ?<span class="id" title="var">z</span> - ?<span class="id" title="var">y</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_lt_swap_lr</span>; <span class="id" title="tactic">assumption</span><br/>
+&nbsp;&nbsp;| [ |- ?<span class="id" title="var">r1</span> &lt; ?<span class="id" title="var">r1</span> + <span class="id" title="var">_</span>] =&gt; <span class="id" title="tactic">apply</span> <span class="id" title="var">Rlt_plus_r</span><br/>
+&nbsp;&nbsp;| [ |- ?<span class="id" title="var">r1</span> &lt; <span class="id" title="var">_</span> + ?<span class="id" title="var">r1</span>] =&gt; <span class="id" title="tactic">apply</span> <span class="id" title="var">Rlt_plus_l</span><br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H</span> : ?<span class="id" title="var">x</span> + ?<span class="id" title="var">y</span> &lt; ?<span class="id" title="var">z</span> |- ?<span class="id" title="var">x</span> &lt; ?<span class="id" title="var">z</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">Rplus_lt_weaken_lr</span>; <span class="id" title="tactic">apply</span> <span class="id" title="var">H</span><br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H</span> : ?<span class="id" title="var">x</span> + ?<span class="id" title="var">y</span> &lt; ?<span class="id" title="var">z</span> |- ?<span class="id" title="var">y</span> &lt; ?<span class="id" title="var">z</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">Rplus_lt_weaken_ll</span>; <span class="id" title="tactic">apply</span> <span class="id" title="var">H</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Takes a hypothesis H of type r1 &lt; r2 and gives a hypothesis U of type
+r2 = r1 + d'
+</div>
+<div class="code">
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">Rlttoplus</span> <span class="id" title="var">H</span> <span class="id" title="var">d'</span> <span class="id" title="var">U</span> := <span class="id" title="keyword">let</span> <span class="id" title="var">Q1</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span> <span class="id" title="var">lets</span> <span class="id" title="var">Q1</span> : <span class="id" title="var">RltPlusExistsL</span> <span class="id" title="var">H</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">U1</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span> <span class="id" title="keyword">let</span> <span class="id" title="var">U2</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span> <span class="id" title="var">decompExAnd</span> <span class="id" title="var">Q1</span> <span class="id" title="var">d'</span> <span class="id" title="var">U1</span> <span class="id" title="var">U2</span>.<br/>
+
+<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Performs a contradiction on the assumption that some non-negative real is
+less than 0, i.e. negative.
+</div>
+<div class="code">
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">nonneg_lt0_contra</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| [<span class="id" title="var">H</span> : (<span class="id" title="var">nonneg</span> ?<span class="id" title="var">x</span>) &lt; 0 |- <span class="id" title="var">_</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rlt_not_le</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>; <span class="id" title="var">false</span>; <span class="id" title="tactic">apply</span> <span class="id" title="var">H</span>; <span class="id" title="var">unwrap_apply2</span> <span class="id" title="var">x</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The number one as a positive real number.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">onePos</span> : <span class="id" title="var">posreal</span>. <br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The minimum of two numbers. Note, r2 is returned if the numbers are equal,
+but in that case r1 = r2, so this is the same as returning r1.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">minR</span> (<span class="id" title="var">r1</span> <span class="id" title="var">r2</span> : <span class="id" title="var">R</span>) : <span class="id" title="var">R</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">if</span> (<span class="id" title="var">Rlt_le_dec</span> <span class="id" title="var">r1</span> <span class="id" title="var">r2</span>) <span class="id" title="keyword">then</span> <span class="id" title="var">r1</span> <span class="id" title="keyword">else</span> <span class="id" title="var">r2</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The maximum of two numbers. Note, r1 is returned if the numbers are equal,
+but in that case r1 = r2, so this is the same as returning r2.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">maxR</span> (<span class="id" title="var">r1</span> <span class="id" title="var">r2</span> : <span class="id" title="var">R</span>) : <span class="id" title="var">R</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">if</span> (<span class="id" title="var">Rlt_le_dec</span> <span class="id" title="var">r1</span> <span class="id" title="var">r2</span>) <span class="id" title="keyword">then</span> <span class="id" title="var">r2</span> <span class="id" title="keyword">else</span> <span class="id" title="var">r1</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">zeroNonneg</span> : <span class="id" title="var">nonnegreal</span> := <span class="id" title="var">mknonnegreal</span> 0 (<span class="id" title="var">Rle_refl</span> 0).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Euclidean distance is always &gt;= 0.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">dist_euc_nonneg</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">x1</span> <span class="id" title="var">y1</span> <span class="id" title="var">x2</span> <span class="id" title="var">y2</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;0 &lt;= <span class="id" title="var">dist_euc</span> <span class="id" title="var">x1</span> <span class="id" title="var">y1</span> <span class="id" title="var">x2</span> <span class="id" title="var">y2</span>. <br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Adding a vector to both points leaves distance unchanged.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">dist_eucAddPres</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">x1</span> <span class="id" title="var">y1</span> <span class="id" title="var">x2</span> <span class="id" title="var">y2</span> <span class="id" title="var">x3</span> <span class="id" title="var">y3</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">dist_euc</span> <span class="id" title="var">x1</span> <span class="id" title="var">y1</span> <span class="id" title="var">x2</span> <span class="id" title="var">y2</span> = <span class="id" title="var">dist_euc</span> (<span class="id" title="var">x1</span> + <span class="id" title="var">x3</span>) (<span class="id" title="var">y1</span> + <span class="id" title="var">y3</span>) (<span class="id" title="var">x2</span> + <span class="id" title="var">x3</span>) (<span class="id" title="var">y2</span> + <span class="id" title="var">y3</span>).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Adding (x, y) to one of the coordinates of dist_euc yeilds and expression
+that is within |(x, y)| of the original.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">dist_eucAddLe</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">x1</span> <span class="id" title="var">y1</span> <span class="id" title="var">x2</span> <span class="id" title="var">y2</span> <span class="id" title="var">x3</span> <span class="id" title="var">y3</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">dist_euc</span> (<span class="id" title="var">x1</span> + <span class="id" title="var">x3</span>) (<span class="id" title="var">y1</span> + <span class="id" title="var">y3</span>) (<span class="id" title="var">x2</span>) (<span class="id" title="var">y2</span>) &lt;=<br/>
+&nbsp;&nbsp;<span class="id" title="var">dist_euc</span> <span class="id" title="var">x1</span> <span class="id" title="var">y1</span> <span class="id" title="var">x2</span> <span class="id" title="var">y2</span> + <span class="id" title="var">dist_euc</span> <span class="id" title="var">x3</span> <span class="id" title="var">y3</span> 0 0.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+To show the equality of two nonnegative reals, it suffices to show
+the equality of the numerical parts, i.e. we can ignore the proof terms.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">nonnegRealEqR</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">r1</span> <span class="id" title="var">r2</span> : <span class="id" title="var">nonnegreal</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">nonneg</span> <span class="id" title="var">r1</span> = <span class="id" title="var">nonneg</span> <span class="id" title="var">r2</span> -&gt; <span class="id" title="var">r1</span> = <span class="id" title="var">r2</span>. <br/>
+
+<br/>
+</div>
+
+<div class="doc">
+To show the equality of two positive reals, it suffices to show
+the equality of the numerical parts, i.e. we can ignore the proof terms.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">posRealEqR</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">r1</span> <span class="id" title="var">r2</span> : <span class="id" title="var">posreal</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">pos</span> <span class="id" title="var">r1</span> = <span class="id" title="var">pos</span> <span class="id" title="var">r2</span> -&gt; <span class="id" title="var">r1</span> = <span class="id" title="var">r2</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">R_scope</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Multiplication defined for nonneg reals.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">multNonneg</span> (<span class="id" title="var">r1</span> <span class="id" title="var">r2</span> : <span class="id" title="var">nonnegreal</span>) : <span class="id" title="var">nonnegreal</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">prod</span> := (<span class="id" title="var">r1</span> * <span class="id" title="var">r2</span>) <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">h1</span> := <span class="id" title="var">cond_nonneg</span> <span class="id" title="var">r1</span> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">h2</span> := <span class="id" title="var">cond_nonneg</span> <span class="id" title="var">r2</span> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">h</span> := <span class="id" title="var">Rmult_le_0_compat</span> <span class="id" title="var">r1</span> <span class="id" title="var">r2</span> <span class="id" title="var">h1</span> <span class="id" title="var">h2</span> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;<span class="id" title="var">mknonnegreal</span> <span class="id" title="var">prod</span> <span class="id" title="var">h</span>.<br/>
+<span class="id" title="keyword">Notation</span> &quot;r1 *nn* r2" := (<span class="id" title="var">multNonneg</span> <span class="id" title="var">r1</span> <span class="id" title="var">r2</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 40, <span class="id" title="tactic">left</span> <span class="id" title="keyword">associativity</span>).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Subtraction on nonnegative reals as a total function.
+Gives r1 - r2 if that result is nonnegative, else returns 0.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">subNonnegTot</span> (<span class="id" title="var">r1</span> <span class="id" title="var">r2</span> : <span class="id" title="var">nonnegreal</span>) : <span class="id" title="var">nonnegreal</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> (<span class="id" title="var">Rle_dec</span> <span class="id" title="var">r2</span> <span class="id" title="var">r1</span>) <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| <span class="id" title="tactic">left</span> <span class="id" title="var">p</span> =&gt; <span class="id" title="var">mknonnegreal</span> (<span class="id" title="var">r1</span> - <span class="id" title="var">r2</span>) (<span class="id" title="var">RleMinusBothSides</span> <span class="id" title="var">r1</span> <span class="id" title="var">r2</span> <span class="id" title="var">p</span>)<br/>
+&nbsp;&nbsp;| <span class="id" title="var">_</span> =&gt; <span class="id" title="var">zeroNonneg</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+<span class="id" title="keyword">Notation</span> &quot;r1 -nn- r2" := (<span class="id" title="var">subNonnegTot</span> <span class="id" title="var">r1</span> <span class="id" title="var">r2</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 50).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Adds two nonnegreals together to get a resulting nonegreal.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">addNonneg</span> (<span class="id" title="var">r1</span> <span class="id" title="var">r2</span> : <span class="id" title="var">nonnegreal</span>) : <span class="id" title="var">nonnegreal</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">r1</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| {|<span class="id" title="var">nonneg</span> := <span class="id" title="var">x1</span>; <span class="id" title="var">cond_nonneg</span> := <span class="id" title="var">cn1</span> |} =&gt; <span class="id" title="keyword">match</span> <span class="id" title="var">r2</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| {|<span class="id" title="var">nonneg</span> := <span class="id" title="var">x2</span>; <span class="id" title="var">cond_nonneg</span> := <span class="id" title="var">cn2</span> |} =&gt; <span class="id" title="keyword">let</span> <span class="id" title="var">r</span> := <span class="id" title="var">x1</span> + <span class="id" title="var">x2</span> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">Heqr</span> := <span class="id" title="var">eq_refl</span> <span class="id" title="var">r</span> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;{| <span class="id" title="var">nonneg</span> := <span class="id" title="var">r</span>; <span class="id" title="var">cond_nonneg</span> := <span class="id" title="var">eq_ind_r</span> (<span class="id" title="keyword">fun</span> <span class="id" title="var">r0</span> : <span class="id" title="var">R</span> =&gt; 0 &lt;= <span class="id" title="var">r0</span>)<br/>
+&nbsp;&nbsp;&nbsp;(<span class="id" title="var">Rplus_le_le_0_compat</span> <span class="id" title="var">x1</span> <span class="id" title="var">x2</span> <span class="id" title="var">cn1</span> <span class="id" title="var">cn2</span>) <span class="id" title="var">Heqr</span> |} <span class="id" title="keyword">end</span> <span class="id" title="keyword">end</span>.<br/>
+<span class="id" title="keyword">Notation</span> &quot;x +nn+ y" := (<span class="id" title="var">addNonneg</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 50).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Adding two nonneg numbers and then removing the real part is the same
+as removing the real part and then adding
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">addNonnegFact</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">r1</span> <span class="id" title="var">r2</span> : <span class="id" title="var">nonnegreal</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">nonneg</span> (<span class="id" title="var">r1</span> +<span class="id" title="var">nn</span>+ <span class="id" title="var">r2</span>) = (<span class="id" title="var">nonneg</span> <span class="id" title="var">r1</span>) + (<span class="id" title="var">nonneg</span> <span class="id" title="var">r2</span>).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+zeroNonneg is the right zero for addNonneg
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">addNonnegZeroR</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">r</span> : <span class="id" title="var">nonnegreal</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">r</span> +<span class="id" title="var">nn</span>+ <span class="id" title="var">zeroNonneg</span> = <span class="id" title="var">r</span>. <br/>
+
+<br/>
+</div>
+
+<div class="doc">
+zeroNonneg is the right zero for addNonneg
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">addNonnegZeroL</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">r</span> : <span class="id" title="var">nonnegreal</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">zeroNonneg</span> +<span class="id" title="var">nn</span>+ <span class="id" title="var">r</span> = <span class="id" title="var">r</span>. <br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Removes the proof from an equality of nonnegative reals, simplifying the
+proof obligation to proving the equality on just the reals.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">nonnegEqSimpl</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">r1</span> <span class="id" title="var">r2</span> : <span class="id" title="var">nonnegreal</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">nonneg</span> <span class="id" title="var">r1</span> = <span class="id" title="var">nonneg</span> <span class="id" title="var">r2</span> -&gt; <span class="id" title="var">r1</span> = <span class="id" title="var">r2</span>. <br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Addition of nonnegative reals is associative
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">addNonnegAssoc</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">r1</span> <span class="id" title="var">r2</span> <span class="id" title="var">r3</span> : <span class="id" title="var">nonnegreal</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">r1</span> +<span class="id" title="var">nn</span>+ (<span class="id" title="var">r2</span> +<span class="id" title="var">nn</span>+ <span class="id" title="var">r3</span>) = <span class="id" title="var">r1</span> +<span class="id" title="var">nn</span>+ <span class="id" title="var">r2</span> +<span class="id" title="var">nn</span>+ <span class="id" title="var">r3</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">addNonnegComm</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">r1</span> <span class="id" title="var">r2</span> : <span class="id" title="var">nonnegreal</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">r1</span> +<span class="id" title="var">nn</span>+ <span class="id" title="var">r2</span> = <span class="id" title="var">r2</span> +<span class="id" title="var">nn</span>+ <span class="id" title="var">r1</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">addNonnegCancel</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">r1</span> <span class="id" title="var">r2</span> <span class="id" title="var">r3</span> : <span class="id" title="var">nonnegreal</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">r1</span> +<span class="id" title="var">nn</span>+ <span class="id" title="var">r2</span> = <span class="id" title="var">r1</span> +<span class="id" title="var">nn</span>+ <span class="id" title="var">r3</span> -&gt; <span class="id" title="var">r2</span> = <span class="id" title="var">r3</span>. <br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Equality is decidable for reals.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">eqDecReal</span> : <span class="id" title="var">eqDec</span> <span class="id" title="var">R</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">eqDecNonnegReal</span> : <span class="id" title="var">eqDec</span> <span class="id" title="var">nonnegreal</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">eqDecPosReal</span> : <span class="id" title="var">eqDec</span> <span class="id" title="var">posreal</span>. <br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Squares each element and the adds them.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">sumSquares</span> (<span class="id" title="var">r1</span> <span class="id" title="var">r2</span> : <span class="id" title="var">R</span>) : <span class="id" title="var">R</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">Rsqr</span> <span class="id" title="var">r1</span> + <span class="id" title="var">Rsqr</span> <span class="id" title="var">r2</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Coerce a positive real to a nonnegative real.
+</div>
+<div class="code">
+<span class="id" title="keyword">Coercion</span> <span class="id" title="var">posToNonneg</span> (<span class="id" title="var">r</span> : <span class="id" title="var">posreal</span>) : <span class="id" title="var">nonnegreal</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">r</span> <span class="id" title="keyword">with</span> <span class="id" title="var">mkposreal</span> <span class="id" title="var">p</span> <span class="id" title="var">c</span> =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">mknonnegreal</span> <span class="id" title="var">p</span> (<span class="id" title="var">Rlt_le</span> 0 <span class="id" title="var">p</span> <span class="id" title="var">c</span>) <span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Every positive real is the sum of two positive reals. The simplest
+existential witnesses for this are both half the original number i.e. every number is equal
+to half itself plus half itself.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">addPosRealExists</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">r</span> : <span class="id" title="var">posreal</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">r1</span> <span class="id" title="var">r2</span>, <span class="id" title="var">pos</span> <span class="id" title="var">r</span> = <span class="id" title="var">pos</span> <span class="id" title="var">r1</span> + <span class="id" title="var">pos</span> <span class="id" title="var">r2</span>.<br/>
+
+<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+A position is a pair of reals.
+</div>
+<div class="code">
+<span class="id" title="keyword">Record</span> <span class="id" title="var">Position</span> := <span class="id" title="var">mkPosition</span> {<span class="id" title="var">xCoord</span> : <span class="id" title="var">R</span>; <span class="id" title="var">yCoord</span> : <span class="id" title="var">R</span>}.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Addition on positions (vector addition).
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">addPos</span> (<span class="id" title="var">p1</span> <span class="id" title="var">p2</span> : <span class="id" title="var">Position</span>) : <span class="id" title="var">Position</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">x1</span> := <span class="id" title="var">xCoord</span> <span class="id" title="var">p1</span> <span class="id" title="tactic">in</span> <span class="id" title="keyword">let</span> <span class="id" title="var">y1</span> := <span class="id" title="var">yCoord</span> <span class="id" title="var">p1</span> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">x2</span> := <span class="id" title="var">xCoord</span> <span class="id" title="var">p2</span> <span class="id" title="tactic">in</span> <span class="id" title="keyword">let</span> <span class="id" title="var">y2</span> := <span class="id" title="var">yCoord</span> <span class="id" title="var">p2</span> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;<span class="id" title="var">mkPosition</span> (<span class="id" title="var">x1</span> + <span class="id" title="var">x2</span>) (<span class="id" title="var">y1</span> + <span class="id" title="var">y2</span>).<br/>
+<span class="id" title="keyword">Notation</span> &quot;p1 +p+ p2" := (<span class="id" title="var">addPos</span> <span class="id" title="var">p1</span> <span class="id" title="var">p2</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 50).<br/>
+<span class="id" title="keyword">Hint Unfold</span> <span class="id" title="var">addPos</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Subtraction (vector) on positions.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">minusPos</span> (<span class="id" title="var">p1</span> <span class="id" title="var">p2</span> : <span class="id" title="var">Position</span>) : <span class="id" title="var">Position</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">x1</span> := <span class="id" title="var">xCoord</span> <span class="id" title="var">p1</span> <span class="id" title="tactic">in</span> <span class="id" title="keyword">let</span> <span class="id" title="var">y1</span> := <span class="id" title="var">yCoord</span> <span class="id" title="var">p1</span> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">x2</span> := <span class="id" title="var">xCoord</span> <span class="id" title="var">p2</span> <span class="id" title="tactic">in</span> <span class="id" title="keyword">let</span> <span class="id" title="var">y2</span> := <span class="id" title="var">yCoord</span> <span class="id" title="var">p2</span> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;<span class="id" title="var">mkPosition</span> (<span class="id" title="var">x1</span> - <span class="id" title="var">x2</span>) (<span class="id" title="var">y1</span> - <span class="id" title="var">y2</span>).<br/>
+<span class="id" title="keyword">Notation</span> &quot;p1 -~p- p2" := (<span class="id" title="var">minusPos</span> <span class="id" title="var">p1</span> <span class="id" title="var">p2</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 50).<br/>
+<span class="id" title="keyword">Hint Unfold</span> <span class="id" title="var">minusPos</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">oppPos</span> (<span class="id" title="var">p</span> : <span class="id" title="var">Position</span>) : <span class="id" title="var">Position</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">x</span> := <span class="id" title="var">xCoord</span> <span class="id" title="var">p</span> <span class="id" title="tactic">in</span> <span class="id" title="keyword">let</span> <span class="id" title="var">y</span> := <span class="id" title="var">yCoord</span> <span class="id" title="var">p</span> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;<span class="id" title="var">mkPosition</span> (-<span class="id" title="var">x</span>) (-<span class="id" title="var">y</span>).<br/>
+<span class="id" title="keyword">Notation</span> &quot;~- p" := (<span class="id" title="var">oppPos</span> <span class="id" title="var">p</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 40).<br/>
+<span class="id" title="keyword">Hint Unfold</span> <span class="id" title="var">oppPos</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The Euclidean distance between a pair of positions.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">dist2d</span> (<span class="id" title="var">p1</span> <span class="id" title="var">p2</span> : <span class="id" title="var">Position</span>) : <span class="id" title="var">nonnegreal</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">mknonnegreal</span><br/>
+&nbsp;&nbsp;(<span class="id" title="var">dist_euc</span> (<span class="id" title="var">xCoord</span> <span class="id" title="var">p1</span>) (<span class="id" title="var">yCoord</span> <span class="id" title="var">p1</span>) (<span class="id" title="var">xCoord</span> <span class="id" title="var">p2</span>) (<span class="id" title="var">yCoord</span> <span class="id" title="var">p2</span>))<br/>
+&nbsp;&nbsp;(<span class="id" title="var">dist_euc_nonneg</span> (<span class="id" title="var">xCoord</span> <span class="id" title="var">p1</span>) (<span class="id" title="var">yCoord</span> <span class="id" title="var">p1</span>) (<span class="id" title="var">xCoord</span> <span class="id" title="var">p2</span>) (<span class="id" title="var">yCoord</span> <span class="id" title="var">p2</span>)).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The origin is the point (0, 0).
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">origin</span> := <span class="id" title="var">mkPosition</span> 0 0.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The vector length of a position. Defined to be the distance between
+that position and (0, 0).
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">displacement</span> (<span class="id" title="var">p</span> : <span class="id" title="var">Position</span>) : <span class="id" title="var">nonnegreal</span> := <span class="id" title="var">dist2d</span> <span class="id" title="var">p</span> <span class="id" title="var">origin</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">unfoldPosDefs</span> := <span class="id" title="tactic">unfold</span> <span class="id" title="var">addPos</span>; <span class="id" title="tactic">unfold</span> <span class="id" title="var">minusPos</span>; <span class="id" title="tactic">unfold</span> <span class="id" title="var">oppPos</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">dist</span>; <span class="id" title="tactic">unfold</span> <span class="id" title="var">origin</span>; <span class="id" title="tactic">unfold</span> <span class="id" title="var">displacement</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The negation of p1 - p2 is p2 - p1.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">oppMinusPos</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">p1</span> <span class="id" title="var">p2</span> : <span class="id" title="var">Position</span>),<br/>
+&nbsp;&nbsp;&nbsp;~-(<span class="id" title="var">p1</span> -~<span class="id" title="var">p</span>- <span class="id" title="var">p2</span>) = (<span class="id" title="var">p2</span> -~<span class="id" title="var">p</span>- <span class="id" title="var">p1</span>). 
+<br/>
+</div>
+
+<div class="doc">
+0 is the right unit of plus.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">plusRightUnitPos</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">p1</span> : <span class="id" title="var">Position</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">p1</span> +<span class="id" title="var">p</span>+ <span class="id" title="var">origin</span> = <span class="id" title="var">p1</span>. <br/>
+
+<br/>
+</div>
+
+<div class="doc">
+0 is the left unit of plus.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">plusLeftUnitPos</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">p1</span> : <span class="id" title="var">Position</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">origin</span> +<span class="id" title="var">p</span>+ <span class="id" title="var">p1</span> = <span class="id" title="var">p1</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">minusCancellativePos</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">p1</span> : <span class="id" title="var">Position</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">p1</span> -~<span class="id" title="var">p</span>- <span class="id" title="var">p1</span> = <span class="id" title="var">origin</span>. <br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Subtracting p2 is that same as adding -p2.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">minusPlusOppPos</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">p1</span> <span class="id" title="var">p2</span> : <span class="id" title="var">Position</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">p1</span> -~<span class="id" title="var">p</span>- <span class="id" title="var">p2</span> = <span class="id" title="var">p1</span> +<span class="id" title="var">p</span>+ (~-<span class="id" title="var">p2</span>). <br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Add and then subtract p2 and you're left with the original position.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">plusMinusCancelPos</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">p1</span> <span class="id" title="var">p2</span> : <span class="id" title="var">Position</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">p1</span> +<span class="id" title="var">p</span>+ <span class="id" title="var">p2</span> -~<span class="id" title="var">p</span>- <span class="id" title="var">p2</span> = <span class="id" title="var">p1</span>. <br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Subtract and then add p2 and you're left with the original position.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">minusPlusCancelPos</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">p1</span> <span class="id" title="var">p2</span> : <span class="id" title="var">Position</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">p1</span> -~<span class="id" title="var">p</span>- <span class="id" title="var">p2</span> +<span class="id" title="var">p</span>+ <span class="id" title="var">p2</span> = <span class="id" title="var">p1</span>. <br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The distance function is symmetric.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">distSymmetric</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">p1</span> <span class="id" title="var">p2</span> : <span class="id" title="var">Position</span>), <span class="id" title="var">dist2d</span> <span class="id" title="var">p1</span> <span class="id" title="var">p2</span> = <span class="id" title="var">dist2d</span> <span class="id" title="var">p2</span> <span class="id" title="var">p1</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Adding the difference between two vectors to the subtracted
+vector gets you the other vector.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">minusPlusInvPos</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">p1</span> <span class="id" title="var">p2</span> : <span class="id" title="var">Position</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">p1</span> = <span class="id" title="var">p2</span> +<span class="id" title="var">p</span>+ (<span class="id" title="var">p1</span> -~<span class="id" title="var">p</span>- <span class="id" title="var">p2</span>). <br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Adding the same vector to the arguments of dist2d preserves the result.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">distAddPres</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">p1</span> <span class="id" title="var">p2</span> <span class="id" title="var">p3</span> : <span class="id" title="var">Position</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">dist2d</span> <span class="id" title="var">p1</span> <span class="id" title="var">p2</span> = <span class="id" title="var">dist2d</span> (<span class="id" title="var">p1</span> +<span class="id" title="var">p</span>+ <span class="id" title="var">p3</span>) (<span class="id" title="var">p2</span> +<span class="id" title="var">p</span>+ <span class="id" title="var">p3</span>). <br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Subtracting the same vector to the arguments of dist2d preserves the result.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">distMinusPres</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">p1</span> <span class="id" title="var">p2</span> <span class="id" title="var">p3</span> : <span class="id" title="var">Position</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">dist2d</span> <span class="id" title="var">p1</span> <span class="id" title="var">p2</span> = <span class="id" title="var">dist2d</span> (<span class="id" title="var">p1</span> -~<span class="id" title="var">p</span>- <span class="id" title="var">p3</span>) (<span class="id" title="var">p2</span> -~<span class="id" title="var">p</span>- <span class="id" title="var">p3</span>). <br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The distance between p1 and p2 is the same as the length of p1 - p2.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">minusLengthDistance</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">p1</span> <span class="id" title="var">p2</span> : <span class="id" title="var">Position</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">dist2d</span> <span class="id" title="var">p1</span> <span class="id" title="var">p2</span> = <span class="id" title="var">displacement</span> (<span class="id" title="var">p1</span> -~<span class="id" title="var">p</span>- <span class="id" title="var">p2</span>). <br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Adding p3 to p1 changes the distance between p1 and p2 by
+at most |p3|.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">distAddLe</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">p1</span> <span class="id" title="var">p2</span> <span class="id" title="var">p3</span> : <span class="id" title="var">Position</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">dist2d</span> (<span class="id" title="var">p1</span> +<span class="id" title="var">p</span>+ <span class="id" title="var">p3</span>) (<span class="id" title="var">p2</span>) &lt;= <span class="id" title="var">dist2d</span> <span class="id" title="var">p1</span> <span class="id" title="var">p2</span> + <span class="id" title="var">displacement</span> <span class="id" title="var">p3</span>. <br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Adding p3 to p1 changes the distance between p1 and p2 by
+at most r if |p3| &lt;= r.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">distAddLeLe</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">p1</span> <span class="id" title="var">p2</span> <span class="id" title="var">p3</span> : <span class="id" title="var">Position</span>) (<span class="id" title="var">r</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">displacement</span> <span class="id" title="var">p3</span> &lt;= <span class="id" title="var">r</span> -&gt; <span class="id" title="var">dist2d</span> (<span class="id" title="var">p1</span> +<span class="id" title="var">p</span>+ <span class="id" title="var">p3</span>) (<span class="id" title="var">p2</span>) &lt;= <span class="id" title="var">dist2d</span> <span class="id" title="var">p1</span> <span class="id" title="var">p2</span> + <span class="id" title="var">r</span>. &nbsp;&nbsp;<span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">R_scope</span>. <br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If the distance between p1 and p1' is bounded above by r, and the
+same holds for p2 and p2', then the distance between p1 and p2 is
+at most the difference between p1' and p2' + 2r.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">posDiffBound</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">p1</span> <span class="id" title="var">p2</span> <span class="id" title="var">p1'</span> <span class="id" title="var">p2'</span> : <span class="id" title="var">Position</span>) (<span class="id" title="var">r</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">dist2d</span> <span class="id" title="var">p1</span>  <span class="id" title="var">p1'</span> &lt;= <span class="id" title="var">r</span> -&gt; <span class="id" title="var">dist2d</span> <span class="id" title="var">p2</span> <span class="id" title="var">p2'</span> &lt;= <span class="id" title="var">r</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">dist2d</span> <span class="id" title="var">p1</span> <span class="id" title="var">p2</span> &lt;= <span class="id" title="var">dist2d</span> <span class="id" title="var">p1'</span> <span class="id" title="var">p2'</span> + 2*<span class="id" title="var">r</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">eqDecPosition</span> : <span class="id" title="var">eqDec</span> <span class="id" title="var">Position</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">dist_tri_ineq</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">l1</span> <span class="id" title="var">l2</span> <span class="id" title="var">l3</span> : <span class="id" title="var">Position</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">dist2d</span> <span class="id" title="var">l1</span> <span class="id" title="var">l3</span> &lt;= <span class="id" title="var">dist2d</span> <span class="id" title="var">l1</span> <span class="id" title="var">l2</span> + <span class="id" title="var">dist2d</span> <span class="id" title="var">l2</span> <span class="id" title="var">l3</span>. 
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">dist2D_refl</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">l</span> : <span class="id" title="var">Position</span>, <span class="id" title="var">dist2d</span> <span class="id" title="var">l</span> <span class="id" title="var">l</span> = <span class="id" title="var">zeroNonneg</span>. <br/>
+
+<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+An interval on the real line. We allow upper &lt; lower, the interpretation
+in this case being that the interval is empty. The two fields lowerClosed and
+upperClosed allow for the four possibilities of interval, from fully closed
+to fully open: <font size=-2>&#9744;</font>, <span class="inlinecode">),</span> <span class="inlinecode">(</span>, ().
+</div>
+<div class="code">
+<span class="id" title="keyword">Record</span> <span class="id" title="var">Interval</span> := <span class="id" title="var">mkInterval</span>{<br/>
+&nbsp;&nbsp;<span class="id" title="var">lower</span> : <span class="id" title="var">R</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="var">upper</span> : <span class="id" title="var">R</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="var">lowerClosed</span> : <span class="id" title="var">bool</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="var">upperClosed</span> : <span class="id" title="var">bool</span><br/>
+&nbsp;&nbsp;}.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+inInterval r i means that the real number r is in the Interval i,
+where i is interpreted as a closed interval.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">inInterval</span> (<span class="id" title="var">r</span> : <span class="id" title="var">R</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">Interval</span>) :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">lowerClosed</span> <span class="id" title="var">i</span>, <span class="id" title="var">upperClosed</span> <span class="id" title="var">i</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">true</span>, <span class="id" title="var">true</span> =&gt; <span class="id" title="var">lower</span> <span class="id" title="var">i</span> &lt;= <span class="id" title="var">r</span> &lt;= <span class="id" title="var">upper</span> <span class="id" title="var">i</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">true</span>, <span class="id" title="var">false</span> =&gt; <span class="id" title="var">lower</span> <span class="id" title="var">i</span> &lt;= <span class="id" title="var">r</span> &lt; <span class="id" title="var">upper</span> <span class="id" title="var">i</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">false</span>, <span class="id" title="var">true</span> =&gt; <span class="id" title="var">lower</span> <span class="id" title="var">i</span> &lt; <span class="id" title="var">r</span> &lt;= <span class="id" title="var">upper</span> <span class="id" title="var">i</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">false</span>, <span class="id" title="var">false</span> =&gt; <span class="id" title="var">lower</span> <span class="id" title="var">i</span> &lt; <span class="id" title="var">r</span> &lt; <span class="id" title="var">upper</span> <span class="id" title="var">i</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+<span class="id" title="keyword">Notation</span> &quot;r [:] i" := (<span class="id" title="var">inInterval</span> <span class="id" title="var">r</span> <span class="id" title="var">i</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 70).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+v1 is a (non-strict) sub interval of v2
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">subInterval</span> (<span class="id" title="var">i1</span> <span class="id" title="var">i2</span> : <span class="id" title="var">Interval</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">forall</span> <span class="id" title="var">r</span> : <span class="id" title="var">R</span>, <span class="id" title="var">r</span> [:] <span class="id" title="var">i1</span> -&gt; <span class="id" title="var">r</span> [:] <span class="id" title="var">i2</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">R_scope</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Add the lower bounds and the upper bounds just as in vector addition.
+Closedness of a bound in the resulting interval is equivalent to closedness of
+the respective bounds in both i1 and i2.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">addInterval</span> (<span class="id" title="var">i1</span> <span class="id" title="var">i2</span> : <span class="id" title="var">Interval</span>) : <span class="id" title="var">Interval</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">i1</span> <span class="id" title="keyword">with</span> (<span class="id" title="var">mkInterval</span> <span class="id" title="var">l1</span> <span class="id" title="var">u1</span> <span class="id" title="var">lc1</span> <span class="id" title="var">uc1</span>) =&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">i2</span> <span class="id" title="keyword">with</span> (<span class="id" title="var">mkInterval</span> <span class="id" title="var">l2</span> <span class="id" title="var">u2</span> <span class="id" title="var">lc2</span> <span class="id" title="var">uc2</span>) =&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">mkInterval</span> (<span class="id" title="var">l1</span> + <span class="id" title="var">l2</span>) (<span class="id" title="var">u1</span> + <span class="id" title="var">u2</span>) (<span class="id" title="var">andb</span> <span class="id" title="var">lc1</span> <span class="id" title="var">lc2</span>) (<span class="id" title="var">andb</span> <span class="id" title="var">uc1</span> <span class="id" title="var">uc2</span>)<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span> <span class="id" title="keyword">end</span>.<br/>
+<span class="id" title="keyword">Notation</span> &quot;i [++] i'" := (<span class="id" title="var">addInterval</span> <span class="id" title="var">i</span> <span class="id" title="var">i'</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 45).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If x is in i then x is less than or equal to the upper bound of i.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">inIntervalLeUpper</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">i</span> : <span class="id" title="var">Interval</span>) (<span class="id" title="var">x</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">x</span> [:] <span class="id" title="var">i</span> -&gt; <span class="id" title="var">x</span> &lt;= <span class="id" title="var">upper</span> <span class="id" title="var">i</span>. <br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If x is in i then the lower bound of i is less than or equal x.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">inIntervalLeLower</span>: <span class="id" title="keyword">forall</span> (<span class="id" title="var">i</span> : <span class="id" title="var">Interval</span>) (<span class="id" title="var">x</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">x</span> [:] <span class="id" title="var">i</span> -&gt; <span class="id" title="var">lower</span> <span class="id" title="var">i</span> &lt;= <span class="id" title="var">x</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">inIntervalLtUpper</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">i</span> : <span class="id" title="var">Interval</span>) (<span class="id" title="var">r</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">r</span> [:] <span class="id" title="var">i</span> -&gt; <span class="id" title="var">upperClosed</span> <span class="id" title="var">i</span> = <span class="id" title="var">false</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">r</span> &lt; <span class="id" title="var">upper</span> <span class="id" title="var">i</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">inIntervalLtLower</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">i</span> : <span class="id" title="var">Interval</span>) (<span class="id" title="var">r</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">r</span> [:] <span class="id" title="var">i</span> -&gt; <span class="id" title="var">lowerClosed</span> <span class="id" title="var">i</span> = <span class="id" title="var">false</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">lower</span> <span class="id" title="var">i</span> &lt; <span class="id" title="var">r</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">inAddLtLower</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">i1</span> <span class="id" title="var">i2</span> : <span class="id" title="var">Interval</span>) (<span class="id" title="var">r1</span> <span class="id" title="var">r2</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">r1</span> [:] <span class="id" title="var">i1</span> -&gt; <span class="id" title="var">r2</span> [:] <span class="id" title="var">i2</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">lowerClosed</span> <span class="id" title="var">i1</span> = <span class="id" title="var">false</span> \/ <span class="id" title="var">lowerClosed</span> <span class="id" title="var">i2</span> = <span class="id" title="var">false</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">lower</span> <span class="id" title="var">i1</span> + <span class="id" title="var">lower</span> <span class="id" title="var">i2</span> &lt; <span class="id" title="var">r1</span> + <span class="id" title="var">r2</span>. 
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">inAddLtUpper</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">i1</span> <span class="id" title="var">i2</span> : <span class="id" title="var">Interval</span>) (<span class="id" title="var">r1</span> <span class="id" title="var">r2</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">r1</span> [:] <span class="id" title="var">i1</span> -&gt; <span class="id" title="var">r2</span> [:] <span class="id" title="var">i2</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">upperClosed</span> <span class="id" title="var">i1</span> = <span class="id" title="var">false</span> \/ <span class="id" title="var">upperClosed</span> <span class="id" title="var">i2</span> = <span class="id" title="var">false</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">r1</span> + <span class="id" title="var">r2</span> &lt; <span class="id" title="var">upper</span> <span class="id" title="var">i1</span> + <span class="id" title="var">upper</span> <span class="id" title="var">i2</span>. 
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">addIntervalLower</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">i1</span> <span class="id" title="var">i2</span> : <span class="id" title="var">Interval</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">lower</span> (<span class="id" title="var">i1</span> [++] <span class="id" title="var">i2</span>) = <span class="id" title="var">lower</span> <span class="id" title="var">i1</span> + <span class="id" title="var">lower</span> <span class="id" title="var">i2</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">addIntervalUpper</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">i1</span> <span class="id" title="var">i2</span> : <span class="id" title="var">Interval</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">upper</span> (<span class="id" title="var">i1</span> [++] <span class="id" title="var">i2</span>) = <span class="id" title="var">upper</span> <span class="id" title="var">i1</span> + <span class="id" title="var">upper</span> <span class="id" title="var">i2</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">addIntervalUpperOpen</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">i1</span> <span class="id" title="var">i2</span> : <span class="id" title="var">Interval</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">upperClosed</span> (<span class="id" title="var">i1</span> [++] <span class="id" title="var">i2</span>) = <span class="id" title="var">false</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">upperClosed</span> <span class="id" title="var">i1</span> = <span class="id" title="var">false</span> \/ <span class="id" title="var">upperClosed</span> <span class="id" title="var">i2</span> = <span class="id" title="var">false</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">addIntervalLowerOpen</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">i1</span> <span class="id" title="var">i2</span> : <span class="id" title="var">Interval</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">lowerClosed</span> (<span class="id" title="var">i1</span> [++] <span class="id" title="var">i2</span>) = <span class="id" title="var">false</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">lowerClosed</span> <span class="id" title="var">i1</span> = <span class="id" title="var">false</span> \/ <span class="id" title="var">lowerClosed</span> <span class="id" title="var">i2</span> = <span class="id" title="var">false</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">inAddInterval</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">i1</span> <span class="id" title="var">i2</span> : <span class="id" title="var">Interval</span>) (<span class="id" title="var">r1</span> <span class="id" title="var">r2</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">r1</span> [:] <span class="id" title="var">i1</span> -&gt; <span class="id" title="var">r2</span> [:] <span class="id" title="var">i2</span> -&gt; (<span class="id" title="var">r1</span> + <span class="id" title="var">r2</span>) [:] (<span class="id" title="var">i1</span> [++] <span class="id" title="var">i2</span>).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Shifts an interval right by some amount i.e. adds that amount to the upper and lower
+bounds of the interval. Closedness does not change.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">plusInterval</span> (<span class="id" title="var">i</span> : <span class="id" title="var">Interval</span>) (<span class="id" title="var">r</span> : <span class="id" title="var">R</span>) : <span class="id" title="var">Interval</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">i</span> <span class="id" title="keyword">with</span> <span class="id" title="var">mkInterval</span> <span class="id" title="var">l</span> <span class="id" title="var">u</span> <span class="id" title="var">cl</span> <span class="id" title="var">cu</span>=&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">mkInterval</span> (<span class="id" title="var">l</span> + <span class="id" title="var">r</span>) (<span class="id" title="var">u</span> + <span class="id" title="var">r</span>) <span class="id" title="var">cl</span> <span class="id" title="var">cu</span> <span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Shifts an interval left by some amount i.e. adds that amount to the upper and lower
+bounds of the interval.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">minusInterval</span> (<span class="id" title="var">i</span> : <span class="id" title="var">Interval</span>) (<span class="id" title="var">r</span> : <span class="id" title="var">R</span>) : <span class="id" title="var">Interval</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">i</span> <span class="id" title="keyword">with</span> <span class="id" title="var">mkInterval</span> <span class="id" title="var">l</span> <span class="id" title="var">u</span> <span class="id" title="var">cl</span> <span class="id" title="var">cu</span>=&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">mkInterval</span> (<span class="id" title="var">l</span> - <span class="id" title="var">r</span>) (<span class="id" title="var">u</span> - <span class="id" title="var">r</span>) <span class="id" title="var">cl</span> <span class="id" title="var">cu</span> <span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Notation</span> &quot;i [+] r" := (<span class="id" title="var">plusInterval</span> <span class="id" title="var">i</span> <span class="id" title="var">r</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 45).<br/>
+<span class="id" title="keyword">Notation</span> &quot;i [-] r" := (<span class="id" title="var">minusInterval</span> <span class="id" title="var">i</span> <span class="id" title="var">r</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 45).<br/>
+<span class="id" title="keyword">Notation</span> &quot;[\ x , y \]" := (<span class="id" title="var">mkInterval</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">true</span> <span class="id" title="var">true</span>).<br/>
+<span class="id" title="keyword">Notation</span> &quot;[\ x , y \)" := (<span class="id" title="var">mkInterval</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">true</span> <span class="id" title="var">false</span>).<br/>
+<span class="id" title="keyword">Notation</span> &quot;(\ x , y \]" := (<span class="id" title="var">mkInterval</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">false</span> <span class="id" title="var">true</span>).<br/>
+<span class="id" title="keyword">Notation</span> &quot;(\ x , y \)" := (<span class="id" title="var">mkInterval</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">false</span> <span class="id" title="var">false</span>).<br/>
+<span class="id" title="keyword">Notation</span> &quot;i1 &lt;[ i2" := (<span class="id" title="var">subInterval</span> <span class="id" title="var">i1</span> <span class="id" title="var">i2</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 50).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Every interval can be rewritten by subtracting and then adding the same r.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">minusPlusInterval</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">i</span> : <span class="id" title="var">Interval</span>) (<span class="id" title="var">r</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">i</span> = <span class="id" title="var">i</span> [-] <span class="id" title="var">r</span> [+] <span class="id" title="var">r</span>. <br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Every interval can be rewritten by adding and then subtracting the same r.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">plusMinusInterval</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">i</span> : <span class="id" title="var">Interval</span>) (<span class="id" title="var">r</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">i</span> = <span class="id" title="var">i</span> [+] <span class="id" title="var">r</span> [-] <span class="id" title="var">r</span>. <br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Adding a negative is the same as subtracting
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">minusOppInterval</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">i</span> : <span class="id" title="var">Interval</span>) (<span class="id" title="var">r</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">i</span> [+] -<span class="id" title="var">r</span> = <span class="id" title="var">i</span> [-] <span class="id" title="var">r</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">inIntervalPlusCancel</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">i</span> : <span class="id" title="var">Interval</span>) (<span class="id" title="var">x</span> <span class="id" title="var">r</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">x</span> + <span class="id" title="var">r</span> [:] <span class="id" title="var">i</span> [+] <span class="id" title="var">r</span> -&gt; <span class="id" title="var">x</span> [:] <span class="id" title="var">i</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">subIntervalPlusCancel</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">i</span> <span class="id" title="var">i'</span> : <span class="id" title="var">Interval</span>) (<span class="id" title="var">r</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">i</span> [+] <span class="id" title="var">r</span> &lt;[ <span class="id" title="var">i'</span> [+] <span class="id" title="var">r</span> -&gt; <span class="id" title="var">i</span> &lt;[ <span class="id" title="var">i'</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">inIntervalPlusCompat</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">i</span> : <span class="id" title="var">Interval</span>) (<span class="id" title="var">x</span> <span class="id" title="var">r</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">x</span> [:] <span class="id" title="var">i</span> -&gt; <span class="id" title="var">x</span> + <span class="id" title="var">r</span> [:] <span class="id" title="var">i</span> [+] <span class="id" title="var">r</span>. <br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Every interval is a sub interval of itself.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">subIntervalRefl</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">i</span> : <span class="id" title="var">Interval</span>), <span class="id" title="var">i</span> &lt;[ <span class="id" title="var">i</span>. <br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If a number is less than the lower bound of an interval then it is
+not in that interval.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">outIntervalLtLower</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">r</span> : <span class="id" title="var">R</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">Interval</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">r</span> &lt; <span class="id" title="var">lower</span> <span class="id" title="var">i</span> -&gt; ~ <span class="id" title="var">r</span> [:] <span class="id" title="var">i</span>. <br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If a number is greater than the upper bound of an interval then it is
+not in that interval.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">outIntervalLtUpper</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">r</span> : <span class="id" title="var">R</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">Interval</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">upper</span> <span class="id" title="var">i</span> &lt; <span class="id" title="var">r</span>-&gt; ~ <span class="id" title="var">r</span> [:] <span class="id" title="var">i</span>. <br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If a number is less than or equal the lower bound of an interval
+that is lower closed then it is not in the interval.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">outIntervalLeLower</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">r</span> : <span class="id" title="var">R</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">Interval</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">r</span> &lt;= <span class="id" title="var">lower</span> <span class="id" title="var">i</span> -&gt; <span class="id" title="var">lowerClosed</span> <span class="id" title="var">i</span> = <span class="id" title="var">false</span> -&gt; ~ <span class="id" title="var">r</span> [:] <span class="id" title="var">i</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If a number is less than or equal the lower bound of an interval
+that is lower closed then it is not in the interval.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">outIntervalLeUpper</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">r</span> : <span class="id" title="var">R</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">Interval</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">upper</span> <span class="id" title="var">i</span> &lt;= <span class="id" title="var">r</span> -&gt; <span class="id" title="var">upperClosed</span> <span class="id" title="var">i</span> = <span class="id" title="var">false</span> -&gt; ~ <span class="id" title="var">r</span> [:] <span class="id" title="var">i</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Membership of an interval is decidable.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">inIntervalDec</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">r</span> : <span class="id" title="var">R</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">Interval</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">r</span> [:] <span class="id" title="var">i</span> \/ ~ <span class="id" title="var">r</span> [:] <span class="id" title="var">i</span>. 
+<br/>
+</div>
+
+<div class="doc">
+If a number exists in the point interval <span class="inlinecode"><span class="id" title="var">x</span>,</span> <span class="inlinecode"><span class="id" title="var">x</span></span>
+then that number must be equal to x.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">inIntervalPoint</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">x</span> <span class="id" title="var">y</span> : <span class="id" title="var">R</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">x</span> [:] [\<span class="id" title="var">y</span>, <span class="id" title="var">y</span>\] -&gt; <span class="id" title="var">x</span> = <span class="id" title="var">y</span>. <br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">Rminus_refl_simpl</span> := <span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span> |- <span class="id" title="keyword">context</span> [?<span class="id" title="var">x</span> - ?<span class="id" title="var">x</span>] =&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">replace</span> (<span class="id" title="var">x</span> - <span class="id" title="var">x</span>) <span class="id" title="keyword">with</span> 0; [ | <span class="id" title="tactic">ring</span>] <span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rminus_lt_subNonnegTot</span> (<span class="id" title="var">a</span> <span class="id" title="var">b</span> : <span class="id" title="var">nonnegreal</span>) <span class="id" title="var">c</span> :<br/>
+&nbsp;&nbsp;0 &lt; <span class="id" title="var">c</span> -&gt; <span class="id" title="var">a</span> - <span class="id" title="var">b</span> &lt; <span class="id" title="var">c</span> -&gt; <span class="id" title="var">a</span> -<span class="id" title="var">nn</span>- <span class="id" title="var">b</span> &lt; <span class="id" title="var">c</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rminus_plus_lt_subNonnegTot</span> (<span class="id" title="var">a</span> <span class="id" title="var">b</span> : <span class="id" title="var">nonnegreal</span>) <span class="id" title="var">c</span> <span class="id" title="var">z</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">z</span> &lt; <span class="id" title="var">c</span> -&gt; <span class="id" title="var">a</span> - <span class="id" title="var">b</span> + <span class="id" title="var">z</span> &lt; <span class="id" title="var">c</span> -&gt; <span class="id" title="var">a</span> -<span class="id" title="var">nn</span>- <span class="id" title="var">b</span> + <span class="id" title="var">z</span> &lt; <span class="id" title="var">c</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">subNonnegTot_le_Rminus_eq</span> (<span class="id" title="var">r1</span> <span class="id" title="var">r2</span> : <span class="id" title="var">nonnegreal</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">r2</span> &lt;= <span class="id" title="var">r1</span> -&gt; <span class="id" title="var">nonneg</span> (<span class="id" title="var">r1</span> -<span class="id" title="var">nn</span>- <span class="id" title="var">r2</span>) = <span class="id" title="var">r1</span> - <span class="id" title="var">r2</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rlt_double</span> <span class="id" title="var">x</span> : 0 &lt; <span class="id" title="var">x</span> -&gt; <span class="id" title="var">x</span> &lt; <span class="id" title="var">x</span> + <span class="id" title="var">x</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rmult_lt_0</span> <span class="id" title="var">y</span> <span class="id" title="var">z</span> : 0 &lt; <span class="id" title="var">y</span> -&gt; 0 &lt; <span class="id" title="var">z</span> -&gt; 0 &lt; <span class="id" title="var">y</span> * <span class="id" title="var">z</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rlt_le_zero_plus</span> <span class="id" title="var">r1</span> <span class="id" title="var">r2</span> : 0 &lt; <span class="id" title="var">r1</span> -&gt; 0 &lt;= <span class="id" title="var">r2</span> -&gt; 0 &lt; <span class="id" title="var">r1</span> + <span class="id" title="var">r2</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rmax_lt_l</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">a</span> : <span class="id" title="var">a</span> &lt; <span class="id" title="var">x</span> -&gt; <span class="id" title="var">a</span> &lt; <span class="id" title="var">Rmax</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">subNonnegTot_0_or_Rminus</span> <span class="id" title="var">r1</span> <span class="id" title="var">r2</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">nonneg</span> (<span class="id" title="var">r1</span> -<span class="id" title="var">nn</span>- <span class="id" title="var">r2</span>) = 0 \/<br/>
+&nbsp;&nbsp;<span class="id" title="var">nonneg</span> (<span class="id" title="var">r1</span> -<span class="id" title="var">nn</span>- <span class="id" title="var">r2</span>) = <span class="id" title="var">r1</span> - <span class="id" title="var">r2</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">subNonnegTot_lt_0</span> (<span class="id" title="var">r1</span> <span class="id" title="var">r2</span> : <span class="id" title="var">nonnegreal</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">r1</span> &lt; <span class="id" title="var">r2</span> -&gt; <span class="id" title="var">nonneg</span> (<span class="id" title="var">r1</span> -<span class="id" title="var">nn</span>- <span class="id" title="var">r2</span>) = 0. <br/>
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">Rplus3_swap_2_3_free</span> := <span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| |- <span class="id" title="keyword">context</span>[?<span class="id" title="var">r1</span> + ?<span class="id" title="var">r2</span> + ?<span class="id" title="var">r3</span>] =&gt; <span class="id" title="var">Rplus3_swap_2_3</span> <span class="id" title="var">r1</span> <span class="id" title="var">r2</span> <span class="id" title="var">r3</span> <br/>
+&nbsp;&nbsp;| |- <span class="id" title="keyword">context</span>[?<span class="id" title="var">r1</span> + (?<span class="id" title="var">r2</span> + ?<span class="id" title="var">r3</span>)] =&gt; <span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">Rplus_assoc</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">Rplus3_swap_2_3</span> <span class="id" title="var">r1</span> <span class="id" title="var">r2</span> <span class="id" title="var">r3</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">Rle_subNonnegTot_r</span> (<span class="id" title="var">r1</span> <span class="id" title="var">r2</span> <span class="id" title="var">r3</span> : <span class="id" title="var">nonnegreal</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">r1</span> &lt;= <span class="id" title="var">r2</span> -&gt; (<span class="id" title="var">r1</span> -<span class="id" title="var">nn</span>- <span class="id" title="var">r3</span>) &lt;= (<span class="id" title="var">r2</span> -<span class="id" title="var">nn</span>- <span class="id" title="var">r3</span>). <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">addNonneg_subNonnegTot_le_assoc</span> <span class="id" title="var">r1</span> <span class="id" title="var">r2</span> <span class="id" title="var">r3</span> :<br/>
+&nbsp;&nbsp;(<span class="id" title="var">r1</span> +<span class="id" title="var">nn</span>+ <span class="id" title="var">r2</span>) -<span class="id" title="var">nn</span>- <span class="id" title="var">r3</span> &lt;= <span class="id" title="var">r1</span> +<span class="id" title="var">nn</span>+ (<span class="id" title="var">r2</span> -<span class="id" title="var">nn</span>- <span class="id" title="var">r3</span>).<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">multNonneg_Rmult_eq</span> <span class="id" title="var">r1</span> <span class="id" title="var">r2</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">nonneg</span> (<span class="id" title="var">r1</span> *<span class="id" title="var">nn</span>* <span class="id" title="var">r2</span>) = <span class="id" title="var">r1</span> * <span class="id" title="var">r2</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">subNonnegTot_le_Rminus</span> (<span class="id" title="var">r1</span> <span class="id" title="var">r2</span> : <span class="id" title="var">nonnegreal</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">r1</span> - <span class="id" title="var">r2</span> &lt;= (<span class="id" title="var">r1</span> -<span class="id" title="var">nn</span>- <span class="id" title="var">r2</span>). <br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">subNonnegTot_plus_lt_Rminus</span> (<span class="id" title="var">a</span> <span class="id" title="var">b</span> : <span class="id" title="var">nonnegreal</span>) <span class="id" title="var">c</span> <span class="id" title="var">z</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">a</span> -<span class="id" title="var">nn</span>- <span class="id" title="var">b</span> + <span class="id" title="var">z</span> &lt; <span class="id" title="var">c</span> -&gt; <span class="id" title="var">a</span> - <span class="id" title="var">b</span> + <span class="id" title="var">z</span> &lt; <span class="id" title="var">c</span>. <br/>
+
+<br/>
+</div>
+<hr/>This page has been generated by <a href="http://coq.inria.fr/">coqdoc</a>
+</div>
+
+</div>
+
+</body>
+</html>

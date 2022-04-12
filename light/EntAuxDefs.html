@@ -1,0 +1,213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<title>EntAuxDefs</title>
+</head>
+
+<body>
+
+<div id="page">
+
+<div id="header">
+</div>
+
+<div id="main">
+
+<h1 class="libtitle">Library EntAuxDefs</h1>
+
+<div class="code">
+</div>
+
+<div class="doc">
+This file was written by Colm Bhandal, PhD student, Foundations and Methods group,
+School of Computer Science and Statistics, Trinity College, Dublin, Ireland.
+</div>
+<div class="code">
+
+<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.StandardResults</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.ComhBasics</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.LanguageFoundations</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.InterfaceLanguage</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.ModeStateLanguage</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.SoftwareLanguage</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.EntityLanguage</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.ProtAuxDefs</span>.<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">liftProcEnt</span> (<span class="id" title="var">X</span> : <span class="id" title="var">ProcTerm</span> -&gt; <span class="id" title="keyword">Prop</span>) : <span class="id" title="var">Entity</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">lifpe</span> (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>) (<span class="id" title="var">h</span> : <span class="id" title="var">Interface</span>) (<span class="id" title="var">k</span> : <span class="id" title="var">ModeState</span>) :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">X</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">liftProcEnt</span> <span class="id" title="var">X</span> ([|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|]).<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">bcWaitStateEnt</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">x</span> : <span class="id" title="keyword">Time</span>) : <span class="id" title="var">Entity</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+<span class="id" title="var">liftProcEnt</span> (<span class="id" title="var">bcWaitStateProt</span> <span class="id" title="var">m</span> <span class="id" title="var">x</span>).<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">sleepingStateEnt</span> : <span class="id" title="var">Entity</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+<span class="id" title="var">liftProcEnt</span> <span class="id" title="var">sleepingStateProt</span>.<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">bcReadyStateEnt</span>  (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>) : <span class="id" title="var">Entity</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+<span class="id" title="var">liftProcEnt</span> (<span class="id" title="var">bcReadyStateProt</span> <span class="id" title="var">m</span> <span class="id" title="var">l</span>).<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">dormantStateEnt</span> : <span class="id" title="var">Entity</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+<span class="id" title="var">liftProcEnt</span> <span class="id" title="var">dormantStateProt</span>.<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">tfsStartStateEnt</span> : <span class="id" title="var">Entity</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+<span class="id" title="var">liftProcEnt</span> <span class="id" title="var">tfsStartStateProt</span>.<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">initStateEnt</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) : <span class="id" title="var">Entity</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+<span class="id" title="var">liftProcEnt</span> (<span class="id" title="var">initStateProt</span> <span class="id" title="var">m</span>).<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">ovReadyStateEnt</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>) : <span class="id" title="var">Entity</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+<span class="id" title="var">liftProcEnt</span> (<span class="id" title="var">ovReadyStateProt</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">l</span>).<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">switchCurrStateEnt</span> : <span class="id" title="var">Entity</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+<span class="id" title="var">liftProcEnt</span> <span class="id" title="var">switchCurrStateProt</span>.<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">switchListenStateEnt</span> : <span class="id" title="var">Entity</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+<span class="id" title="var">liftProcEnt</span> <span class="id" title="var">switchListenStateProt</span>.<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">tfsListenStateEnt</span> := <span class="id" title="var">liftProcEnt</span> <span class="id" title="var">tfsListenStateProt</span>.<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">ovAbortStateEnt</span> := <span class="id" title="var">liftProcEnt</span> <span class="id" title="var">ovAbortStateProt</span>.<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">tfsBcStateEnt</span> := <span class="id" title="var">liftProcEnt</span> <span class="id" title="var">tfsBcStateProt</span>.<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">switchBcStateEnt</span> <span class="id" title="var">m</span> := <span class="id" title="var">liftProcEnt</span> (<span class="id" title="var">switchBcStateProt</span> <span class="id" title="var">m</span>).<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">ovWaitStateEnt</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">t</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> : <span class="id" title="keyword">Time</span>) : <span class="id" title="var">Entity</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+<span class="id" title="var">liftProcEnt</span> (<span class="id" title="var">ovWaitStateProt</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span>).<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">tfsCurrStateEnt</span> := <span class="id" title="var">liftProcEnt</span> <span class="id" title="var">tfsCurrStateProt</span>.<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">tfsNextStateEnt</span> <span class="id" title="var">m</span> := <span class="id" title="var">liftProcEnt</span> (<span class="id" title="var">tfsNextStateProt</span> <span class="id" title="var">m</span>).<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">listeningStateEnt</span> : <span class="id" title="var">Entity</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+<span class="id" title="var">liftProcEnt</span> <span class="id" title="var">listeningStateProt</span>.<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">currCompStateEnt</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">r</span> : <span class="id" title="var">Distance</span>) : <span class="id" title="var">Entity</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+<span class="id" title="var">liftProcEnt</span> (<span class="id" title="var">currCompStateProt</span> <span class="id" title="var">m</span> <span class="id" title="var">r</span>).<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">pausedStateEnt</span> := <span class="id" title="var">liftProcEnt</span> <span class="id" title="var">pausedStateProt</span>.<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">abortOvlpStateEnt</span> := <span class="id" title="var">liftProcEnt</span> <span class="id" title="var">abortOvlpStateProt</span>.<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">badOvlpStateEnt</span> := <span class="id" title="var">liftProcEnt</span> <span class="id" title="var">badOvlpStateProt</span>.<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">nextEqStateEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span> := <span class="id" title="var">liftProcEnt</span> (<span class="id" title="var">nextEqStateProt</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span>).<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">currEqStateEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">m''</span> := <span class="id" title="var">liftProcEnt</span> (<span class="id" title="var">currEqStateProt</span> <span class="id" title="var">m</span> <span class="id" title="var">m''</span>).<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">gotMsgStateEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">l</span> := <span class="id" title="var">liftProcEnt</span> (<span class="id" title="var">gotMsgStateProt</span> <span class="id" title="var">m</span> <span class="id" title="var">l</span>).<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">gotRangeStateEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">r</span> := <span class="id" title="var">liftProcEnt</span> (<span class="id" title="var">gotRangeStateProt</span> <span class="id" title="var">m</span> <span class="id" title="var">r</span>).<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">currPincCheckStateEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">m''</span> <span class="id" title="var">r</span> := <span class="id" title="var">liftProcEnt</span> (<span class="id" title="var">currPincCheckStateProt</span> <span class="id" title="var">m</span> <span class="id" title="var">m''</span> <span class="id" title="var">r</span>).<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">nextPincCheckStateEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">m''</span> <span class="id" title="var">r</span> := <span class="id" title="var">liftProcEnt</span> (<span class="id" title="var">nextPincCheckStateProt</span> <span class="id" title="var">m</span> <span class="id" title="var">m''</span> <span class="id" title="var">r</span>).<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">rangeBadStateEnt</span> <span class="id" title="var">m</span> := <span class="id" title="var">liftProcEnt</span> (<span class="id" title="var">rangeBadStateProt</span> <span class="id" title="var">m</span>).<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">broadcastStateEnt</span> := <span class="id" title="var">liftProcEnt</span> <span class="id" title="var">broadcastStateProt</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">overlapStateEnt</span> : <span class="id" title="var">Entity</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+<span class="id" title="var">liftProcEnt</span> <span class="id" title="var">overlapStateProt</span>.<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">nextSinceStateEnt</span> : <span class="id" title="var">Entity</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+<span class="id" title="var">liftProcEnt</span> <span class="id" title="var">nextSinceStateProt</span>.<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">tfsStateEnt</span> : <span class="id" title="var">Entity</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+<span class="id" title="var">liftProcEnt</span> <span class="id" title="var">tfsStateProt</span>.<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">switchStateEnt</span> : <span class="id" title="var">Entity</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+<span class="id" title="var">liftProcEnt</span> <span class="id" title="var">switchStateProt</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">listenerStateEnt</span> : <span class="id" title="var">Entity</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+<span class="id" title="var">liftProcEnt</span> <span class="id" title="var">listenerStateProt</span>.<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">msgBadPathEnt</span> : <span class="id" title="var">Entity</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">mbpMsg</span> <span class="id" title="var">p</span> <span class="id" title="var">l</span> <span class="id" title="var">h</span> <span class="id" title="var">k</span> <span class="id" title="var">m''</span> <span class="id" title="var">m</span> <span class="id" title="var">l'</span> : <span class="id" title="var">gotMsgStateProt</span> <span class="id" title="var">m''</span> <span class="id" title="var">l'</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">currModeMState</span> <span class="id" title="var">k</span> = <span class="id" title="var">m</span> -&gt; <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">possiblyIncompatible</span> <span class="id" title="var">m</span> <span class="id" title="var">m''</span> (<span class="id" title="var">dist2d</span> <span class="id" title="var">l</span> <span class="id" title="var">l'</span> -<span class="id" title="var">nn</span>- <span class="id" title="var">speedMax</span> *<span class="id" title="var">nn</span>* <span class="id" title="var">msgLatency</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;-&gt; <span class="id" title="var">msgBadPathEnt</span> ([| <span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|])<br/>
+&nbsp;&nbsp;| <span class="id" title="var">mbpRng</span> <span class="id" title="var">p</span> <span class="id" title="var">l</span> <span class="id" title="var">h</span> <span class="id" title="var">k</span> <span class="id" title="var">m''</span> <span class="id" title="var">m</span> <span class="id" title="var">r</span> : <span class="id" title="var">gotRangeStateProt</span> <span class="id" title="var">m''</span> <span class="id" title="var">r</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">currModeMState</span> <span class="id" title="var">k</span> = <span class="id" title="var">m</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">possiblyIncompatible</span> <span class="id" title="var">m</span> <span class="id" title="var">m''</span> <span class="id" title="var">r</span> -&gt; <span class="id" title="var">msgBadPathEnt</span> ([|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|])<br/>
+&nbsp;&nbsp;| <span class="id" title="var">mbpBad</span> <span class="id" title="var">p</span> <span class="id" title="var">l</span> <span class="id" title="var">h</span> <span class="id" title="var">k</span> : <span class="id" title="var">badOvlpStateProt</span> <span class="id" title="var">p</span> -&gt;  <span class="id" title="var">msgBadPathEnt</span> ([|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|]).<br/>
+
+<br/>
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">notifBadPathEnt</span> : <span class="id" title="var">Entity</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">nbpRng</span> <span class="id" title="var">p</span> <span class="id" title="var">l</span> <span class="id" title="var">h</span> <span class="id" title="var">k</span> <span class="id" title="var">m</span> : <span class="id" title="var">rangeBadStateProt</span> <span class="id" title="var">m</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">currModeMState</span> <span class="id" title="var">k</span> = <span class="id" title="var">m</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">notifBadPathEnt</span> ([|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|])<br/>
+&nbsp;&nbsp;| <span class="id" title="var">nbpBad</span> <span class="id" title="var">p</span> <span class="id" title="var">l</span> <span class="id" title="var">h</span> <span class="id" title="var">k</span> : <span class="id" title="var">badOvlpStateProt</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">notifBadPathEnt</span> ([|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|]).<br/>
+
+<br/>
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">msgAbortPathEnt</span> : <span class="id" title="var">Entity</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">mapMsg</span> <span class="id" title="var">p</span> <span class="id" title="var">l</span> <span class="id" title="var">h</span> <span class="id" title="var">k</span> <span class="id" title="var">m''</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span> <span class="id" title="var">l'</span> :<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">r'</span> := <span class="id" title="var">dist2d</span> <span class="id" title="var">l</span> <span class="id" title="var">l'</span> -<span class="id" title="var">nn</span>- <span class="id" title="var">speedMax</span> *<span class="id" title="var">nn</span>* <span class="id" title="var">msgLatency</span> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">gotMsgStateProt</span> <span class="id" title="var">m''</span> <span class="id" title="var">l'</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">currModeMState</span> <span class="id" title="var">k</span> = <span class="id" title="var">m</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;~<span class="id" title="var">possiblyIncompatible</span> <span class="id" title="var">m</span> <span class="id" title="var">m''</span> <span class="id" title="var">r'</span> -&gt; <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">nextModeMState</span> <span class="id" title="var">k</span> = <span class="id" title="var">Some</span> <span class="id" title="var">m'</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">possiblyIncompatible</span> <span class="id" title="var">m'</span> <span class="id" title="var">m''</span> <span class="id" title="var">r'</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">msgAbortPathEnt</span> ([|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|])<br/>
+&nbsp;&nbsp;| <span class="id" title="var">mapGrng</span> <span class="id" title="var">p</span> <span class="id" title="var">l</span> <span class="id" title="var">h</span> <span class="id" title="var">k</span> <span class="id" title="var">m''</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span> <span class="id" title="var">r</span> : <span class="id" title="var">gotRangeStateProt</span> <span class="id" title="var">m''</span> <span class="id" title="var">r</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">currModeMState</span> <span class="id" title="var">k</span> = <span class="id" title="var">m</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;~<span class="id" title="var">possiblyIncompatible</span> <span class="id" title="var">m</span> <span class="id" title="var">m''</span> <span class="id" title="var">r</span> -&gt; <span class="id" title="var">nextModeMState</span> <span class="id" title="var">k</span> = <span class="id" title="var">Some</span> <span class="id" title="var">m'</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">possiblyIncompatible</span> <span class="id" title="var">m'</span> <span class="id" title="var">m''</span> <span class="id" title="var">r</span> -&gt; <span class="id" title="var">msgAbortPathEnt</span> ([|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|])<br/>
+&nbsp;&nbsp;| <span class="id" title="var">mapCuco</span> <span class="id" title="var">p</span> <span class="id" title="var">l</span> <span class="id" title="var">h</span> <span class="id" title="var">k</span> <span class="id" title="var">m''</span> <span class="id" title="var">m'</span> <span class="id" title="var">r</span> : <span class="id" title="var">currCompStateProt</span> <span class="id" title="var">m''</span> <span class="id" title="var">r</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">nextModeMState</span> <span class="id" title="var">k</span> = <span class="id" title="var">Some</span> <span class="id" title="var">m'</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">possiblyIncompatible</span> <span class="id" title="var">m'</span> <span class="id" title="var">m''</span> <span class="id" title="var">r</span> -&gt; <span class="id" title="var">msgAbortPathEnt</span> ([|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|])<br/>
+&nbsp;&nbsp;| <span class="id" title="var">mapAbort</span> <span class="id" title="var">p</span> <span class="id" title="var">l</span> <span class="id" title="var">h</span> <span class="id" title="var">k</span> : <span class="id" title="var">abortOvlpStateProt</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">msgAbortPathEnt</span> ([|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|]).<br/>
+
+<br/>
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">notifAbortPathEnt</span> : <span class="id" title="var">Entity</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">napRng</span> <span class="id" title="var">p</span> <span class="id" title="var">l</span> <span class="id" title="var">h</span> <span class="id" title="var">k</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span> : <span class="id" title="var">rangeBadStateProt</span> <span class="id" title="var">m'</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">currModeMState</span> <span class="id" title="var">k</span> = <span class="id" title="var">m</span> -&gt; <span class="id" title="var">m</span> &lt;&gt; <span class="id" title="var">m'</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">nextModeMState</span> <span class="id" title="var">k</span> = <span class="id" title="var">Some</span> <span class="id" title="var">m'</span> -&gt; <span class="id" title="var">notifAbortPathEnt</span> ([|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|])<br/>
+&nbsp;&nbsp;| <span class="id" title="var">napCuok</span> <span class="id" title="var">p</span> <span class="id" title="var">l</span> <span class="id" title="var">h</span> <span class="id" title="var">k</span> <span class="id" title="var">m'</span> : <span class="id" title="var">currOKStateProt</span> <span class="id" title="var">m'</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">nextModeMState</span> <span class="id" title="var">k</span> = <span class="id" title="var">Some</span> <span class="id" title="var">m'</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">notifAbortPathEnt</span> ([|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|])<br/>
+&nbsp;&nbsp;| <span class="id" title="var">napAbort</span> <span class="id" title="var">p</span> <span class="id" title="var">l</span> <span class="id" title="var">h</span> <span class="id" title="var">k</span> : <span class="id" title="var">abortOvlpStateProt</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">notifAbortPathEnt</span> ([|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|]).<br/>
+
+<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+incomingEnt v e means v is in the incoming list of the interface of e.
+</div>
+<div class="code">
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">incomingEnt</span> (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>) : <span class="id" title="var">Entity</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">incent</span> <span class="id" title="var">P</span> <span class="id" title="var">l</span> <span class="id" title="var">h</span> <span class="id" title="var">K</span> : <span class="id" title="var">incomingInter</span> <span class="id" title="var">v</span> <span class="id" title="var">h</span> -&gt; <span class="id" title="var">incomingEnt</span> <span class="id" title="var">v</span> ([|<span class="id" title="var">P</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">K</span>|]).<br/>
+
+<br/>
+<span class="id" title="keyword">Parameter</span> <span class="id" title="var">reachableEnt</span> : <span class="id" title="var">Entity</span> -&gt; <span class="id" title="keyword">Prop</span>.<br/>
+</div>
+
+<div class="doc">
+Idea: Reflexivie transitive closure of initialEnt under entity transition relations
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Parameter</span> <span class="id" title="var">nextModeEnt</span> : <span class="id" title="var">Mode</span> -&gt; <span class="id" title="var">Entity</span> -&gt; <span class="id" title="keyword">Prop</span>.<br/>
+</div>
+
+<div class="doc">
+Idea: Inductive with one constructor, in which the entity has mode state &lt;m, m', d&gt;, with m' the parameter to this relation
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Parameter</span> <span class="id" title="var">inPosEnt</span> : <span class="id" title="var">Position</span> -&gt; <span class="id" title="var">Entity</span> -&gt; <span class="id" title="keyword">Prop</span>.<br/>
+</div>
+
+<div class="doc">
+Idea: Analogous to nextModeEnt except with position vs. mode state
+<div class="paragraph"> </div>
+
+ An entity is initial if its consitutent process is
+initial and its mode state is a stable, failSafe mode.
+</div>
+<div class="code">
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">initialEnt</span> : <span class="id" title="var">Entity</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">initEnt</span> <span class="id" title="var">p</span> <span class="id" title="var">l</span> <span class="id" title="var">h</span> <span class="id" title="var">m</span> : <span class="id" title="var">initialProc</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">failSafe</span> <span class="id" title="var">m</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">initialEnt</span> ([|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">m</span>|]).<br/>
+</div>
+<hr/>This page has been generated by <a href="http://coq.inria.fr/">coqdoc</a>
+</div>
+
+</div>
+
+</body>
+</html>

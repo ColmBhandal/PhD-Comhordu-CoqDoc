@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<title>NARMsgPosition</title>
+</head>
+
+<body>
+
+<div id="page">
+
+<div id="header">
+</div>
+
+<div id="main">
+
+<h1 class="libtitle">Library NARMsgPosition</h1>
+
+<div class="code">
+</div>
+
+<div class="doc">
+This file was written by Colm Bhandal, PhD student, Foundations and Methods group,
+School of Computer Science and Statistics, Trinity College, Dublin, Ireland.
+</div>
+<div class="code">
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">Equality</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.Extras.LibTactics</span>.<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.GenTacs</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.StandardResults</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.ComhBasics</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.LanguageFoundations</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.SoftwareLanguage</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.InterfaceLanguage</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.ModeStateLanguage</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.NetworkLanguage</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.ProtAuxDefs</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.ProtAuxResults</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.EntAuxDefs</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.EntAuxResults</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.NetAuxBasics</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.NetAuxDefs</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.NARMisc</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">R_scope</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">sent_outgoing</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">sent</span> <span class="id" title="var">v</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="keyword">forall</span> <span class="id" title="var">q</span> : <span class="id" title="var">t</span> &lt; <span class="id" title="var">msgLatency</span>,<br/>
+&nbsp;&nbsp;<span class="id" title="var">outgoing</span> <span class="id" title="var">v</span> (<span class="id" title="var">minusTime</span> <span class="id" title="var">msgLatency</span> <span class="id" title="var">t</span> (<span class="id" title="var">Rlt_le</span> <span class="id" title="var">t</span> <span class="id" title="var">msgLatency</span> <span class="id" title="var">q</span>)) <span class="id" title="var">i</span> <span class="id" title="var">n</span>.<br/>
+</div>
+
+<div class="doc">
+Proof: Induction on sent.
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">fst_sent</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) : <span class="id" title="var">nextSince</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">l0</span>, <span class="id" title="var">sent</span> [<span class="id" title="var">baseMode</span> <span class="id" title="var">m</span>, <span class="id" title="var">basePosition</span> <span class="id" title="var">l0</span>] <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span>.<br/>
+</div>
+
+<div class="doc">
+Proof: By induction on nextSince.
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">sent_out_del</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) : <span class="id" title="var">sent</span> <span class="id" title="var">v</span> <span class="id" title="var">msgLatency</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">outgoing</span> <span class="id" title="var">v</span> <span class="id" title="var">zeroTime</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> \/<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">r</span> <span class="id" title="var">l</span>, <span class="id" title="var">delivered</span> ([-<span class="id" title="var">v</span>, <span class="id" title="var">l</span>, <span class="id" title="var">r</span>-]) <span class="id" title="var">zeroTime</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span>.<br/>
+</div>
+
+<div class="doc">
+Proof: By induction on sent.
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">sent_delivered</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) : <span class="id" title="var">sent</span> <span class="id" title="var">v</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="keyword">forall</span> <span class="id" title="var">q</span> : <span class="id" title="var">msgLatency</span> &lt; <span class="id" title="var">t</span>,<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">r</span> <span class="id" title="var">l</span>,<br/>
+&nbsp;&nbsp;<span class="id" title="var">delivered</span> ([-<span class="id" title="var">v</span>, <span class="id" title="var">l</span>, <span class="id" title="var">r</span>-]) (<span class="id" title="var">minusTime</span> <span class="id" title="var">t</span> <span class="id" title="var">msgLatency</span> (<span class="id" title="var">Rlt_le</span> <span class="id" title="var">msgLatency</span> <span class="id" title="var">t</span> <span class="id" title="var">q</span>)) <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span>.<br/>
+</div>
+
+<div class="doc">
+Proof: Induction on sent. Well the base case can be immediately discarded due to the
+  contradiction of t = 0 and mL &lt; t, given that mL is positive.
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">sent_pos_bound</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">l</span> <span class="id" title="var">l0</span> : <span class="id" title="var">Position</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">sent</span> [<span class="id" title="var">baseMode</span> <span class="id" title="var">m</span>, <span class="id" title="var">basePosition</span> <span class="id" title="var">l0</span>] <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">inPosNet</span> <span class="id" title="var">l</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">dist2d</span> <span class="id" title="var">l</span> <span class="id" title="var">l0</span> &lt;= <span class="id" title="var">speedMax</span>*<span class="id" title="var">t</span>.<br/>
+</div>
+
+<div class="doc">
+Proof: By induction on the proof of sent.
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">fst_delivered</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">nextSince</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">inPosNet</span> <span class="id" title="var">l</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="keyword">forall</span> <span class="id" title="var">q</span> : <span class="id" title="var">msgLatency</span> &lt; <span class="id" title="var">t</span>,<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">l0</span> <span class="id" title="var">l1</span> <span class="id" title="var">r</span>,<br/>
+&nbsp;&nbsp;<span class="id" title="var">delivered</span> ([-[<span class="id" title="var">baseMode</span> <span class="id" title="var">m</span>, <span class="id" title="var">basePosition</span> <span class="id" title="var">l0</span>], <span class="id" title="var">l1</span>, <span class="id" title="var">r</span>-])<br/>
+&nbsp;&nbsp;(<span class="id" title="var">minusTime</span> <span class="id" title="var">t</span> <span class="id" title="var">msgLatency</span> (<span class="id" title="var">Rlt_le</span> <span class="id" title="var">msgLatency</span> <span class="id" title="var">t</span> <span class="id" title="var">q</span>)) <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> /\<br/>
+&nbsp;&nbsp;<span class="id" title="var">dist2d</span> <span class="id" title="var">l</span> <span class="id" title="var">l0</span> &lt;= <span class="id" title="var">speedMax</span>*<span class="id" title="var">t</span>.<br/>
+</div>
+<hr/>This page has been generated by <a href="http://coq.inria.fr/">coqdoc</a>
+</div>
+
+</div>
+
+</body>
+</html>

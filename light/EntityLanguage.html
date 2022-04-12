@@ -1,0 +1,606 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<title>EntityLanguage</title>
+</head>
+
+<body>
+
+<div id="page">
+
+<div id="header">
+</div>
+
+<div id="main">
+
+<h1 class="libtitle">Library EntityLanguage</h1>
+
+<div class="code">
+
+<br/>
+</div>
+
+<div class="doc">
+This file was written by Colm Bhandal, PhD student, Foundations and Methods group,
+School of Computer Science and Statistics, Trinity College, Dublin, Ireland.
+</div>
+<div class="code">
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.Extras.LibTactics</span>.<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.GenTacs</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.StandardResults</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.ComhBasics</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.LanguageFoundations</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.SoftwareLanguage</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.InterfaceLanguage</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.ModeStateLanguage</span>.<br/>
+
+<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+A message is a vector of values augmented with coverage and location information.
+</div>
+<div class="code">
+<span class="id" title="keyword">Record</span> <span class="id" title="var">Message</span> : <span class="id" title="keyword">Type</span> :=<br/>
+<span class="id" title="var">mkMsg</span><br/>
+{<br/>
+&nbsp;&nbsp;<span class="id" title="var">msgPayload</span> :&gt; <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="var">msgPos</span> : <span class="id" title="var">Position</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="var">msgCoverage</span> : <span class="id" title="var">Distance</span><br/>
+}.<br/>
+<span class="id" title="keyword">Notation</span> &quot;[- v , l , r -]" := (<span class="id" title="var">mkMsg</span> <span class="id" title="var">v</span> <span class="id" title="var">l</span> <span class="id" title="var">r</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 40).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Extract the delivery radius from a broadcast.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">rangeMsg</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Message</span>) : <span class="id" title="var">Distance</span> :=<br/>
+&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">m</span> <span class="id" title="keyword">with</span> [-<span class="id" title="var">v</span>, <span class="id" title="var">l</span>, <span class="id" title="var">r</span>-] =&gt; <span class="id" title="var">r</span> <span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Return the first mode that occurs in v, or None if there is no such mode.
+</div>
+<div class="code">
+<span class="id" title="keyword">Fixpoint</span> <span class="id" title="var">firstMode</span> (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>) : <span class="id" title="var">option</span> <span class="id" title="var">Mode</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">v</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| [] =&gt; <span class="id" title="var">None</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">b</span> :: <span class="id" title="var">vs</span> =&gt; <span class="id" title="keyword">match</span> <span class="id" title="var">b</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id" title="var">baseMode</span> <span class="id" title="var">m</span> =&gt; <span class="id" title="var">Some</span> <span class="id" title="var">m</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id" title="var">_</span> =&gt; <span class="id" title="var">firstMode</span> <span class="id" title="var">vs</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">end</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+modeBc b will return the first mode m, if it exists,
+within the list of base values in b.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">modeBc</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Message</span>) : <span class="id" title="var">option</span> <span class="id" title="var">Mode</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">m</span> <span class="id" title="keyword">with</span> [-<span class="id" title="var">v</span>, <span class="id" title="var">l</span>, <span class="id" title="var">r</span>-] =&gt; <span class="id" title="var">firstMode</span> <span class="id" title="var">v</span> <span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Extract the position information from a broadcast. Note that this is the position
+of the sending entity at the time of sending rather than delivery. The entity may have
+moved between sending and delivery.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">posBc</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Message</span>) : <span class="id" title="var">Position</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">m</span> <span class="id" title="keyword">with</span> [-<span class="id" title="var">v</span>, <span class="id" title="var">l</span>, <span class="id" title="var">r</span>-] =&gt; <span class="id" title="var">l</span> <span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+And entity is a quadruple of components: An interface term, a software term,
+an MState term and a location.
+</div>
+<div class="code">
+<span class="id" title="keyword">Record</span> <span class="id" title="var">Entity</span> : <span class="id" title="keyword">Type</span> := <span class="id" title="var">mkEntity</span><br/>
+{<br/>
+&nbsp;&nbsp;<span class="id" title="var">procEnt</span> :&gt; <span class="id" title="var">ProcTerm</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="var">posEnt</span> :&gt; <span class="id" title="var">Position</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="var">interEnt</span> :&gt; <span class="id" title="var">Interface</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="var">mstEnt</span> : <span class="id" title="var">ModeState</span> <br/>
+}.<br/>
+<span class="id" title="keyword">Notation</span> &quot;[| p , l , i , k |]" := (<span class="id" title="var">mkEntity</span> <span class="id" title="var">p</span> <span class="id" title="var">l</span> <span class="id" title="var">i</span> <span class="id" title="var">k</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 30).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Equality on entities is decidable.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">eqDecEnt</span> : <span class="id" title="var">eqDec</span> <span class="id" title="var">Entity</span>. 
+<br/>
+</div>
+
+<div class="doc">
+The current mode of an entity is the current mode of the mode state.
+</div>
+<div class="code">
+<span class="id" title="keyword">Coercion</span> <span class="id" title="var">currModeEnt</span> (<span class="id" title="var">e</span> : <span class="id" title="var">Entity</span>) : <span class="id" title="var">Mode</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">e</span> <span class="id" title="keyword">with</span> [|<span class="id" title="var">_</span>, <span class="id" title="var">_</span>, <span class="id" title="var">_</span>, <span class="id" title="var">a</span>|] =&gt; <span class="id" title="var">a</span> <span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The next mode of an entity is the next mode of the mode state.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">nextModeEnt</span> (<span class="id" title="var">e</span> : <span class="id" title="var">Entity</span>) : <span class="id" title="var">option</span> <span class="id" title="var">Mode</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">e</span> <span class="id" title="keyword">with</span> [|<span class="id" title="var">_</span>, <span class="id" title="var">_</span>, <span class="id" title="var">_</span>, <span class="id" title="var">a</span>|] =&gt; <span class="id" title="var">nextModeMState</span> <span class="id" title="var">a</span> <span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">R_scope</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If the minimum distance of compatibiltiy of the respective modes
+of the entities is less than or equal to the separation of the
+entities in space, then they are compatible.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">compatible</span> (<span class="id" title="var">e1</span> <span class="id" title="var">e2</span> : <span class="id" title="var">Entity</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;(<span class="id" title="var">minDistComp</span> <span class="id" title="var">e1</span> <span class="id" title="var">e2</span>) &lt;= (<span class="id" title="var">dist2d</span> <span class="id" title="var">e1</span> <span class="id" title="var">e2</span>).<br/>
+<span class="id" title="keyword">Notation</span> &quot;e1 ~~ e2" := (<span class="id" title="var">compatible</span> <span class="id" title="var">e1</span> <span class="id" title="var">e2</span>) (<span class="id" title="tactic">left</span> <span class="id" title="keyword">associativity</span>, <span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 40).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Compatibility is a symmetric relation.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">compatibleSymmetric</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">e1</span> <span class="id" title="var">e2</span> : <span class="id" title="var">Entity</span>), (<span class="id" title="var">e1</span> ~~ <span class="id" title="var">e2</span>) &lt;-&gt; (<span class="id" title="var">e2</span> ~~ <span class="id" title="var">e1</span>).<br/>
+
+<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+A discrete action is either the input, output or ignorance of a message, or
+it is the silent value tau.
+</div>
+<div class="code">
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">ActDiscEnt</span> : <span class="id" title="keyword">Type</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">aeTagOut</span> : <span class="id" title="var">Message</span> -&gt; <span class="id" title="var">ActDiscEnt</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">aeTagIn</span> : <span class="id" title="var">Message</span> -&gt; <span class="id" title="var">ActDiscEnt</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">aeTagIg</span> : <span class="id" title="var">Message</span> -&gt; <span class="id" title="var">ActDiscEnt</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">aeTau</span> : <span class="id" title="var">ActDiscEnt</span>.<br/>
+<span class="id" title="keyword">Notation</span> &quot;b #!" := (<span class="id" title="var">aeTagOut</span> <span class="id" title="var">b</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 30).<br/>
+<span class="id" title="keyword">Notation</span> &quot;b #?" := (<span class="id" title="var">aeTagIn</span> <span class="id" title="var">b</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 30).<br/>
+<span class="id" title="keyword">Notation</span> &quot;b #:" := (<span class="id" title="var">aeTagIg</span> <span class="id" title="var">b</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 30).<br/>
+
+<br/>
+<span class="id" title="keyword">Reserved Notation</span> &quot;e1 -EA- a -&gt;&gt; e2" (<span class="id" title="tactic">left</span> <span class="id" title="keyword">associativity</span>, <span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 50).<br/>
+<span class="id" title="keyword">Reserved Notation</span> &quot;e1 -ED- a -&gt;&gt; e2" (<span class="id" title="tactic">left</span> <span class="id" title="keyword">associativity</span>, <span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 50).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The discrete action semantics for entities.
+</div>
+<div class="code">
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">stepDiscEnt</span> : <span class="id" title="var">Entity</span> -&gt; <span class="id" title="var">ActDiscEnt</span> -&gt; <span class="id" title="var">Entity</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepDeProcTau</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">p</span> <span class="id" title="var">p'</span> : <span class="id" title="var">ProcTerm</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">Interface</span>) (<span class="id" title="var">k</span> : <span class="id" title="var">ModeState</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">tauAct</span> -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> -&gt; [| <span class="id" title="var">p</span> , <span class="id" title="var">l</span> , <span class="id" title="var">i</span> , <span class="id" title="var">k</span> |] -<span class="id" title="var">EA</span>- <span class="id" title="var">aeTau</span> -&gt;&gt; [| <span class="id" title="var">p'</span> , <span class="id" title="var">l</span> , <span class="id" title="var">i</span> , <span class="id" title="var">k</span> |]<br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepDeIOProcInter</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">p</span> <span class="id" title="var">p'</span> : <span class="id" title="var">ProcTerm</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">i</span> <span class="id" title="var">i'</span> : <span class="id" title="var">Interface</span>) (<span class="id" title="var">k</span> : <span class="id" title="var">ModeState</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">chanOutProc</span> ;! <span class="id" title="var">v</span> -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> -&gt; <span class="id" title="var">i</span> -<span class="id" title="var">i</span>- <span class="id" title="var">chanOutProc</span> {? <span class="id" title="var">v</span> -<span class="id" title="var">i</span>&gt; <span class="id" title="var">i'</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;[| <span class="id" title="var">p</span> , <span class="id" title="var">l</span> , <span class="id" title="var">i</span> , <span class="id" title="var">k</span> |] -<span class="id" title="var">EA</span>- <span class="id" title="var">aeTau</span> -&gt;&gt; [| <span class="id" title="var">p'</span> , <span class="id" title="var">l</span> , <span class="id" title="var">i'</span> , <span class="id" title="var">k</span> |]<br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepDeIOInterProc</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">p</span> <span class="id" title="var">p'</span> : <span class="id" title="var">ProcTerm</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">i</span> <span class="id" title="var">i'</span> : <span class="id" title="var">Interface</span>) (<span class="id" title="var">k</span> : <span class="id" title="var">ModeState</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">chanInProc</span> ;? <span class="id" title="var">v</span> -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> -&gt; <span class="id" title="var">i</span> -<span class="id" title="var">i</span>- <span class="id" title="var">chanInProc</span> {! <span class="id" title="var">v</span> -<span class="id" title="var">i</span>&gt; <span class="id" title="var">i'</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;[| <span class="id" title="var">p</span> , <span class="id" title="var">l</span> , <span class="id" title="var">i</span> , <span class="id" title="var">k</span> |] -<span class="id" title="var">EA</span>- <span class="id" title="var">aeTau</span> -&gt;&gt; [| <span class="id" title="var">p'</span> , <span class="id" title="var">l</span> , <span class="id" title="var">i'</span> , <span class="id" title="var">k</span> |]<br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepDeNotif</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">p</span> <span class="id" title="var">p'</span> : <span class="id" title="var">ProcTerm</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">i</span> <span class="id" title="var">i'</span> : <span class="id" title="var">Interface</span>) (<span class="id" title="var">k</span> : <span class="id" title="var">ModeState</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">chanAN</span> ;? <span class="id" title="var">v</span> -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> -&gt; <span class="id" title="var">i</span> -<span class="id" title="var">i</span>- <span class="id" title="var">chanAN</span> {! <span class="id" title="var">v</span> -<span class="id" title="var">i</span>&gt; <span class="id" title="var">i'</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;[| <span class="id" title="var">p</span> , <span class="id" title="var">l</span> , <span class="id" title="var">i</span> , <span class="id" title="var">k</span> |] -<span class="id" title="var">EA</span>- <span class="id" title="var">aeTau</span> -&gt;&gt; [| <span class="id" title="var">p'</span> , <span class="id" title="var">l</span> , <span class="id" title="var">i'</span> , <span class="id" title="var">k</span> |]<br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepDeRdStbl</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">p</span> <span class="id" title="var">p'</span> : <span class="id" title="var">ProcTerm</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">i</span> : <span class="id" title="var">Interface</span>) (<span class="id" title="var">k</span> <span class="id" title="var">k'</span> : <span class="id" title="var">ModeState</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">chanMStable</span> *? -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> -&gt; <span class="id" title="var">k</span> -<span class="id" title="var">ms</span>- <span class="id" title="var">chanMStable</span> @! -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">k'</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;[| <span class="id" title="var">p</span> , <span class="id" title="var">l</span> , <span class="id" title="var">i</span> , <span class="id" title="var">k</span> |] -<span class="id" title="var">EA</span>- <span class="id" title="var">aeTau</span> -&gt;&gt; [| <span class="id" title="var">p'</span> , <span class="id" title="var">l</span> , <span class="id" title="var">i</span> , <span class="id" title="var">k'</span> |]<br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepDeCurrWrite</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">p</span> <span class="id" title="var">p'</span> : <span class="id" title="var">ProcTerm</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">i</span> : <span class="id" title="var">Interface</span>) (<span class="id" title="var">k</span> <span class="id" title="var">k'</span> : <span class="id" title="var">ModeState</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">chanMCurr</span> *! -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> -&gt; <span class="id" title="var">k</span> -<span class="id" title="var">ms</span>- <span class="id" title="var">chanMCurr</span> @? -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">k'</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;[| <span class="id" title="var">p</span> , <span class="id" title="var">l</span> , <span class="id" title="var">i</span> , <span class="id" title="var">k</span> |] -<span class="id" title="var">EA</span>- <span class="id" title="var">aeTau</span> -&gt;&gt; [| <span class="id" title="var">p'</span> , <span class="id" title="var">l</span> , <span class="id" title="var">i</span> , <span class="id" title="var">k'</span> |]<br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepDeCurrRead</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">p</span> <span class="id" title="var">p'</span> : <span class="id" title="var">ProcTerm</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">i</span> : <span class="id" title="var">Interface</span>) (<span class="id" title="var">k</span> <span class="id" title="var">k'</span> : <span class="id" title="var">ModeState</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">chanMCurr</span> ;? [<span class="id" title="var">baseMode</span> <span class="id" title="var">m</span>] -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> -&gt; <span class="id" title="var">k</span> -<span class="id" title="var">ms</span>- <span class="id" title="var">chanMCurr</span> .! <span class="id" title="var">m</span> -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">k'</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;[| <span class="id" title="var">p</span> , <span class="id" title="var">l</span> , <span class="id" title="var">i</span> , <span class="id" title="var">k</span> |] -<span class="id" title="var">EA</span>- <span class="id" title="var">aeTau</span> -&gt;&gt; [| <span class="id" title="var">p'</span> , <span class="id" title="var">l</span> , <span class="id" title="var">i</span> , <span class="id" title="var">k'</span> |]<br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepDeNextWrite</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">p</span> <span class="id" title="var">p'</span> : <span class="id" title="var">ProcTerm</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">i</span> : <span class="id" title="var">Interface</span>) (<span class="id" title="var">k</span> <span class="id" title="var">k'</span> : <span class="id" title="var">ModeState</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">chanMNext</span> ;! [<span class="id" title="var">baseMode</span> <span class="id" title="var">m</span>] -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> -&gt; <span class="id" title="var">k</span> -<span class="id" title="var">ms</span>- <span class="id" title="var">chanMNext</span> .? <span class="id" title="var">m</span> -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">k'</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;[| <span class="id" title="var">p</span> , <span class="id" title="var">l</span> , <span class="id" title="var">i</span> , <span class="id" title="var">k</span> |] -<span class="id" title="var">EA</span>- <span class="id" title="var">aeTau</span> -&gt;&gt; [| <span class="id" title="var">p'</span> , <span class="id" title="var">l</span> , <span class="id" title="var">i</span> , <span class="id" title="var">k'</span> |]<br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepDeNextRead</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">p</span> <span class="id" title="var">p'</span> : <span class="id" title="var">ProcTerm</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">i</span> : <span class="id" title="var">Interface</span>) (<span class="id" title="var">k</span> <span class="id" title="var">k'</span> : <span class="id" title="var">ModeState</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">chanMNext</span> ;? [<span class="id" title="var">baseMode</span> <span class="id" title="var">m</span>] -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> -&gt; <span class="id" title="var">k</span> -<span class="id" title="var">ms</span>- <span class="id" title="var">chanMNext</span> .! <span class="id" title="var">m</span> -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">k'</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;[| <span class="id" title="var">p</span> , <span class="id" title="var">l</span> , <span class="id" title="var">i</span> , <span class="id" title="var">k</span> |] -<span class="id" title="var">EA</span>- <span class="id" title="var">aeTau</span> -&gt;&gt; [| <span class="id" title="var">p'</span> , <span class="id" title="var">l</span> , <span class="id" title="var">i</span> , <span class="id" title="var">k'</span> |]<br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepDePosRead</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">p</span> <span class="id" title="var">p'</span> : <span class="id" title="var">ProcTerm</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">i</span> : <span class="id" title="var">Interface</span>) (<span class="id" title="var">k</span> : <span class="id" title="var">ModeState</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">chanPos</span> ;? [<span class="id" title="var">basePosition</span> <span class="id" title="var">l</span>] -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;[| <span class="id" title="var">p</span> , <span class="id" title="var">l</span> , <span class="id" title="var">i</span> , <span class="id" title="var">k</span> |] -<span class="id" title="var">EA</span>- <span class="id" title="var">aeTau</span> -&gt;&gt; [| <span class="id" title="var">p'</span> , <span class="id" title="var">l</span> , <span class="id" title="var">i</span> , <span class="id" title="var">k</span> |]<br/>
+&nbsp;&nbsp;</div>
+
+<div class="doc">
+If the message sent was too far away, it gets ignored.
+</div>
+<div class="code">
+&nbsp;&nbsp;| <span class="id" title="var">stepDeIgnore</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) (<span class="id" title="var">l</span> <span class="id" title="var">l'</span> : <span class="id" title="var">Position</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">i</span> : <span class="id" title="var">Interface</span>) (<span class="id" title="var">k</span> : <span class="id" title="var">ModeState</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>) (<span class="id" title="var">r</span> : <span class="id" title="var">Distance</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">r</span> &lt; <span class="id" title="var">dist2d</span> <span class="id" title="var">l</span> <span class="id" title="var">l'</span> -&gt; <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;[| <span class="id" title="var">p</span> , <span class="id" title="var">l</span> , <span class="id" title="var">i</span> , <span class="id" title="var">k</span> |] -<span class="id" title="var">EA</span>- [-<span class="id" title="var">v</span>, <span class="id" title="var">l'</span>, <span class="id" title="var">r</span>-]#: -&gt;&gt; [| <span class="id" title="var">p</span> , <span class="id" title="var">l</span> , <span class="id" title="var">i</span> , <span class="id" title="var">k</span> |]<br/>
+&nbsp;&nbsp;</div>
+
+<div class="doc">
+If the message sent was within range, then it gets input. This can be proven not
+  to block by analysing the behaviour of interface components. Therefore, a message
+  should always be accepted.
+</div>
+<div class="code">
+&nbsp;&nbsp;| <span class="id" title="var">stepDeIn</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) (<span class="id" title="var">l</span> <span class="id" title="var">l'</span> : <span class="id" title="var">Position</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">i</span> <span class="id" title="var">i'</span> : <span class="id" title="var">Interface</span>) (<span class="id" title="var">k</span> : <span class="id" title="var">ModeState</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>) (<span class="id" title="var">r</span> : <span class="id" title="var">Distance</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">dist2d</span> <span class="id" title="var">l</span> <span class="id" title="var">l'</span> &lt;= <span class="id" title="var">r</span> -&gt; <span class="id" title="var">i</span> -<span class="id" title="var">i</span>- <span class="id" title="var">chanIOEnv</span> {? <span class="id" title="var">v</span> -<span class="id" title="var">i</span>&gt; <span class="id" title="var">i'</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;[| <span class="id" title="var">p</span> , <span class="id" title="var">l</span> , <span class="id" title="var">i</span> , <span class="id" title="var">k</span> |] -<span class="id" title="var">EA</span>- [-<span class="id" title="var">v</span>, <span class="id" title="var">l'</span>, <span class="id" title="var">r</span>-]#? -&gt;&gt; [| <span class="id" title="var">p</span> , <span class="id" title="var">l</span> , <span class="id" title="var">i'</span> , <span class="id" title="var">k</span> |]<br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepDeOut</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">i</span> <span class="id" title="var">i'</span> : <span class="id" title="var">Interface</span>) (<span class="id" title="var">k</span> : <span class="id" title="var">ModeState</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>) (<span class="id" title="var">r</span> : <span class="id" title="var">Distance</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">i</span> -<span class="id" title="var">i</span>- <span class="id" title="var">chanIOEnv</span> <span class="id" title="var">_</span>! <span class="id" title="var">v</span> !<span class="id" title="var">_</span> <span class="id" title="var">r</span> -<span class="id" title="var">i</span>&gt; <span class="id" title="var">i'</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;[| <span class="id" title="var">p</span> , <span class="id" title="var">l</span> , <span class="id" title="var">i</span> , <span class="id" title="var">k</span> |] -<span class="id" title="var">EA</span>- [-<span class="id" title="var">v</span>, <span class="id" title="var">l</span>, <span class="id" title="var">r</span>-]#! -&gt;&gt; [| <span class="id" title="var">p</span> , <span class="id" title="var">l</span> , <span class="id" title="var">i'</span> , <span class="id" title="var">k</span> |]<br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepDeTest</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">i</span> : <span class="id" title="var">Interface</span>) (<span class="id" title="var">k</span> <span class="id" title="var">k'</span> : <span class="id" title="var">ModeState</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">k</span> -<span class="id" title="var">ms</span>- <span class="id" title="var">chanMNext</span> .? <span class="id" title="var">m</span> -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">k'</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;[| <span class="id" title="var">p</span> , <span class="id" title="var">l</span> , <span class="id" title="var">i</span> , <span class="id" title="var">k</span> |] -<span class="id" title="var">EA</span>- <span class="id" title="var">aeTau</span> -&gt;&gt; [| <span class="id" title="var">p</span> , <span class="id" title="var">l</span> , <span class="id" title="var">i</span> , <span class="id" title="var">k'</span> |]<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">where</span> &quot;e1 -EA- a -&gt;&gt; e2" := (<span class="id" title="var">stepDiscEnt</span> <span class="id" title="var">e1</span> <span class="id" title="var">a</span> <span class="id" title="var">e2</span>).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+An entity e is discrete action enabled for the discrete action a iff
+there is some entity e' such that e transitions to e' via a.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">discActEnabledEnt</span> (<span class="id" title="var">e</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">ActDiscEnt</span>) :=<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">e'</span>, <span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">a</span> -&gt;&gt; <span class="id" title="var">e'</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+This predicate says that it is impossible for p to synchronise with either i
+or k via the discrete action a i.e. if p can do a, then neither i nor k can do its
+complement.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">noSyncNow</span> (<span class="id" title="var">a</span> : <span class="id" title="var">DiscAct</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">i</span> : <span class="id" title="var">Interface</span>) (<span class="id" title="var">k</span> : <span class="id" title="var">ModeState</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">discActEnabled</span> <span class="id" title="var">p</span> <span class="id" title="var">a</span> -&gt;<br/>
+&nbsp;&nbsp;(~<span class="id" title="var">discActEnabledInter</span> (<span class="id" title="var">a</span>^) <span class="id" title="var">i</span> /\ ~<span class="id" title="var">discActEnabledMState</span> (<span class="id" title="var">a</span>^) <span class="id" title="var">k</span>).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+This predicate says that p i and k cannot synchronise now, nor can they
+synchronise after each has respectively performed a delay of d' that is less
+than d.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">noSync</span> (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">Interface</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">k</span> : <span class="id" title="var">ModeState</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">forall</span> <span class="id" title="var">a</span> : <span class="id" title="var">DiscAct</span>, <span class="id" title="var">noSyncNow</span> <span class="id" title="var">a</span> <span class="id" title="var">p</span> <span class="id" title="var">i</span> <span class="id" title="var">k</span> /\<br/>
+&nbsp;&nbsp;(<span class="id" title="keyword">forall</span> (<span class="id" title="var">p'</span> : <span class="id" title="var">ProcTerm</span>) (<span class="id" title="var">i'</span> : <span class="id" title="var">Interface</span>) (<span class="id" title="var">k'</span> : <span class="id" title="var">ModeState</span>) (<span class="id" title="var">d'</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">d'</span> &lt; <span class="id" title="var">d</span> -&gt; <span class="id" title="var">p</span> -<span class="id" title="var">PD</span>- <span class="id" title="var">d'</span> -<span class="id" title="var">PD</span>&gt; <span class="id" title="var">p'</span> -&gt; <span class="id" title="var">i</span> -<span class="id" title="var">i</span>- <span class="id" title="var">d'</span> -<span class="id" title="var">i</span>&gt; <span class="id" title="var">i'</span> -&gt; <span class="id" title="var">k</span> -<span class="id" title="var">ms</span>- <span class="id" title="var">d'</span> -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">k'</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">noSyncNow</span> <span class="id" title="var">a</span> <span class="id" title="var">p'</span> <span class="id" title="var">i'</span> <span class="id" title="var">k'</span>).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The timed action semantics for entities. There is only one delay law. The software,
+mode state and interface components all must delay by the same amount d for the entire
+entity to delay by this amount. After this, there are two interesting premises to the law.
+The first deals with a displacement vector delta, saying that its absolute value must be
+at most the delay multiplied by the maximum speed. In other words, movement is bounded.
+The other premise that is of interest says that the components of the entity must not
+be capable of synchronisation at any point during the delay.
+</div>
+<div class="code">
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">stepTimedEnt</span> : <span class="id" title="var">Entity</span> -&gt; <span class="id" title="var">Delay</span> -&gt; <span class="id" title="var">Entity</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepTeDel</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>) (<span class="id" title="var">p</span> <span class="id" title="var">p'</span> : <span class="id" title="var">ProcTerm</span>) (<span class="id" title="var">l</span> <span class="id" title="keyword">delta</span> : <span class="id" title="var">Position</span>)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">i</span> <span class="id" title="var">i'</span> : <span class="id" title="var">Interface</span>) (<span class="id" title="var">k</span> <span class="id" title="var">k'</span> : <span class="id" title="var">ModeState</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">p</span> -<span class="id" title="var">PD</span>- <span class="id" title="var">d</span> -<span class="id" title="var">PD</span>&gt; <span class="id" title="var">p'</span> -&gt; <span class="id" title="var">i</span> -<span class="id" title="var">i</span>- <span class="id" title="var">d</span> -<span class="id" title="var">i</span>&gt; <span class="id" title="var">i'</span> -&gt; <span class="id" title="var">k</span> -<span class="id" title="var">ms</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">k'</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">displacement</span> <span class="id" title="keyword">delta</span> &lt;= <span class="id" title="var">speedMax</span> * <span class="id" title="var">d</span> -&gt; <span class="id" title="var">noSync</span> <span class="id" title="var">p</span> <span class="id" title="var">i</span> <span class="id" title="var">k</span> <span class="id" title="var">d</span> -&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;[| <span class="id" title="var">p</span> , <span class="id" title="var">l</span> , <span class="id" title="var">i</span> , <span class="id" title="var">k</span> |] -<span class="id" title="var">ED</span>- <span class="id" title="var">d</span> -&gt;&gt; [| <span class="id" title="var">p'</span> , <span class="id" title="var">addPos</span> <span class="id" title="var">l</span> <span class="id" title="keyword">delta</span>, <span class="id" title="var">i'</span> , <span class="id" title="var">k'</span> |]<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">where</span> &quot;e1 -ED- d -&gt;&gt; e2" := (<span class="id" title="var">stepTimedEnt</span> <span class="id" title="var">e1</span> <span class="id" title="var">d</span> <span class="id" title="var">e2</span>).<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">destr_ent_inter</span> <span class="id" title="var">e</span> <span class="id" title="var">p</span> <span class="id" title="var">l</span> <span class="id" title="var">k</span> <span class="id" title="var">li</span> <span class="id" title="var">lo</span> <span class="id" title="var">ln</span> := <span class="id" title="keyword">let</span> <span class="id" title="var">h</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span> <span class="id" title="tactic">destruct</span> <span class="id" title="var">e</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">p</span> <span class="id" title="var">l</span> <span class="id" title="var">h</span> <span class="id" title="var">k</span>];<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">h</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">li</span> <span class="id" title="var">lo</span> <span class="id" title="var">ln</span>].<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If the current mode has changed across a tau transition, then the software process
+output on mCurr, and the mode state input on the same channel.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">curr_switch_proc</span> (<span class="id" title="var">p</span> <span class="id" title="var">p'</span> : <span class="id" title="var">ProcTerm</span>) (<span class="id" title="var">l</span> <span class="id" title="var">l'</span> : <span class="id" title="var">Position</span>) (<span class="id" title="var">h</span> <span class="id" title="var">h'</span> : <span class="id" title="var">Interface</span>) (<span class="id" title="var">k</span> <span class="id" title="var">k'</span> : <span class="id" title="var">ModeState</span>) :<br/>
+&nbsp;&nbsp;[|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|] -<span class="id" title="var">EA</span>- <span class="id" title="var">aeTau</span> -&gt;&gt; [|<span class="id" title="var">p'</span>, <span class="id" title="var">l'</span>, <span class="id" title="var">h'</span>, <span class="id" title="var">k'</span>|] -&gt; <span class="id" title="var">currModeMState</span> <span class="id" title="var">k</span> &lt;&gt; <span class="id" title="var">currModeMState</span> <span class="id" title="var">k'</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">chanMCurr</span> *! -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> /\ <span class="id" title="var">k</span> -<span class="id" title="var">ms</span>- <span class="id" title="var">chanMCurr</span> @? -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">k'</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The derivative of an ignore transition is the same as the source.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">ignoreEqEnt</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Message</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">m</span>#: -&gt;&gt; <span class="id" title="var">e'</span> -&gt; <span class="id" title="var">e</span> = <span class="id" title="var">e'</span>. <br/>
+
+<br/>
+</div>
+
+<div class="doc">
+An entity can always either input or ignore a message.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">inOrIgEnt</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">e</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Message</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">discActEnabledEnt</span> <span class="id" title="var">e</span> (<span class="id" title="var">m</span>#?) \/ <span class="id" title="var">discActEnabledEnt</span> <span class="id" title="var">e</span> (<span class="id" title="var">m</span>#:). <br/>
+
+<br/>
+<span class="id" title="keyword">Conjecture</span> <span class="id" title="var">dec_compatible</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">e1</span> <span class="id" title="var">e2</span> : <span class="id" title="var">Entity</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">e1</span> ~~ <span class="id" title="var">e2</span> \/ ~(<span class="id" title="var">e1</span> ~~<span class="id" title="var">e2</span>).<br/>
+</div>
+
+<div class="doc">
+Proof: Obvious
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Conjecture</span> <span class="id" title="var">currMode_ent_mState</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>) (<span class="id" title="var">h</span> : <span class="id" title="var">Interface</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">k</span> : <span class="id" title="var">ModeState</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>), <span class="id" title="var">currModeEnt</span> ([|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|]) = <span class="id" title="var">m</span> -&gt; <span class="id" title="var">currModeMState</span> <span class="id" title="var">k</span> = <span class="id" title="var">m</span>.<br/>
+</div>
+
+<div class="doc">
+Proof: Obvious from definitions
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">link_ent_inter_disc</span> <span class="id" title="var">p</span> <span class="id" title="var">p'</span> <span class="id" title="var">l</span> <span class="id" title="var">l'</span> <span class="id" title="var">h</span> <span class="id" title="var">h'</span> <span class="id" title="var">k</span> <span class="id" title="var">k'</span> <span class="id" title="var">a</span> :<br/>
+&nbsp;&nbsp;[|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|] -<span class="id" title="var">EA</span>- <span class="id" title="var">a</span> -&gt;&gt; [|<span class="id" title="var">p'</span>, <span class="id" title="var">l'</span>, <span class="id" title="var">h'</span>, <span class="id" title="var">k'</span>|] -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">h</span> = <span class="id" title="var">h'</span> \/ <br/>
+&nbsp;&nbsp;(<span class="id" title="var">k</span> = <span class="id" title="var">k'</span> /\<br/>
+&nbsp;&nbsp;((<span class="id" title="tactic">exists</span> <span class="id" title="var">v</span>, (<span class="id" title="var">h</span> -<span class="id" title="var">i</span>- <span class="id" title="var">chanOutProc</span> {? <span class="id" title="var">v</span> -<span class="id" title="var">i</span>&gt; <span class="id" title="var">h'</span> /\ <span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">chanOutProc</span>;! <span class="id" title="var">v</span> -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span>)) \/<br/>
+&nbsp;&nbsp;(<span class="id" title="tactic">exists</span> <span class="id" title="var">v</span>, (<span class="id" title="var">h</span> -<span class="id" title="var">i</span>- <span class="id" title="var">chanInProc</span> {! <span class="id" title="var">v</span> -<span class="id" title="var">i</span>&gt; <span class="id" title="var">h'</span> /\ <span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">chanInProc</span>;? <span class="id" title="var">v</span> -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span>)) \/<br/>
+&nbsp;&nbsp;(<span class="id" title="tactic">exists</span> <span class="id" title="var">v</span>, (<span class="id" title="var">h</span> -<span class="id" title="var">i</span>- <span class="id" title="var">chanAN</span> {! <span class="id" title="var">v</span> -<span class="id" title="var">i</span>&gt; <span class="id" title="var">h'</span> /\ <span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">chanAN</span>;? <span class="id" title="var">v</span> -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span>)) \/<br/>
+&nbsp;&nbsp;(<span class="id" title="tactic">exists</span> <span class="id" title="var">v</span>, <span class="id" title="var">h</span> -<span class="id" title="var">i</span>- <span class="id" title="var">chanIOEnv</span> {? <span class="id" title="var">v</span> -<span class="id" title="var">i</span>&gt; <span class="id" title="var">h'</span>) \/<br/>
+&nbsp;&nbsp;(<span class="id" title="tactic">exists</span> <span class="id" title="var">v</span> <span class="id" title="var">r</span>, <span class="id" title="var">h</span> -<span class="id" title="var">i</span>- <span class="id" title="var">chanIOEnv</span> <span class="id" title="var">_</span>! <span class="id" title="var">v</span> !<span class="id" title="var">_</span> <span class="id" title="var">r</span> -<span class="id" title="var">i</span>&gt; <span class="id" title="var">h'</span>))).<br/>
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">link_entinterdisc_tac</span> <span class="id" title="var">v</span> <span class="id" title="var">r</span> <span class="id" title="var">U</span> := <br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H</span> : [|?<span class="id" title="var">p</span>, ?<span class="id" title="var">l</span>, ?<span class="id" title="var">h</span>, ?<span class="id" title="var">k</span>|] -<span class="id" title="var">EA</span>- ?<span class="id" title="var">a</span> -&gt;&gt; [|?<span class="id" title="var">p'</span>, ?<span class="id" title="var">l'</span>, ?<span class="id" title="var">h'</span>, ?<span class="id" title="var">k'</span>|] |- <span class="id" title="var">_</span>] =&gt;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">H1</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span> <span class="id" title="var">lets</span> <span class="id" title="var">H1</span> : <span class="id" title="var">link_ent_inter_disc</span> <span class="id" title="var">H</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">U1</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span> <span class="id" title="keyword">let</span> <span class="id" title="var">H0</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span> <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">elim_intro</span> <span class="id" title="var">H1</span> <span class="id" title="var">U1</span> <span class="id" title="var">H0</span>;[ | <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">H7</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span> <span class="id" title="keyword">let</span> <span class="id" title="var">H8</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">decompAnd2</span> <span class="id" title="var">H0</span> <span class="id" title="var">H7</span> <span class="id" title="var">H8</span>; <span class="id" title="keyword">let</span> <span class="id" title="var">V</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="var">v</span> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">elimOr5</span> <span class="id" title="var">H8</span> <span class="id" title="var">U</span>;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;[(<span class="id" title="keyword">let</span> <span class="id" title="var">H2</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span> <span class="id" title="tactic">destruct</span> <span class="id" title="var">U1</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">V</span> <span class="id" title="var">H2</span>]; <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">andflat</span> <span class="id" title="var">U</span>).. | <span class="id" title="keyword">let</span> <span class="id" title="var">H2</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span> <span class="id" title="tactic">destruct</span> <span class="id" title="var">U1</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">V</span> <span class="id" title="var">H2</span>]; <span class="id" title="tactic">rename</span> <span class="id" title="var">H2</span> <span class="id" title="var">into</span> <span class="id" title="var">U1</span> | <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">R</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="var">r</span> <span class="id" title="tactic">in</span> <span class="id" title="keyword">let</span> <span class="id" title="var">H3</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">decompEx2</span> <span class="id" title="var">U1</span> <span class="id" title="var">V</span> <span class="id" title="var">R</span> <span class="id" title="var">H3</span>;<span class="id" title="tactic">rename</span> <span class="id" title="var">H3</span> <span class="id" title="var">into</span> <span class="id" title="var">U1</span> ]<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;]<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">link_ent_inter_del</span> <span class="id" title="var">p</span> <span class="id" title="var">p'</span> <span class="id" title="var">l</span> <span class="id" title="var">l'</span> <span class="id" title="var">h</span> <span class="id" title="var">h'</span> <span class="id" title="var">k</span> <span class="id" title="var">k'</span> <span class="id" title="var">d</span> :<br/>
+&nbsp;&nbsp;[|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|] -<span class="id" title="var">ED</span>- <span class="id" title="var">d</span> -&gt;&gt; [|<span class="id" title="var">p'</span>, <span class="id" title="var">l'</span>, <span class="id" title="var">h'</span>, <span class="id" title="var">k'</span>|] -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">h</span> -<span class="id" title="var">i</span>- <span class="id" title="var">d</span> -<span class="id" title="var">i</span>&gt; <span class="id" title="var">h'</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">link_entinterdel_tac</span> <span class="id" title="var">U</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H</span> : [|?<span class="id" title="var">p</span>, ?<span class="id" title="var">l</span>, ?<span class="id" title="var">h</span>, ?<span class="id" title="var">k</span>|] -<span class="id" title="var">ED</span>- ?<span class="id" title="var">d</span> -&gt;&gt; [|?<span class="id" title="var">p'</span>, ?<span class="id" title="var">l'</span>, ?<span class="id" title="var">h'</span>, ?<span class="id" title="var">k'</span>|] |- <span class="id" title="var">_</span>] =&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">U1</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span> <span class="id" title="var">lets</span> <span class="id" title="var">U1</span> : <span class="id" title="var">link_ent_inter_del</span> <span class="id" title="var">H</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">link_ent_soft_del</span> <span class="id" title="var">p</span> <span class="id" title="var">p'</span> <span class="id" title="var">l</span> <span class="id" title="var">l'</span> <span class="id" title="var">h</span> <span class="id" title="var">h'</span> <span class="id" title="var">k</span> <span class="id" title="var">k'</span> <span class="id" title="var">d</span> :<br/>
+&nbsp;&nbsp;[|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|] -<span class="id" title="var">ED</span>- <span class="id" title="var">d</span> -&gt;&gt; [|<span class="id" title="var">p'</span>, <span class="id" title="var">l'</span>, <span class="id" title="var">h'</span>, <span class="id" title="var">k'</span>|] -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">p</span> -<span class="id" title="var">PD</span>- <span class="id" title="var">d</span> -<span class="id" title="var">PD</span>&gt; <span class="id" title="var">p'</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">link_entsoftdel_tac</span> <span class="id" title="var">U</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H</span> : [|?<span class="id" title="var">p</span>, ?<span class="id" title="var">l</span>, ?<span class="id" title="var">h</span>, ?<span class="id" title="var">k</span>|] -<span class="id" title="var">ED</span>- ?<span class="id" title="var">d</span> -&gt;&gt; [|?<span class="id" title="var">p'</span>, ?<span class="id" title="var">l'</span>, ?<span class="id" title="var">h'</span>, ?<span class="id" title="var">k'</span>|] |- <span class="id" title="var">_</span>] =&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">U1</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span> <span class="id" title="var">lets</span> <span class="id" title="var">U1</span> : <span class="id" title="var">link_ent_soft_del</span> <span class="id" title="var">H</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">link_ent_mState_del</span> <span class="id" title="var">p</span> <span class="id" title="var">p'</span> <span class="id" title="var">l</span> <span class="id" title="var">l'</span> <span class="id" title="var">h</span> <span class="id" title="var">h'</span> <span class="id" title="var">k</span> <span class="id" title="var">k'</span> <span class="id" title="var">d</span> :<br/>
+&nbsp;&nbsp;[|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|] -<span class="id" title="var">ED</span>- <span class="id" title="var">d</span> -&gt;&gt; [|<span class="id" title="var">p'</span>, <span class="id" title="var">l'</span>, <span class="id" title="var">h'</span>, <span class="id" title="var">k'</span>|] -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">k</span> -<span class="id" title="var">ms</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">k'</span>. <br/>
+
+<br/>
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">link_entmstatedel_tac</span> <span class="id" title="var">U</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| [ <span class="id" title="var">H</span> : [|?<span class="id" title="var">p</span>, ?<span class="id" title="var">l</span>, ?<span class="id" title="var">h</span>, ?<span class="id" title="var">k</span>|] -<span class="id" title="var">ED</span>- ?<span class="id" title="var">d</span> -&gt;&gt; [|?<span class="id" title="var">p'</span>, ?<span class="id" title="var">l'</span>, ?<span class="id" title="var">h'</span>, ?<span class="id" title="var">k'</span>|] |- <span class="id" title="var">_</span>] =&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">U1</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="var">U</span> <span class="id" title="tactic">in</span> <span class="id" title="var">lets</span> <span class="id" title="var">U1</span> : <span class="id" title="var">link_ent_mState_del</span> <span class="id" title="var">H</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">timeSplit_ent</span> <span class="id" title="var">e</span> <span class="id" title="var">e''</span> <span class="id" title="var">d</span> <span class="id" title="var">d'</span> <span class="id" title="var">d''</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">e</span> -<span class="id" title="var">ED</span>- <span class="id" title="var">d''</span> -&gt;&gt; <span class="id" title="var">e''</span> -&gt; <span class="id" title="var">d''</span> = <span class="id" title="var">d</span> +<span class="id" title="var">d</span>+ <span class="id" title="var">d'</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">e'</span>, <span class="id" title="var">e</span> -<span class="id" title="var">ED</span>- <span class="id" title="var">d</span> -&gt;&gt; <span class="id" title="var">e'</span> /\ <span class="id" title="var">e'</span> -<span class="id" title="var">ED</span>- <span class="id" title="var">d'</span> -&gt;&gt; <span class="id" title="var">e''</span>. </div>
+
+<div class="doc">
+Proof: This should follow from time split properties of the underlying components. Also, it would have to be shown that the noSynch predicate would still hold for the intermediate entity component e', with the time parameter changed.
+</div>
+<div class="code">
+
+<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Destructs the next entity it encounters naming its sub-components as fresh instances
+of p, l, h, k.
+</div>
+<div class="code">
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">destrEnt</span> <span class="id" title="var">p</span> <span class="id" title="var">l</span> <span class="id" title="var">h</span> <span class="id" title="var">k</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;[ <span class="id" title="var">e</span> : <span class="id" title="var">Entity</span> |- <span class="id" title="var">_</span> ] =&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">vp</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="var">p</span> <span class="id" title="tactic">in</span> <span class="id" title="keyword">let</span> <span class="id" title="var">vl</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="var">l</span> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">vh</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="var">h</span> <span class="id" title="tactic">in</span> <span class="id" title="keyword">let</span> <span class="id" title="var">vk</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="var">k</span> <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">e</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">vp</span> <span class="id" title="var">vl</span> <span class="id" title="var">vh</span> <span class="id" title="var">vk</span>]<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Repeatedly destructs all entities according to the names given.
+</div>
+<div class="code">
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">destrEnts</span> <span class="id" title="var">p</span> <span class="id" title="var">l</span> <span class="id" title="var">h</span> <span class="id" title="var">k</span> := <span class="id" title="tactic">repeat</span> <span class="id" title="var">destrEnt</span> <span class="id" title="var">p</span> <span class="id" title="var">l</span> <span class="id" title="var">h</span> <span class="id" title="var">k</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Destructs any entities it finds. May have also be searched for as destr_ents.
+</div>
+<div class="code">
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">destrEnts_norm</span> := <span class="id" title="keyword">let</span> <span class="id" title="var">p</span> := <span class="id" title="tactic">fresh</span> "p" <span class="id" title="tactic">in</span> <span class="id" title="keyword">let</span> <span class="id" title="var">l</span> := <span class="id" title="tactic">fresh</span> "l" <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">h</span> := <span class="id" title="tactic">fresh</span> "h" <span class="id" title="tactic">in</span> <span class="id" title="keyword">let</span> <span class="id" title="var">k</span> := <span class="id" title="tactic">fresh</span> "k" <span class="id" title="tactic">in</span> <span class="id" title="var">destrEnts</span> <span class="id" title="var">p</span> <span class="id" title="var">l</span> <span class="id" title="var">h</span> <span class="id" title="var">k</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+From a delay on an entity creates the hypothesis NS (a parameter) that no synchronisation
+is possible between any of the components of the entity.
+</div>
+<div class="code">
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">del_noSync_tac</span> <span class="id" title="var">NS</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span> [<span class="id" title="var">a</span> : <span class="id" title="var">DiscAct</span>, <span class="id" title="var">U</span> : [|?<span class="id" title="var">p0</span>, <span class="id" title="var">_</span>, ?<span class="id" title="var">h0</span>, ?<span class="id" title="var">k0</span>|] -<span class="id" title="var">ED</span>- ?<span class="id" title="var">d</span> -&gt;&gt; <span class="id" title="var">_</span> |- <span class="id" title="var">_</span>] =&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">noSync</span> <span class="id" title="var">p0</span> <span class="id" title="var">h0</span> <span class="id" title="var">k0</span> <span class="id" title="var">d</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">NS</span>; [<span class="id" title="tactic">inversion</span> <span class="id" title="var">U</span>; <span class="id" title="tactic">assumption</span> | ]<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+From a hypothesis X of noSynch between various components, creates a weakened version of X
+saying that noSyncNow is possible between those components and calls it NS.
+</div>
+<div class="code">
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">noSync_noSyncNow_tac</span> <span class="id" title="var">NS</span> := <br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;[ <span class="id" title="var">a</span> : <span class="id" title="var">DiscAct</span>, <span class="id" title="var">X</span> : <span class="id" title="var">noSync</span> ?<span class="id" title="var">p0</span> ?<span class="id" title="var">h0</span> ?<span class="id" title="var">k0</span> <span class="id" title="var">_</span> |- <span class="id" title="var">_</span>] =&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">noSyncNow</span> <span class="id" title="var">a</span> <span class="id" title="var">p0</span> <span class="id" title="var">h0</span> <span class="id" title="var">k0</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">NS</span>; [<span class="id" title="tactic">unfold</span> <span class="id" title="var">noSync</span> <span class="id" title="tactic">in</span> <span class="id" title="var">X</span>; <span class="id" title="tactic">apply</span> <span class="id" title="var">X</span><br/>
+&nbsp;&nbsp;| ] <span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+From an entity delay creates the hypothesis NS saying that noSyncNow is possible between
+the components of the entity, via the first action a matched in the hypotheses.
+</div>
+<div class="code">
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">del_noSyncNow_tac</span> <span class="id" title="var">NS</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">X</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span> <span class="id" title="var">del_noSync_tac</span> <span class="id" title="var">X</span>; <span class="id" title="var">noSync_noSyncNow_tac</span> <span class="id" title="var">NS</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">clear</span> <span class="id" title="var">X</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Takes a delay hypothesis and inverts to give that noSyncNow holds for
+the components of the entity in question.
+</div>
+<div class="code">
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">noSyncNow_tac</span> := <span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;[<span class="id" title="var">A</span> : [|?<span class="id" title="var">p</span>, <span class="id" title="var">_</span>, ?<span class="id" title="var">h</span>, ?<span class="id" title="var">k</span>|] -<span class="id" title="var">ED</span>- ?<span class="id" title="var">d</span> -&gt;&gt; <span class="id" title="var">_</span> |- <span class="id" title="var">_</span>] =&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">NS</span> := <span class="id" title="tactic">fresh</span> "NS" <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="keyword">forall</span> <span class="id" title="var">a</span>, <span class="id" title="var">noSyncNow</span> <span class="id" title="var">a</span> <span class="id" title="var">p</span> <span class="id" title="var">h</span> <span class="id" title="var">k</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">NS</span>;<br/>
+&nbsp;&nbsp;[<span class="id" title="tactic">inversion</span> <span class="id" title="var">A</span>; <span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span> [<span class="id" title="var">B</span> : <span class="id" title="var">noSync</span> <span class="id" title="var">p</span> <span class="id" title="var">h</span> <span class="id" title="var">k</span> <span class="id" title="var">d</span> |- <span class="id" title="var">_</span>] =&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">B</span> <span class="id" title="keyword">end</span>| ] <span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">Ltac</span> <span class="id" title="var">invertDel_ent_proc</span> := <span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;[<span class="id" title="var">U1</span> : [|?<span class="id" title="var">p0</span>, <span class="id" title="var">_</span>, <span class="id" title="var">_</span>, <span class="id" title="var">_</span>|] -<span class="id" title="var">ED</span>- ?<span class="id" title="var">d</span> -&gt;&gt; [|?<span class="id" title="var">p</span>, <span class="id" title="var">_</span>, <span class="id" title="var">_</span>, <span class="id" title="var">_</span>|] |- <span class="id" title="var">_</span> ]<br/>
+&nbsp;&nbsp;=&gt; <span class="id" title="tactic">assert</span> (<span class="id" title="var">p0</span> -<span class="id" title="var">PD</span>- <span class="id" title="var">d</span> -<span class="id" title="var">PD</span>&gt; <span class="id" title="var">p</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">PD</span>; [<span class="id" title="tactic">inversion</span> <span class="id" title="var">U1</span>; <span class="id" title="tactic">assumption</span> | ] <span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Creates a hypothesis PD saying that some process delays to another process,
+then rewrites TR, an equality identifying the process with a triple of processes,
+then creates three hypotheses saying that the sort relations of the three processes
+are distinct, called SORT1_2, SORT1_3 and SORT2_3.
+</div>
+<div class="code">
+<span class="id" title="keyword">Ltac</span> <span class="id" title="var">del_triple_sort_tac</span> :=<br/>
+&nbsp;&nbsp;(<span class="id" title="tactic">try</span> <span class="id" title="var">invertDel_ent_proc</span>); <span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;[<span class="id" title="var">TR</span> : ?<span class="id" title="var">p</span> = ?<span class="id" title="var">p1</span> $||$ ?<span class="id" title="var">p2</span> $||$ ?<span class="id" title="var">p3</span>, <span class="id" title="var">PD</span> : ?<span class="id" title="var">p</span> -<span class="id" title="var">PD</span>- ?<span class="id" title="var">d</span> -<span class="id" title="var">PD</span>&gt; ?<span class="id" title="var">p'</span> |- <span class="id" title="var">_</span>] =&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">TR</span> <span class="id" title="tactic">in</span> <span class="id" title="var">PD</span>; <span class="id" title="keyword">let</span> <span class="id" title="var">U</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span> <span class="id" title="keyword">let</span> <span class="id" title="var">x</span> := <span class="id" title="tactic">fresh</span> "SORT1_2" <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">y</span> := <span class="id" title="tactic">fresh</span> "SORT1_3" <span class="id" title="tactic">in</span> <span class="id" title="keyword">let</span> <span class="id" title="var">z</span> := <span class="id" title="tactic">fresh</span> "SORT2_3" <span class="id" title="tactic">in</span><br/>
+&nbsp;&nbsp;(<span class="id" title="var">lets</span> <span class="id" title="var">U</span> : <span class="id" title="var">del_triple_sort</span> <span class="id" title="var">PD</span>; <span class="id" title="var">decompAnd3</span> <span class="id" title="var">U</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">z</span>) <span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+</div>
+<hr/>This page has been generated by <a href="http://coq.inria.fr/">coqdoc</a>
+</div>
+
+</div>
+
+</body>
+</html>

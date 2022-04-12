@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<title>NARNonFS_currSince</title>
+</head>
+
+<body>
+
+<div id="page">
+
+<div id="header">
+</div>
+
+<div id="main">
+
+<h1 class="libtitle">Library NARNonFS_currSince</h1>
+
+<div class="code">
+</div>
+
+<div class="doc">
+This file was written by Colm Bhandal, PhD student, Foundations and Methods group,
+School of Computer Science and Statistics, Trinity College, Dublin, Ireland.
+</div>
+<div class="code">
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.Extras.LibTactics</span>.<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.GenTacs</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.StandardResults</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.ComhBasics</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.NetworkLanguage</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.LanguageFoundations</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.ModeStateLanguage</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.InterfaceLanguage</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.SoftwareLanguage</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.ProtAuxDefs</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.ProtAuxResults</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.EntAuxDefs</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.EntAuxResults</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.NetAuxBasics</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.NetAuxDefs</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.NARMisc</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">ovWait_nextSinceState_net</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> : <br/>
+&nbsp;&nbsp;<span class="id" title="var">ovWaitStateNet</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">nextSinceStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span>. <span class="id" title="var">Admitted</span> .<br/>
+
+<br/>
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">ovWait_nextSince_pending</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">t</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">ovWaitStateNet</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">pending</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> \/ <span class="id" title="tactic">exists</span> <span class="id" title="var">t</span>, <span class="id" title="var">nextSince</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">introz</span> <span class="id" title="var">U</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">p</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">initNet_contra</span> <span class="id" title="var">U</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>. 
+<br/>
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">ovReady_nextSince_pending</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">ovReadyStateNet</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">l</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">pending</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> \/ <span class="id" title="tactic">exists</span> <span class="id" title="var">t</span>, <span class="id" title="var">nextSince</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">introz</span> <span class="id" title="var">U</span>.<br/>
+</div>
+
+<div class="doc">
+Proof: Induction on reachable.
+</div>
+<div class="code">
+&nbsp;&nbsp;<span class="id" title="tactic">induction</span> <span class="id" title="var">p</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>. 
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">pending_urgent</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">n'</span> <span class="id" title="var">p</span> <span class="id" title="var">d</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">pending</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">False</span>. <span class="id" title="var">Admitted</span>. </div>
+
+<div class="doc">
+Proof: Induction on pending. BaseType case: ovWait is ready to input a position,
+and so is urgent. This readiness is not perverted by any other discreet action,
+so the ovWait-ovWait inductive case follows. Both inductive cases with ovReady
+as the current state follows immediately from the fact that ovWaitState is
+itself urgent
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">ovWait_zero_nextSince</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">t</span> <span class="id" title="var">y</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) : <span class="id" title="var">ovWaitStateNet</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">zeroTime</span> <span class="id" title="var">y</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">t</span>, <span class="id" title="var">nextSince</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span>. <span class="id" title="var">Admitted</span>. </div>
+
+<div class="doc">
+Proof: Induction on reachable. BaseType case fails. For the inductive case(s),
+case analyse- is the last state ovWait? If yes, then the result follows easily
+by induction. If not, then use (...ovWait_prev...) to get the possible shapes of
+the previous state. Well, it can't be initState m, because this would give us
+x = tw(m0, m) + period m, which is greater than 0. But x = 0. So our previous
+state must have been ovReady m (t + period m) l. Then by (ovReady_nextSince_pending),
+the previous state was either pending or nextSince. In either case, there is a
+constructor of nextSince that allows us to prove nextSince holds for the current state.
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">switchBc_nextSince</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) : <span class="id" title="var">switchBcStateNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="tactic">exists</span> <span class="id" title="var">t</span>, <span class="id" title="var">nextSince</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>. </div>
+
+<div class="doc">
+Proof: By induction on reachable. Eliminate the easy cases, leaving us with the
+discrete inductive case with the previous state not switchBcState. Then we use
+(...switchBc_prev...) to give us ovWait m t 0 y as the predecessor state- we know
+the parameter x is 0 because the transition would have to have been enabled.
+Then by (ovWait_nextSince_pending &amp; elimination of the pending case somehow) we have that the previous state was nextSince and so by
+application of the nextSince discrete constructor so is this one.
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">switchCurr_nextSince</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) : <span class="id" title="var">switchCurrStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">t</span>, <span class="id" title="var">nextSince</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span>. <span class="id" title="var">Admitted</span>. </div>
+
+<div class="doc">
+Proof: By induction on reachable and (...switchCurr_prev...) to give us switchBc m
+as the predecessor state. Then by (swtichBc_nextSince) and application of the nextSince
+discrete constructor our results follows.
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">nonFS_currSince</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) <br/>
+&nbsp;&nbsp;(<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) : <span class="id" title="var">currModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; ~<span class="id" title="var">failSafe</span> <span class="id" title="var">m</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">t</span>, <span class="id" title="var">currSince</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>.<br/>
+</div>
+
+<div class="doc">
+Proof: Induction on the proof of reachability of n.
+</div>
+<div class="code">
+&nbsp;&nbsp;<span class="id" title="tactic">induction</span> <span class="id" title="var">p</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">currMode_ent_ex</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>. <span class="id" title="var">decompose</span> [<span class="id" title="var">ex</span>] <span class="id" title="var">H</span>. <span class="id" title="tactic">clear</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">rename</span> <span class="id" title="var">x</span> <span class="id" title="var">into</span> <span class="id" title="var">e</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H1</span>. <span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">H2</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">False_ind</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">initial_failSafe</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">i0</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">addHyp</span> (<span class="id" title="var">currModeNet_dec</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span>). <span class="id" title="var">invertClear</span> <span class="id" title="var">H1</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">IHp</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H2</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H2</span>. <span class="id" title="tactic">rename</span> <span class="id" title="var">x</span> <span class="id" title="var">into</span> <span class="id" title="var">t</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">t</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">currSinceDisc</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H1</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">addHyp</span> (<span class="id" title="var">currMode_pres_bkwd</span> <span class="id" title="var">n</span> <span class="id" title="var">n'</span> <span class="id" title="var">a</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">s</span> <span class="id" title="var">H</span>). <span class="id" title="var">invertClear</span> <span class="id" title="var">H1</span>. <span class="id" title="tactic">rename</span> <span class="id" title="var">x</span> <span class="id" title="var">into</span> <span class="id" title="var">m'</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">m'</span> &lt;&gt; <span class="id" title="var">m</span>). <span class="id" title="tactic">unfold</span> <span class="id" title="var">not</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">H1</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H3</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H2</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">addHyp</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">rewrite</span> (<span class="id" title="var">currMode_ent_ex</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span>) <span class="id" title="tactic">in</span> <span class="id" title="var">H4</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">addHyp</span> <span class="id" title="var">H3</span>. <span class="id" title="tactic">rewrite</span> (<span class="id" title="var">currMode_ent_ex</span> <span class="id" title="var">m'</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span>) <span class="id" title="tactic">in</span> <span class="id" title="var">H5</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H4</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H5</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H4</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H6</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rename</span> <span class="id" title="var">x0</span> <span class="id" title="var">into</span> <span class="id" title="var">e</span>. <span class="id" title="tactic">rename</span> <span class="id" title="var">x</span> <span class="id" title="var">into</span> <span class="id" title="var">e'</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">addHyp</span> (<span class="id" title="var">curr_switch_ent_tau</span> <span class="id" title="var">n</span> <span class="id" title="var">n'</span> <span class="id" title="var">a</span> <span class="id" title="var">e</span> <span class="id" title="var">e'</span> <span class="id" title="var">i</span> <span class="id" title="var">m'</span> <span class="id" title="var">m</span> <span class="id" title="var">s</span> <span class="id" title="var">H5</span> <span class="id" title="var">H4</span> <span class="id" title="var">H7</span> <span class="id" title="var">H8</span> <span class="id" title="var">H1</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rename</span> <span class="id" title="var">p</span> <span class="id" title="var">into</span> <span class="id" title="var">X</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">e</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">p</span> <span class="id" title="var">l</span> <span class="id" title="var">h</span> <span class="id" title="var">k</span>]. <span class="id" title="tactic">destruct</span> <span class="id" title="var">e'</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">p'</span> <span class="id" title="var">l'</span> <span class="id" title="var">h'</span> <span class="id" title="var">k'</span>].<br/>
+&nbsp;&nbsp;<span class="id" title="var">addHyp</span> (<span class="id" title="var">currMode_ent_mState</span> <span class="id" title="var">p</span> <span class="id" title="var">l</span> <span class="id" title="var">h</span> <span class="id" title="var">k</span> <span class="id" title="var">m'</span> <span class="id" title="var">H7</span>). <span class="id" title="var">addHyp</span> (<span class="id" title="var">currMode_ent_mState</span> <span class="id" title="var">p'</span> <span class="id" title="var">l'</span> <span class="id" title="var">h'</span> <span class="id" title="var">k'</span> <span class="id" title="var">m</span> <span class="id" title="var">H8</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">currModeMState</span> <span class="id" title="var">k</span> &lt;&gt; <span class="id" title="var">currModeMState</span> <span class="id" title="var">k'</span>). <span class="id" title="tactic">rewrite</span> <span class="id" title="var">H9</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">H10</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">addHyp</span> (<span class="id" title="var">curr_switch_proc</span> <span class="id" title="var">p</span> <span class="id" title="var">p'</span> <span class="id" title="var">l</span> <span class="id" title="var">l'</span> <span class="id" title="var">h</span> <span class="id" title="var">h'</span> <span class="id" title="var">k</span> <span class="id" title="var">k'</span> <span class="id" title="var">H6</span> <span class="id" title="var">H11</span>). <span class="id" title="var">invertClear</span> <span class="id" title="var">H12</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">addHyp</span> (<span class="id" title="var">reachable_net_prot</span> <span class="id" title="var">n</span> <span class="id" title="var">i</span> <span class="id" title="var">p</span> <span class="id" title="var">l</span> <span class="id" title="var">h</span> <span class="id" title="var">k</span> <span class="id" title="var">X</span> <span class="id" title="var">H5</span>). <span class="id" title="tactic">apply</span> <span class="id" title="var">reachableProt_triple</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H12</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H12</span>. <span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">H18</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H13</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">link_partripdiscex_tac</span> <span class="id" title="var">Y</span> <span class="id" title="var">p1'</span> <span class="id" title="var">p2'</span> <span class="id" title="var">p3'</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">Y</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H13</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">link_partripout_tac</span> <span class="id" title="var">U</span>;[<br/>
+&nbsp;&nbsp;<br/>
+&nbsp;&nbsp;<span class="id" title="var">false</span>; <span class="id" title="tactic">eapply</span> <span class="id" title="var">bc_mCurr_out_not</span>; [<span class="id" title="tactic">apply</span> <span class="id" title="var">U</span> | <span class="id" title="tactic">assumption</span>] | |<br/>
+&nbsp;&nbsp;<br/>
+&nbsp;&nbsp;<span class="id" title="var">false</span>; <span class="id" title="tactic">eapply</span> <span class="id" title="var">listen_mCurr_out_not</span>; [<span class="id" title="tactic">apply</span> <span class="id" title="var">U</span> | <span class="id" title="tactic">assumption</span>]].<br/>
+&nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">OO</span> : <span class="id" title="var">ovlp_mCurr_out</span> <span class="id" title="var">U</span> <span class="id" title="var">H16</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">elim_intro</span> <span class="id" title="var">OO</span> <span class="id" title="var">SW</span> <span class="id" title="var">TF</span>. <span class="id" title="var">Focus</span> 2.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">tfsBcStateEnt</span> ([|<span class="id" title="var">p'</span>, <span class="id" title="var">l'</span>, <span class="id" title="var">h'</span>, <span class="id" title="var">k'</span>|])). <span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">Y</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">TF</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">tfsBc_failSafe</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H12</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">simpl</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H12</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">H10</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H12</span>. <span class="id" title="var">false</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">switchCurrStateEnt</span> ([|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|])).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">H18</span>. <span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">SW</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">switchCurrStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span>). <span class="id" title="tactic">econstructor</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H12</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">addHyp</span> (<span class="id" title="var">switchCurr_nextSince</span> <span class="id" title="var">n</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">X</span> <span class="id" title="var">H19</span>). <span class="id" title="var">invertClear</span> <span class="id" title="var">H20</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rename</span> <span class="id" title="var">x</span> <span class="id" title="var">into</span> <span class="id" title="var">t</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">t</span>. <span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">econstructor</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">SW</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">Y</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H4</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H4</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">addHyp</span> (<span class="id" title="var">currMode_del_pres_bkwd</span> <span class="id" title="var">n</span> <span class="id" title="var">n'</span> <span class="id" title="var">d</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">s</span> <span class="id" title="var">H</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">IHp</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H1</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H1</span>. <span class="id" title="tactic">rename</span> <span class="id" title="var">x</span> <span class="id" title="var">into</span> <span class="id" title="var">t</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> (<span class="id" title="var">t</span> +<span class="id" title="var">dt</span>+ <span class="id" title="var">d</span>). <span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+</div>
+<hr/>This page has been generated by <a href="http://coq.inria.fr/">coqdoc</a>
+</div>
+
+</div>
+
+</body>
+</html>

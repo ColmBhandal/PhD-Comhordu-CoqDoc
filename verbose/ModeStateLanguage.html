@@ -1,0 +1,375 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<title>ModeStateLanguage</title>
+</head>
+
+<body>
+
+<div id="page">
+
+<div id="header">
+</div>
+
+<div id="main">
+
+<h1 class="libtitle">Library ModeStateLanguage</h1>
+
+<div class="code">
+</div>
+
+<div class="doc">
+This file was written by Colm Bhandal, PhD student, Foundations and Methods group,
+School of Computer Science and Statistics, Trinity College, Dublin, Ireland.
+</div>
+<div class="code">
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.Extras.LibTactics</span>.<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.GenTacs</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.LanguageFoundations</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.ComhBasics</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.StandardResults</span>.<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Syntax: a mode state is either a single stable mode, or the transition from one mode
+to another, with a certain amount of time remaining until the transition times out and
+the mode switch can be finalised.
+</div>
+<div class="code">
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">ModeState</span> : <span class="id" title="keyword">Type</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">sing</span> :&gt; <span class="id" title="var">Mode</span> -&gt; <span class="id" title="var">ModeState</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">transState</span> : <span class="id" title="var">Mode</span> -&gt; <span class="id" title="var">Mode</span> -&gt; <span class="id" title="keyword">Time</span> -&gt; <span class="id" title="var">ModeState</span>.<br/>
+<span class="id" title="keyword">Notation</span> &quot;&lt;| m , m' , t |&gt;" := (<span class="id" title="var">transState</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span> <span class="id" title="var">t</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 30).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Coerce a mode state to its current mode.
+</div>
+<div class="code">
+<span class="id" title="keyword">Coercion</span> <span class="id" title="var">currModeMState</span> (<span class="id" title="var">a</span> : <span class="id" title="var">ModeState</span>) : <span class="id" title="var">Mode</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">a</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">sing</span> <span class="id" title="var">m</span> =&gt; <span class="id" title="var">m</span><br/>
+&nbsp;&nbsp;| &lt;|<span class="id" title="var">m</span>, <span class="id" title="var">m'</span>, <span class="id" title="var">d</span>|&gt; =&gt; <span class="id" title="var">m</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Strip the next mode off the mode state, if it exists.
+</div>
+<div class="code">
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">nextModeMState</span> (<span class="id" title="var">a</span> : <span class="id" title="var">ModeState</span>) : <span class="id" title="var">option</span> <span class="id" title="var">Mode</span> :=<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">a</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">sing</span> <span class="id" title="var">m</span> =&gt; <span class="id" title="var">None</span><br/>
+&nbsp;&nbsp;| &lt;|<span class="id" title="var">m</span>, <span class="id" title="var">m'</span>, <span class="id" title="var">d</span>|&gt; =&gt; <span class="id" title="var">Some</span> <span class="id" title="var">m'</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Equality on mode states is decidable.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">eqDecModeState</span> : <span class="id" title="var">eqDec</span> <span class="id" title="var">ModeState</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">eqDec</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">x1</span>, <span class="id" title="var">x2</span>; <span class="id" title="tactic">try</span> <span class="id" title="tactic">solve</span> [<span class="id" title="tactic">right</span>; <span class="id" title="tactic">unfold</span> <span class="id" title="var">not</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>; <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>]. <span class="id" title="var">addHyp</span> (<span class="id" title="var">eqDecMode</span> <span class="id" title="var">m</span> <span class="id" title="var">m0</span>). <span class="id" title="var">invertClear</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">left</span>. <span class="id" title="tactic">subst</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="tactic">right</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">not</span>. <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">addHyp</span> (<span class="id" title="var">eqDecMode</span> <span class="id" title="var">m</span> <span class="id" title="var">m1</span>). <span class="id" title="var">invertClear</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">addHyp</span> (<span class="id" title="var">eqDecMode</span> <span class="id" title="var">m0</span> <span class="id" title="var">m2</span>). <span class="id" title="var">invertClear</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">addHyp</span> (<span class="id" title="var">eqDecTime</span> <span class="id" title="var">t</span> <span class="id" title="var">t0</span>). <span class="id" title="var">invertClear</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">left</span>. <span class="id" title="tactic">subst</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="tactic">right</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">not</span>. <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">H2</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="tactic">right</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">not</span>. <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">H1</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="tactic">right</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">not</span>. <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The actions of the mode state are: input/output of a mode on a channel,
+or delay.
+</div>
+<div class="code">
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">ActModeState</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">amIn</span> : <span class="id" title="var">Channel</span> -&gt; <span class="id" title="var">Mode</span> -&gt; <span class="id" title="var">ActModeState</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">amOut</span> : <span class="id" title="var">Channel</span> -&gt; <span class="id" title="var">Mode</span> -&gt; <span class="id" title="var">ActModeState</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">amOutEmp</span> : <span class="id" title="var">Channel</span> -&gt; <span class="id" title="var">ActModeState</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">amInEmp</span> : <span class="id" title="var">Channel</span> -&gt; <span class="id" title="var">ActModeState</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">amDel</span> :&gt; <span class="id" title="var">Delay</span> -&gt; <span class="id" title="var">ActModeState</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Notation</span> &quot;c .? m" := (<span class="id" title="var">amIn</span> <span class="id" title="var">c</span> <span class="id" title="var">m</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 30).<br/>
+<span class="id" title="keyword">Notation</span> &quot;c .! m" := (<span class="id" title="var">amOut</span> <span class="id" title="var">c</span> <span class="id" title="var">m</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 30).<br/>
+<span class="id" title="keyword">Notation</span> &quot;c @! " := (<span class="id" title="var">amOutEmp</span> <span class="id" title="var">c</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 30).<br/>
+<span class="id" title="keyword">Notation</span> &quot;c @? " := (<span class="id" title="var">amInEmp</span> <span class="id" title="var">c</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 30).<br/>
+
+<br/>
+<span class="id" title="keyword">Reserved Notation</span> &quot;m -ms- a -ms&gt; m'" (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 75).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The semantics of the mode state language.
+</div>
+<div class="code">
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">stepModeState</span> : <span class="id" title="var">ModeState</span> -&gt; <span class="id" title="var">ActModeState</span> -&gt; <span class="id" title="var">ModeState</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;</div>
+
+<div class="doc">
+A stable mode state can delay arbitrarily and remain unchanged.
+</div>
+<div class="code">
+&nbsp;&nbsp;| <span class="id" title="var">stepMsDelSing</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">m</span> -<span class="id" title="var">ms</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">m</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepMsDelTout</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">m</span> <span class="id" title="var">m'</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;| <span class="id" title="var">m</span> , <span class="id" title="var">m'</span> , <span class="id" title="var">zeroTime</span> |&gt; -<span class="id" title="var">ms</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ms</span>&gt; &lt;| <span class="id" title="var">m</span> , <span class="id" title="var">m'</span> , <span class="id" title="var">zeroTime</span> |&gt;<br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepMsDelGuard</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">m</span> <span class="id" title="var">m'</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>) (<span class="id" title="var">t</span> <span class="id" title="var">t'</span> : <span class="id" title="keyword">Time</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">t</span> = <span class="id" title="var">t'</span> +<span class="id" title="var">dt</span>+ <span class="id" title="var">d</span> -&gt; &lt;| <span class="id" title="var">m</span> , <span class="id" title="var">m'</span> , <span class="id" title="var">t</span> |&gt; -<span class="id" title="var">ms</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ms</span>&gt; &lt;| <span class="id" title="var">m</span> , <span class="id" title="var">m'</span> , <span class="id" title="var">t'</span> |&gt;<br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepMsTimeout</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">m</span> <span class="id" title="var">m'</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">t</span> &lt; <span class="id" title="var">d</span> -&gt; &lt;| <span class="id" title="var">m</span> , <span class="id" title="var">m'</span> , <span class="id" title="var">t</span> |&gt; -<span class="id" title="var">ms</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ms</span>&gt; &lt;| <span class="id" title="var">m</span> , <span class="id" title="var">m'</span> , <span class="id" title="var">zeroTime</span> |&gt;<br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepMsInit</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">m</span> <span class="id" title="var">m'</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">m</span> -<span class="id" title="var">mtr</span>-&gt; <span class="id" title="var">m'</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">m</span> -<span class="id" title="var">ms</span>- <span class="id" title="var">chanMNext</span> .? <span class="id" title="var">m'</span> -<span class="id" title="var">ms</span>&gt; &lt;| <span class="id" title="var">m</span> , <span class="id" title="var">m'</span> , <span class="id" title="var">modeTransTime</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span> <span class="id" title="var">p</span> |&gt;<br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepMsSwitch</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">m</span> <span class="id" title="var">m'</span> : <span class="id" title="var">Mode</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;| <span class="id" title="var">m</span> , <span class="id" title="var">m'</span> , <span class="id" title="var">zeroTime</span> |&gt; -<span class="id" title="var">ms</span>- <span class="id" title="var">chanMCurr</span> @? -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">m'</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepMsAbort</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">m</span> <span class="id" title="var">m'</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;| <span class="id" title="var">m</span> , <span class="id" title="var">m'</span> , <span class="id" title="var">t</span> |&gt; -<span class="id" title="var">ms</span>- <span class="id" title="var">chanMStable</span> @? -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">m</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepMsOutCurrSing</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>, <span class="id" title="var">m</span> -<span class="id" title="var">ms</span>- <span class="id" title="var">chanMCurr</span> .! <span class="id" title="var">m</span> -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">m</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepMsOutCurrTrans</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">m</span> <span class="id" title="var">m'</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;| <span class="id" title="var">m</span> , <span class="id" title="var">m'</span> , <span class="id" title="var">t</span> |&gt; -<span class="id" title="var">ms</span>- <span class="id" title="var">chanMCurr</span> .! <span class="id" title="var">m</span> -<span class="id" title="var">ms</span>&gt; &lt;| <span class="id" title="var">m</span> , <span class="id" title="var">m'</span> , <span class="id" title="var">t</span> |&gt;<br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepMsOutNext</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">m</span> <span class="id" title="var">m'</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;| <span class="id" title="var">m</span> , <span class="id" title="var">m'</span> , <span class="id" title="var">t</span> |&gt; -<span class="id" title="var">ms</span>- <span class="id" title="var">chanMNext</span> .! <span class="id" title="var">m'</span> -<span class="id" title="var">ms</span>&gt; &lt;| <span class="id" title="var">m</span> , <span class="id" title="var">m'</span> , <span class="id" title="var">t</span> |&gt;<br/>
+&nbsp;&nbsp;| <span class="id" title="var">stepMsOutStable</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>, <span class="id" title="var">m</span> -<span class="id" title="var">ms</span>- <span class="id" title="var">chanMStable</span> @! -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">m</span><br/>
+&nbsp;&nbsp;<span class="id" title="keyword">where</span> &quot;m -ms- a -ms&gt; m'" := (<span class="id" title="var">stepModeState</span> <span class="id" title="var">m</span> <span class="id" title="var">a</span> <span class="id" title="var">m'</span>).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+A mode state is enabled on a discrete action if it can perform an input of
+a mode, an output of a mode or an output of nothing. The discrete action is then
+the corresponding input or output as a DiscAct rather than an ActModeState.
+</div>
+<div class="code">
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">discActEnabledMState</span> : <span class="id" title="var">DiscAct</span> -&gt; <span class="id" title="var">ModeState</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">daemIn</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">c</span> : <span class="id" title="var">Channel</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">k</span> <span class="id" title="var">k'</span> : <span class="id" title="var">ModeState</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">k</span> -<span class="id" title="var">ms</span>- <span class="id" title="var">c</span> .? <span class="id" title="var">m</span> -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">k'</span> -&gt; <span class="id" title="var">discActEnabledMState</span> (<span class="id" title="var">c</span> ;? [<span class="id" title="var">baseMode</span> <span class="id" title="var">m</span>]) <span class="id" title="var">k</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">daemOutMode</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">c</span> : <span class="id" title="var">Channel</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">k</span> <span class="id" title="var">k'</span> : <span class="id" title="var">ModeState</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">k</span> -<span class="id" title="var">ms</span>- <span class="id" title="var">c</span> .! <span class="id" title="var">m</span> -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">k'</span> -&gt; <span class="id" title="var">discActEnabledMState</span> (<span class="id" title="var">c</span> ;! [<span class="id" title="var">baseMode</span> <span class="id" title="var">m</span>]) <span class="id" title="var">k</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">daemInEmp</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">c</span> : <span class="id" title="var">Channel</span>) (<span class="id" title="var">k</span> <span class="id" title="var">k'</span> : <span class="id" title="var">ModeState</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">k</span> -<span class="id" title="var">ms</span>- <span class="id" title="var">c</span> @? -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">k'</span> -&gt; <span class="id" title="var">discActEnabledMState</span> (<span class="id" title="var">c</span> *?) <span class="id" title="var">k</span><br/>
+&nbsp;&nbsp;| <span class="id" title="var">daemOutEmp</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">c</span> : <span class="id" title="var">Channel</span>) (<span class="id" title="var">k</span> <span class="id" title="var">k'</span> : <span class="id" title="var">ModeState</span>),<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">k</span> -<span class="id" title="var">ms</span>- <span class="id" title="var">c</span> @! -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">k'</span> -&gt; <span class="id" title="var">discActEnabledMState</span> (<span class="id" title="var">c</span> *!) <span class="id" title="var">k</span>.<br/>
+
+<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If &lt;m1, m2, t&gt; transitions by d to &lt;m1', m2', t'&gt; then either t' = 0,
+or t = t' + d.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">delMStateTrans</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">m1</span> <span class="id" title="var">m2</span> <span class="id" title="var">m1'</span> <span class="id" title="var">m2'</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">t</span> <span class="id" title="var">t'</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;&lt;| <span class="id" title="var">m1</span>, <span class="id" title="var">m2</span>, <span class="id" title="var">t</span> |&gt; -<span class="id" title="var">ms</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ms</span>&gt; &lt;| <span class="id" title="var">m1'</span>, <span class="id" title="var">m2'</span>, <span class="id" title="var">t'</span> |&gt; -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">t'</span> = <span class="id" title="var">zeroTime</span> /\ <span class="id" title="var">t</span> &lt; <span class="id" title="var">d</span> \/ <span class="id" title="var">t</span> = <span class="id" title="var">t'</span> +<span class="id" title="var">dt</span>+ <span class="id" title="var">d</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">left</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">split</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">d</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">delay</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">cond_pos</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">right</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">left</span>. <span class="id" title="tactic">split</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">delMStateTout</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">m1</span> <span class="id" title="var">m2</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">ModeState</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;&lt;| <span class="id" title="var">m1</span>, <span class="id" title="var">m2</span>, <span class="id" title="var">zeroTime</span> |&gt; -<span class="id" title="var">ms</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">a</span> -&gt; <span class="id" title="var">a</span> = &lt;| <span class="id" title="var">m1</span>, <span class="id" title="var">m2</span>, <span class="id" title="var">zeroTime</span> |&gt;.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="tactic">destruct</span> (<span class="id" title="var">t'</span> +<span class="id" title="var">dt</span>+ <span class="id" title="var">d</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">zeroTime</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H5</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">delay</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H5</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">clear</span> <span class="id" title="var">H5</span>. <span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">H7</span> <span class="id" title="tactic">in</span> <span class="id" title="var">cond_pos</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">Rlt_irrefl</span> <span class="id" title="tactic">in</span> <span class="id" title="var">cond_pos</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">cond_pos</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If an MState can timeout in d then it can timeout in d + d'.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">delMStateToutLengthen</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">m1</span> <span class="id" title="var">m2</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">d</span> <span class="id" title="var">d'</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;&lt;| <span class="id" title="var">m1</span>, <span class="id" title="var">m2</span>, <span class="id" title="var">t</span> |&gt;  -<span class="id" title="var">ms</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ms</span>&gt; &lt;| <span class="id" title="var">m1</span>, <span class="id" title="var">m2</span>, <span class="id" title="var">zeroTime</span> |&gt; -&gt;<br/>
+&nbsp;&nbsp;&lt;| <span class="id" title="var">m1</span>, <span class="id" title="var">m2</span>, <span class="id" title="var">t</span> |&gt;  -<span class="id" title="var">ms</span>- <span class="id" title="var">d</span> +<span class="id" title="var">d</span>+ <span class="id" title="var">d'</span> -<span class="id" title="var">ms</span>&gt; &lt;| <span class="id" title="var">m1</span>, <span class="id" title="var">m2</span>, <span class="id" title="var">zeroTime</span> |&gt;. <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepMsTimeout</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">H1</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">zeroTime</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">d</span>, <span class="id" title="var">d'</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">zeroNonneg</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">delay</span>, <span class="id" title="var">delay0</span>. <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">Rplus_comm</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_le_lt_compat</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">Rle_refl</span>. <span class="id" title="tactic">assumption</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">stepMsTimeout</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">Rlt_trans</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H1</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">replace</span> (<span class="id" title="var">pos</span> (<span class="id" title="var">delay</span> <span class="id" title="var">d</span>)) <span class="id" title="keyword">with</span> (0 + <span class="id" title="var">d</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">d</span>, <span class="id" title="var">d'</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">delay</span>, <span class="id" title="var">delay0</span>. <span class="id" title="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">Rplus_comm</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_le_lt_compat</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rle_refl</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">ring</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+If an Mstate is transitioning and it delays, then it is still transitioning.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">delMStatePresTrans</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">m1</span> <span class="id" title="var">m2</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">ModeState</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>),<br/>
+&nbsp;&nbsp;&lt;| <span class="id" title="var">m1</span>, <span class="id" title="var">m2</span>, <span class="id" title="var">t</span>|&gt; -<span class="id" title="var">ms</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">a</span> -&gt; <span class="id" title="tactic">exists</span> <span class="id" title="var">t'</span>, <span class="id" title="var">a</span> = &lt;| <span class="id" title="var">m1</span>, <span class="id" title="var">m2</span>, <span class="id" title="var">t'</span>|&gt;.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">exists</span> <span class="id" title="var">zeroTime</span>. <span class="id" title="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">t'</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="tactic">exists</span> <span class="id" title="var">zeroTime</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Two consecutive delays can be joined together into one delay, skipping the intermediate
+state. The final delay is the sum of the two original delays.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">delAddMState</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">a</span> <span class="id" title="var">a'</span> <span class="id" title="var">a''</span> : <span class="id" title="var">ModeState</span>) (<span class="id" title="var">d</span> <span class="id" title="var">d'</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">a</span> -<span class="id" title="var">ms</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">a'</span> -&gt; <span class="id" title="var">a'</span> -<span class="id" title="var">ms</span>- <span class="id" title="var">d'</span> -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">a''</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">a</span> -<span class="id" title="var">ms</span>- <span class="id" title="var">d</span> +<span class="id" title="var">d</span>+ <span class="id" title="var">d'</span> -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">a''</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">H2</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">constructor</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">H2</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">delMStateTout</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">H4</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H0</span>. <span class="id" title="var">addHyp</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">delMStatePresTrans</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H0</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">rename</span> <span class="id" title="var">x</span> <span class="id" title="var">into</span> <span class="id" title="var">t''</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">H6</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">H6</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H5</span>. <span class="id" title="tactic">clear</span> <span class="id" title="var">H6</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">H2</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">H4</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">H3</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">H3</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">delMStateTrans</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H5</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H5</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">H5</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">stepMsTimeout</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">addDelayComm</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">d</span>, <span class="id" title="var">d'</span>, <span class="id" title="var">t'</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">time</span>, <span class="id" title="var">delay</span>, <span class="id" title="var">delay0</span>. <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_lt_le_compat</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">Rle_refl</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">delTimeAddAssoc</span>. <span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">addDelayComm</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">timeDelAddSwitch</span>. <span class="id" title="tactic">reflexivity</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">H4</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">delMStateTout</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">H4</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">H2</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">H4</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">H4</span>. <span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">H2</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">delMStateToutLengthen</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">H2</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Every mode state can delay by any amount d.
+</div>
+<div class="code">
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">delEnabledMState</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">a</span> : <span class="id" title="var">ModeState</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">a'</span>, <span class="id" title="var">a</span> -<span class="id" title="var">ms</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">a'</span>. <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">a</span>. <span class="id" title="tactic">exists</span> <span class="id" title="var">m</span>. <span class="id" title="tactic">constructor</span>. <span class="id" title="var">addHyp</span> (<span class="id" title="var">Rlt_le_dec</span> <span class="id" title="var">t</span> <span class="id" title="var">d</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">exists</span> (&lt;| <span class="id" title="var">m</span>, <span class="id" title="var">m0</span>, <span class="id" title="var">zeroTime</span> |&gt;).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">stepMsTimeout</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">delLeTimeSum</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H0</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">exists</span> (&lt;| <span class="id" title="var">m</span>, <span class="id" title="var">m0</span>, <span class="id" title="var">x</span> |&gt;). <span class="id" title="tactic">rewrite</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">curr_switch_mState</span> (<span class="id" title="var">k</span> <span class="id" title="var">k'</span> : <span class="id" title="var">ModeState</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">ActModeState</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">k</span> -<span class="id" title="var">ms</span>- <span class="id" title="var">a</span> -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">k'</span> -&gt; <span class="id" title="var">currModeMState</span> <span class="id" title="var">k</span> &lt;&gt; <span class="id" title="var">currModeMState</span> <span class="id" title="var">k'</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">a</span> = <span class="id" title="var">chanMCurr</span> @?. <span class="id" title="tactic">intros</span> <span class="id" title="var">H</span> <span class="id" title="var">H0</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">try</span> (<span class="id" title="var">false</span>; <span class="id" title="tactic">apply</span> <span class="id" title="var">H0</span>; <span class="id" title="tactic">subst</span>; <span class="id" title="tactic">reflexivity</span>). <span class="id" title="tactic">reflexivity</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">timeSplit_mState</span> (<span class="id" title="var">k</span> <span class="id" title="var">k''</span> : <span class="id" title="var">ModeState</span>) (<span class="id" title="var">d</span> <span class="id" title="var">d'</span> <span class="id" title="var">d''</span> : <span class="id" title="var">Delay</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">k</span> -<span class="id" title="var">ms</span>- <span class="id" title="var">d''</span> -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">k''</span> -&gt; <span class="id" title="var">d''</span> = <span class="id" title="var">d</span> +<span class="id" title="var">d</span>+ <span class="id" title="var">d'</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">k'</span>, <span class="id" title="var">k</span> -<span class="id" title="var">ms</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">k'</span> /\ <span class="id" title="var">k'</span> -<span class="id" title="var">ms</span>- <span class="id" title="var">d'</span> -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">k''</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">k</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">introz</span> <span class="id" title="var">U</span>. <span class="id" title="tactic">exists</span> <span class="id" title="var">m</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">U</span>. <span class="id" title="tactic">split</span>; <span class="id" title="tactic">constructor</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">introz</span> <span class="id" title="var">U</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">DT</span> : <span class="id" title="var">Rle_or_lt</span> <span class="id" title="var">d</span> <span class="id" title="var">t</span>. <span class="id" title="var">or_flat</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rename</span> <span class="id" title="var">OR</span> <span class="id" title="var">into</span> <span class="id" title="var">DT</span>. <span class="id" title="var">remember</span> (<span class="id" title="var">minusTime</span> <span class="id" title="var">t</span> <span class="id" title="var">d</span> <span class="id" title="var">DT</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">t'</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> (&lt;| <span class="id" title="var">m</span>, <span class="id" title="var">m0</span>, <span class="id" title="var">t'</span> |&gt;). <span class="id" title="tactic">subst</span>. <span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">timeEqR</span>. <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">ring</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">DMP</span> : <span class="id" title="var">delMStatePresTrans</span> <span class="id" title="var">U</span>. <span class="id" title="var">ex_flat</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">subst</span>. <span class="id" title="var">lets</span> <span class="id" title="var">DMT</span> : <span class="id" title="var">delMStateTrans</span> <span class="id" title="var">U</span>. <span class="id" title="var">or_flat</span>. <span class="id" title="var">and_flat</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">subst</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">stepMsTimeout</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">Rplus_lt_reg_r</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">Rle_lt_trans</span>; [ | <span class="id" title="tactic">apply</span> <span class="id" title="var">AND0</span>]. <span class="id" title="tactic">apply</span> <span class="id" title="var">Req_le</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">ring</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">subst</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">stepMsDelGuard</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">timeEqR</span>. <span class="id" title="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">ring</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> (&lt;| <span class="id" title="var">m</span>, <span class="id" title="var">m0</span>, <span class="id" title="var">zeroTime</span> |&gt;). <span class="id" title="tactic">split</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">stepMsTimeout</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="var">lets</span> <span class="id" title="var">DMP</span> : <span class="id" title="var">delMStatePresTrans</span> <span class="id" title="var">U</span>. <span class="id" title="var">ex_flat</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">subst</span>. <span class="id" title="var">lets</span> <span class="id" title="var">DMT</span> : <span class="id" title="var">delMStateTrans</span> <span class="id" title="var">U</span>. <span class="id" title="var">or_flat</span>. <span class="id" title="var">and_flat</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">subst</span>. <span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">subst</span>. <span class="id" title="var">false</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">Rle_not_lt</span>;<br/>
+&nbsp;&nbsp;[ | <span class="id" title="tactic">apply</span> <span class="id" title="var">OR0</span>]. <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">Rplus_comm</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">Rplus_assoc</span>. <span class="id" title="var">Rplus_le_tac</span>. <span class="id" title="tactic">replace</span> 0 <span class="id" title="keyword">with</span> (0 + 0).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rplus_le_compat</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">Rlt_le</span>. <span class="id" title="var">delPos</span>. <span class="id" title="var">timeNonneg</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">ring</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+A mode state is unstable if it is a transition from one mode to another.
+</div>
+<div class="code">
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">unstable</span> : <span class="id" title="var">ModeState</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
+&nbsp;&nbsp;| <span class="id" title="var">unstbl</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span> <span class="id" title="var">t</span> : <span class="id" title="var">unstable</span> (&lt;| <span class="id" title="var">m</span> , <span class="id" title="var">m'</span> , <span class="id" title="var">t</span> |&gt;).<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">unstable_stable_in</span> <span class="id" title="var">k</span> : <span class="id" title="var">unstable</span> <span class="id" title="var">k</span> -&gt; <span class="id" title="var">discActEnabledMState</span> (<span class="id" title="var">chanMStable</span> *?) <span class="id" title="var">k</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">subst</span>. <span class="id" title="tactic">repeat</span> <span class="id" title="tactic">econstructor</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">modeState_curr_enabled</span> <span class="id" title="var">k</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">discActEnabledMState</span> (<span class="id" title="var">chanMCurr</span> ;! [<span class="id" title="var">baseMode</span> (<span class="id" title="var">currModeMState</span> <span class="id" title="var">k</span>)]) <span class="id" title="var">k</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">k</span>; <span class="id" title="tactic">econstructor</span>; <span class="id" title="tactic">constructor</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">mState_stable_next_enabled</span> <span class="id" title="var">k</span> <span class="id" title="var">m'</span> : <span class="id" title="var">currModeMState</span> <span class="id" title="var">k</span> -<span class="id" title="var">mtr</span>-&gt; <span class="id" title="var">m'</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">discActEnabledMState</span> (<span class="id" title="var">chanMStable</span>*?) <span class="id" title="var">k</span> \/<br/>
+&nbsp;&nbsp;<span class="id" title="var">discActEnabledMState</span> (<span class="id" title="var">chanMNext</span>;? [<span class="id" title="var">baseMode</span> <span class="id" title="var">m'</span>]) <span class="id" title="var">k</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">k</span>. <span class="id" title="tactic">right</span>. <span class="id" title="tactic">econstructor</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">SMI</span> : <span class="id" title="var">stepMsInit</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">SMI</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">left</span>. <span class="id" title="tactic">econstructor</span>. <span class="id" title="tactic">constructor</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">next_modeState_stable_not</span> <span class="id" title="var">k</span> <span class="id" title="var">k'</span> <span class="id" title="var">m'</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">nextModeMState</span> <span class="id" title="var">k</span> = <span class="id" title="var">Some</span> <span class="id" title="var">m'</span> -&gt; <span class="id" title="var">k</span> -<span class="id" title="var">ms</span>- <span class="id" title="var">chanMStable</span> @! -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">k'</span> -&gt; <span class="id" title="var">False</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">modeState_abort_in_not</span> <span class="id" title="var">k</span> <span class="id" title="var">k'</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">k</span> -<span class="id" title="var">ms</span>- <span class="id" title="var">chanAbort</span> @? -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">k'</span> -&gt; <span class="id" title="var">False</span>. <span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">unstable_stable_out_not</span> <span class="id" title="var">k</span> : <span class="id" title="var">unstable</span> <span class="id" title="var">k</span> -&gt;<br/>
+&nbsp;&nbsp;~ <span class="id" title="var">discActEnabledMState</span> (<span class="id" title="var">chanMStable</span> *!) <span class="id" title="var">k</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">not</span>. <span class="id" title="tactic">intros</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">subst</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H3</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">nextMode_unstable</span> <span class="id" title="var">k</span> <span class="id" title="var">m</span> : <span class="id" title="var">nextModeMState</span> <span class="id" title="var">k</span> = <span class="id" title="var">Some</span> <span class="id" title="var">m</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">unstable</span> <span class="id" title="var">k</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">k</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">constructor</span>. <span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+<hr/>This page has been generated by <a href="http://coq.inria.fr/">coqdoc</a>
+</div>
+
+</div>
+
+</body>
+</html>

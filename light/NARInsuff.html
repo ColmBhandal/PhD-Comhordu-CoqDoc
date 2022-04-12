@@ -1,0 +1,233 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<title>NARInsuff</title>
+</head>
+
+<body>
+
+<div id="page">
+
+<div id="header">
+</div>
+
+<div id="main">
+
+<h1 class="libtitle">Library NARInsuff</h1>
+
+<div class="code">
+</div>
+
+<div class="doc">
+This file was written by Colm Bhandal, PhD student, Foundations and Methods group,
+School of Computer Science and Statistics, Trinity College, Dublin, Ireland.
+</div>
+<div class="code">
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">Equality</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.Extras.LibTactics</span>.<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.GenTacs</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.StandardResults</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.ComhBasics</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.LanguageFoundations</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.EntityLanguage</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.NetworkLanguage</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.NetAuxBasics</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.NetAuxDefs</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.NARMisc</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.EntAuxDefs</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.EntAuxResults</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.ProtAuxDefs</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.ModeStateLanguage</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.InterfaceLanguage</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.SoftwareLanguage</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.ProtAuxResults</span>.<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">tfs_state_rel</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> (<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">tfsStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="tactic">exists</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span>, <span class="id" title="var">tfs</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">tfs_currModeNet</span> <span class="id" title="var">m1</span> <span class="id" title="var">m2</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> : <span class="id" title="var">tfs</span> <span class="id" title="var">m1</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">currModeNet</span> <span class="id" title="var">m2</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; ~<span class="id" title="var">failSafe</span> <span class="id" title="var">m2</span> -&gt; <span class="id" title="var">m1</span> = <span class="id" title="var">m2</span>.<br/>
+</div>
+
+<div class="doc">
+Proof: induction on tfs. The first base follows from the definition of
+tfs. The discrete inductive case follows by application of I.H. and use
+of the mode-swith-states(exact name?) theorem to eliminate all states
+except tfsCurr-&gt;tfsBc. For this, it can be shown that the curr mode
+is fail safe in the derivative, contradicting our hypothesis. The delay
+inductive case follows by I.H. and a preservation theorem (name?) for
+currModeNet over a delay
+</div>
+<div class="code">
+
+<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">currModeNet_notifBad_pres_bkwd</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">n'</span> <span class="id" title="var">a</span><br/>
+&nbsp;&nbsp;(<span class="id" title="var">rn</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) (<span class="id" title="var">w</span> : <span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">currModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">notifBadPathNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt;<br/>
+&nbsp;&nbsp;~<span class="id" title="var">failSafe</span> <span class="id" title="var">m</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">currModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> \/<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">t</span>, <span class="id" title="var">tfs</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span> (<span class="id" title="var">reachNetDisc</span> <span class="id" title="var">n</span> <span class="id" title="var">n'</span> <span class="id" title="var">a</span> <span class="id" title="var">rn</span> <span class="id" title="var">w</span>). 
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">currEq_eq_badOvlp_net</span> <span class="id" title="var">m</span> <span class="id" title="var">m''</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">m</span> = <span class="id" title="var">m''</span> -&gt; <span class="id" title="var">currEqStateNet</span> <span class="id" title="var">m</span> <span class="id" title="var">m''</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">badOvlpStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span>.<br/>
+
+<br/>
+
+<br/>
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">delivered_incomingNetNotif</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>) (<span class="id" title="var">r</span> : <span class="id" title="var">Distance</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">delivered</span> ([-<span class="id" title="var">v</span>, <span class="id" title="var">l</span>, <span class="id" title="var">r</span>-]) <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="keyword">forall</span> <span class="id" title="var">q</span> : <span class="id" title="var">t</span> &lt; <span class="id" title="var">adaptNotif</span>,<br/>
+&nbsp;&nbsp;<span class="id" title="var">incomingNetNotif</span> ((<span class="id" title="var">baseDistance</span> <span class="id" title="var">r</span>)::<span class="id" title="var">v</span>) (<span class="id" title="var">minusTime</span> <span class="id" title="var">adaptNotif</span> <span class="id" title="var">t</span> (<span class="id" title="var">Rlt_le</span> <span class="id" title="var">t</span> <span class="id" title="var">adaptNotif</span> <span class="id" title="var">q</span>)) <span class="id" title="var">i</span> <span class="id" title="var">n</span>.<br/>
+</div>
+
+<div class="doc">
+Proof: Induction on delivered.
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">insuff_incomingNotif_abort</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">ActDiscNet</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">r</span> : <span class="id" title="var">Distance</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) : <br/>
+&nbsp;&nbsp;<span class="id" title="var">nextModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt; ~<span class="id" title="var">sufficient</span> <span class="id" title="var">m</span> <span class="id" title="var">r</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">incomingNetNotif</span> [<span class="id" title="var">baseDistance</span> <span class="id" title="var">r</span>, <span class="id" title="var">baseMode</span> <span class="id" title="var">m</span>, <span class="id" title="var">basePosition</span> <span class="id" title="var">l</span>] <span class="id" title="var">zeroTime</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">incomingNetNotif</span> [<span class="id" title="var">baseDistance</span> <span class="id" title="var">r</span>, <span class="id" title="var">baseMode</span> <span class="id" title="var">m</span>, <span class="id" title="var">basePosition</span> <span class="id" title="var">l</span>] <span class="id" title="var">zeroTime</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span> \/<br/>
+&nbsp;&nbsp;<span class="id" title="var">notifAbortPathNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span>. </div>
+
+<div class="doc">
+Proof: Much like Basics::outgoing_timeout_disc. We case analyse the action a.
+For the cases where a is either input, output or ignore, we can show that
+incomingNetNotif is preserved (...linking theorems / theorems on timed lists...),
+and we have our LHS. In the remaining case, a is a tau action. Then we can show
+that either incomingNetNotif &lt;r, m, l&gt; 0 i n' or the tau is the result of an output
+of &lt;r, m, l&gt; by the interface on the channel AN and an input by the process on
+this channel. Then by the base case of notifAbortPath, we have that
+notifAbortPath m r i n', giving us the RHS of the goal, and we're done.
+
+<div class="paragraph"> </div>
+
+Idea: Standardised proof method? Destruct everything right down to timed lists of interface,
+then show the notif lists are either equal or there's a transition from one to the other.
+Then show that only such a transition, with the arguments of the buffered message,
+will cause it to leave the list. But in that case, you have a case for the notifAbort path.
+So that's it.
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">nextSince_next</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) : <br/>
+&nbsp;&nbsp;<span class="id" title="var">nextSince</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">nextModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span>.<br/>
+</div>
+
+<div class="doc">
+Proof: As detailed above
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">notifAbort_not_nextSince</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">a</span> : <span class="id" title="var">ActDiscNet</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">rn</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) : <br/>
+&nbsp;&nbsp;<span class="id" title="var">notifAbortPathNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">notifAbortPathNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span> \/ ~<span class="id" title="var">nextSinceStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span>. </div>
+
+<div class="doc">
+Proof: Similar to msgAbort_not_nextSince
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">instant_insuff_abort</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">l</span> <span class="id" title="var">l0</span> : <span class="id" title="var">Position</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">r</span> : <span class="id" title="var">Distance</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) : <br/>
+&nbsp;&nbsp;<span class="id" title="var">delivered</span> ([-[<span class="id" title="var">baseMode</span> <span class="id" title="var">m</span>, <span class="id" title="var">basePosition</span> <span class="id" title="var">l</span>], <span class="id" title="var">l0</span>, <span class="id" title="var">r</span>-]) <span class="id" title="var">adaptNotif</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt; ~<span class="id" title="var">sufficient</span> <span class="id" title="var">m</span> <span class="id" title="var">r</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">nextSince</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">adaptNotif</span> &lt; <span class="id" title="var">t</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">incomingNetNotif</span> [<span class="id" title="var">baseDistance</span> <span class="id" title="var">r</span>, <span class="id" title="var">baseMode</span> <span class="id" title="var">m</span>, <span class="id" title="var">basePosition</span> <span class="id" title="var">l</span>] <span class="id" title="var">zeroTime</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> \/<br/>
+&nbsp;&nbsp;<span class="id" title="var">notifAbortPathNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">insuff_incomingNotif_bad</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">ActDiscNet</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">r</span> : <span class="id" title="var">Distance</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) : <br/>
+&nbsp;&nbsp;<span class="id" title="var">currModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt; ~<span class="id" title="var">sufficient</span> <span class="id" title="var">m</span> <span class="id" title="var">r</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">incomingNetNotif</span> [<span class="id" title="var">baseDistance</span> <span class="id" title="var">r</span>, <span class="id" title="var">baseMode</span> <span class="id" title="var">m</span>, <span class="id" title="var">basePosition</span> <span class="id" title="var">l</span>] <span class="id" title="var">zeroTime</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">incomingNetNotif</span> [<span class="id" title="var">baseDistance</span> <span class="id" title="var">r</span>, <span class="id" title="var">baseMode</span> <span class="id" title="var">m</span>, <span class="id" title="var">basePosition</span> <span class="id" title="var">l</span>] <span class="id" title="var">zeroTime</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span> \/<br/>
+&nbsp;&nbsp;<span class="id" title="var">notifBadPathNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span>. 
+<br/>
+</div>
+
+<div class="doc">
+If the badOvlp state holds at a particular reachable state,
+and in the next state listening holds, then the next state is tfs for some
+time t, with the mode parameter equal to the current mode.
+</div>
+<div class="code">
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">badOvlp_listening_tfs</span> <span class="id" title="var">n</span> <span class="id" title="var">n'</span> <span class="id" title="var">a</span> <span class="id" title="var">i</span> <span class="id" title="var">m</span> <br/>
+&nbsp;&nbsp;(<span class="id" title="var">rn</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) (<span class="id" title="var">w</span> : <span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">badOvlpStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">listeningStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">currModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">t</span>, <span class="id" title="var">tfs</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span> (<span class="id" title="var">reachNetDisc</span> <span class="id" title="var">n</span> <span class="id" title="var">n'</span> <span class="id" title="var">a</span> <span class="id" title="var">rn</span> <span class="id" title="var">w</span>).<br/>
+
+<br/>
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">notifBad_pres_tfs</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">a</span> : <span class="id" title="var">ActDiscNet</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">rn</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">w</span> : <span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span>) : <br/>
+&nbsp;&nbsp;<span class="id" title="var">notifBadPathNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">currModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span> -&gt; ~<span class="id" title="var">failSafe</span> <span class="id" title="var">m</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">notifBadPathNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span> \/ (<span class="id" title="tactic">exists</span> <span class="id" title="var">t</span>, <span class="id" title="var">tfs</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span> (<span class="id" title="var">reachNetDisc</span> <span class="id" title="var">n</span> <span class="id" title="var">n'</span> <span class="id" title="var">a</span> <span class="id" title="var">rn</span> <span class="id" title="var">w</span>)).<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">tfs_pres_not_currSince</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">n'</span> <span class="id" title="var">p</span> <span class="id" title="var">a</span><br/>
+&nbsp;&nbsp;(<span class="id" title="var">w</span> : <span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span>) : <span class="id" title="var">tfs</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">tfs</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span> (<span class="id" title="var">reachNetDisc</span> <span class="id" title="var">n</span> <span class="id" title="var">n'</span> <span class="id" title="var">a</span> <span class="id" title="var">p</span> <span class="id" title="var">w</span>) \/<br/>
+&nbsp;&nbsp;(<span class="id" title="keyword">forall</span> <span class="id" title="var">m'</span> <span class="id" title="var">t'</span> <span class="id" title="var">p'</span>, ~<span class="id" title="var">currSince</span> <span class="id" title="var">m'</span> <span class="id" title="var">t'</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p'</span>).<br/>
+
+<br/>
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">instant_insuff_bad</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">l</span> <span class="id" title="var">l0</span> : <span class="id" title="var">Position</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">r</span> : <span class="id" title="var">Distance</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) : <br/>
+&nbsp;&nbsp;<span class="id" title="var">delivered</span> ([-[<span class="id" title="var">baseMode</span> <span class="id" title="var">m</span>, <span class="id" title="var">basePosition</span> <span class="id" title="var">l</span>], <span class="id" title="var">l0</span>, <span class="id" title="var">r</span>-]) <span class="id" title="var">adaptNotif</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt; ~<span class="id" title="var">failSafe</span> <span class="id" title="var">m</span> -&gt;<br/>
+&nbsp;&nbsp;~<span class="id" title="var">sufficient</span> <span class="id" title="var">m</span> <span class="id" title="var">r</span> -&gt; <span class="id" title="var">currSince</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">adaptNotif</span> &lt; <span class="id" title="var">t</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">incomingNetNotif</span> [<span class="id" title="var">baseDistance</span> <span class="id" title="var">r</span>, <span class="id" title="var">baseMode</span> <span class="id" title="var">m</span>, <span class="id" title="var">basePosition</span> <span class="id" title="var">l</span>] <span class="id" title="var">zeroTime</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span><br/>
+&nbsp;&nbsp;\/ <span class="id" title="var">notifBadPathNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> \/ <span class="id" title="tactic">exists</span> <span class="id" title="var">t</span>, <span class="id" title="var">tfs</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">deliv_next_suff</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">l</span> <span class="id" title="var">l0</span> : <span class="id" title="var">Position</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">r</span> : <span class="id" title="var">Distance</span>) (<span class="id" title="var">t</span> <span class="id" title="var">t'</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">nextSince</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">delivered</span> ([-[<span class="id" title="var">baseMode</span> <span class="id" title="var">m</span>, <span class="id" title="var">basePosition</span> <span class="id" title="var">l</span>], <span class="id" title="var">l0</span>, <span class="id" title="var">r</span>-]) <span class="id" title="var">t'</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="var">adaptNotif</span> &lt; <span class="id" title="var">t'</span> -&gt; <span class="id" title="var">t'</span> &lt; <span class="id" title="var">t</span> -&gt; <span class="id" title="var">sufficient</span> <span class="id" title="var">m</span> <span class="id" title="var">r</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">insuff_react</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">l</span> <span class="id" title="var">l0</span> : <span class="id" title="var">Position</span>)<br/>
+&nbsp;&nbsp;(<span class="id" title="var">r</span> : <span class="id" title="var">Distance</span>) (<span class="id" title="var">t</span> <span class="id" title="var">t'</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">currSince</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt; <br/>
+&nbsp;&nbsp;<span class="id" title="var">delivered</span> ([-[<span class="id" title="var">baseMode</span> <span class="id" title="var">m</span>, <span class="id" title="var">basePosition</span> <span class="id" title="var">l</span>], <span class="id" title="var">l0</span>, <span class="id" title="var">r</span>-]) <span class="id" title="var">t'</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">forall</span> <span class="id" title="var">q</span> : <span class="id" title="var">adaptNotif</span> &lt; <span class="id" title="var">t'</span>, <span class="id" title="var">t'</span> &lt; <span class="id" title="var">t</span> -&gt;  ~<span class="id" title="var">sufficient</span> <span class="id" title="var">m</span> <span class="id" title="var">r</span> -&gt; ~<span class="id" title="var">failSafe</span> <span class="id" title="var">m</span> -&gt;<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">x</span>, <span class="id" title="var">minusTime</span> <span class="id" title="var">t'</span> <span class="id" title="var">adaptNotif</span> (<span class="id" title="var">Rlt_le</span> <span class="id" title="var">adaptNotif</span> <span class="id" title="var">t'</span> <span class="id" title="var">q</span>) &lt;= (<span class="id" title="var">time</span> <span class="id" title="var">x</span>) /\<br/>
+&nbsp;&nbsp;<span class="id" title="var">tfs</span> <span class="id" title="var">m</span> <span class="id" title="var">x</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span>.<br/>
+
+<br/>
+</div>
+<hr/>This page has been generated by <a href="http://coq.inria.fr/">coqdoc</a>
+</div>
+
+</div>
+
+</body>
+</html>
