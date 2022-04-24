@@ -24,10 +24,11 @@
 <div class="doc">
 This file was written by Colm Bhandal, PhD student, Foundations and Methods group,
 School of Computer Science and Statistics, Trinity College, Dublin, Ireland.
+<div class="paragraph"> </div>
+
+*************************** Standard Imports 
 </div>
 <div class="code">
-
-<br/>
 
 <br/>
 <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">Reals</span>.<br/>
@@ -72,13 +73,7 @@ School of Computer Science and Statistics, Trinity College, Dublin, Ireland.
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">link_net_prot_reach</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> <span class="id" title="var">l</span> <span class="id" title="var">h</span> <span class="id" title="var">k</span> <span class="id" title="var">i</span> :<br/>
 &nbsp;&nbsp;<span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span> -&gt;  [|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|] @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> -&gt; <span class="id" title="var">reachableProt</span> <span class="id" title="var">p</span>.<br/>
-&nbsp;&nbsp;<span class="id" title="var">Admitted</span>. </div>
-
-<div class="doc">
-Proof: Intermediate results from net to ent and ent to prot.
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>. 
 <br/>
 <span class="id" title="keyword">Ltac</span> <span class="id" title="var">link_netprotreach_tac</span> <span class="id" title="var">U</span> :=<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
@@ -88,12 +83,6 @@ Proof: Intermediate results from net to ent and ent to prot.
 
 <br/>
 <span class="id" title="keyword">Parameter</span> <span class="id" title="var">currModeNet</span> : <span class="id" title="var">Mode</span> -&gt; <span class="id" title="var">nat</span> -&gt; <span class="id" title="var">Network</span> -&gt; <span class="id" title="keyword">Prop</span>.<br/>
-</div>
-
-<div class="doc">
-Idea: Lift currModeEnt
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Inductive</span> <span class="id" title="var">transGuard</span> (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
@@ -102,12 +91,6 @@ Idea: Lift currModeEnt
 
 <br/>
 <span class="id" title="keyword">Parameter</span> <span class="id" title="var">nextModeNet</span> : <span class="id" title="var">Mode</span> -&gt; <span class="id" title="var">nat</span> -&gt; <span class="id" title="var">Network</span> -&gt; <span class="id" title="keyword">Prop</span>.<br/>
-</div>
-
-<div class="doc">
-Idea: Lift nextModeEnt
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Inductive</span> <span class="id" title="var">inPosNet</span> (<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
@@ -142,36 +125,17 @@ Idea: Lift nextModeEnt
 <br/>
 
 <br/>
-</div>
-
-<div class="doc">
-The lifting function we use to lift predicates from the protocol level to the
-entity level.
-</div>
-<div class="code">
 <span class="id" title="keyword">Inductive</span> <span class="id" title="var">liftEntNet</span> (<span class="id" title="var">X</span> : <span class="id" title="var">Entity</span> -&gt; <span class="id" title="keyword">Prop</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
 &nbsp;&nbsp;| <span class="id" title="var">lenWitness</span> (<span class="id" title="var">e</span> : <span class="id" title="var">Entity</span>) : <span class="id" title="var">X</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">e</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> -&gt; <span class="id" title="var">liftEntNet</span> <span class="id" title="var">X</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span>.<br/>
 
 <br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Broadcast
-</div>
-<div class="code">
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">bcWaitStateNet</span> <span class="id" title="var">m</span> <span class="id" title="var">x</span> := <span class="id" title="var">liftEntNet</span> (<span class="id" title="var">bcWaitStateEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">x</span>).<br/>
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">sleepingStateNet</span> := <span class="id" title="var">liftEntNet</span> <span class="id" title="var">sleepingStateEnt</span>.<br/>
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">bcReadyStateNet</span> <span class="id" title="var">m</span> <span class="id" title="var">l</span> := <span class="id" title="var">liftEntNet</span> (<span class="id" title="var">bcReadyStateEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">l</span>).<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Overlap
-</div>
-<div class="code">
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">dormantStateNet</span> := <span class="id" title="var">liftEntNet</span> <span class="id" title="var">dormantStateEnt</span>.<br/>
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">tfsStartStateNet</span> := <span class="id" title="var">liftEntNet</span> <span class="id" title="var">tfsStartStateEnt</span>.<br/>
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">initStateNet</span> <span class="id" title="var">m</span> := <span class="id" title="var">liftEntNet</span> (<span class="id" title="var">initStateEnt</span> <span class="id" title="var">m</span>).<br/>
@@ -187,12 +151,6 @@ Overlap
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">tfsNextStateNet</span> <span class="id" title="var">m</span> := <span class="id" title="var">liftEntNet</span> (<span class="id" title="var">tfsNextStateEnt</span> <span class="id" title="var">m</span>).<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Listener
-</div>
-<div class="code">
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">listeningStateNet</span> := <span class="id" title="var">liftEntNet</span> <span class="id" title="var">listeningStateEnt</span>.<br/>
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">currCompStateNet</span> <span class="id" title="var">m''</span> <span class="id" title="var">r</span> := <span class="id" title="var">liftEntNet</span> (<span class="id" title="var">currCompStateEnt</span> <span class="id" title="var">m''</span> <span class="id" title="var">r</span>).<br/>
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">badOvlpStateNet</span> := <span class="id" title="var">liftEntNet</span> <span class="id" title="var">badOvlpStateEnt</span>.<br/>
@@ -202,33 +160,15 @@ Listener
 <br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Broadcast
-</div>
-<div class="code">
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">broadcastStateNet</span> :=  <span class="id" title="var">liftEntNet</span> <span class="id" title="var">broadcastStateEnt</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Overlap
-</div>
-<div class="code">
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">overlapStateNet</span> := <span class="id" title="var">liftEntNet</span> <span class="id" title="var">overlapStateEnt</span>.<br/>
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">tfsStateNet</span> := <span class="id" title="var">liftEntNet</span> <span class="id" title="var">tfsStateEnt</span>.<br/>
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">nextSinceStateNet</span> := <span class="id" title="var">liftEntNet</span> (<span class="id" title="var">nextSinceStateEnt</span>).<br/>
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">switchStateNet</span> := <span class="id" title="var">liftEntNet</span> <span class="id" title="var">switchStateEnt</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Listener
-</div>
-<div class="code">
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">listenerStateNet</span> := <span class="id" title="var">liftEntNet</span> <span class="id" title="var">listenerStateEnt</span>.<br/>
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">ovAbortStateNet</span> := <span class="id" title="var">liftEntNet</span> <span class="id" title="var">ovAbortStateEnt</span>.<br/>
 
@@ -236,22 +176,10 @@ Listener
 
 <br/>
 <span class="id" title="keyword">Conjecture</span> <span class="id" title="var">tfsStateNet_dec</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>), <span class="id" title="var">decidable</span> (<span class="id" title="var">tfsStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span>).<br/>
-</div>
-
-<div class="doc">
-Proof: Obvious
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Conjecture</span> <span class="id" title="var">tfsCurrNet_dec</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>),<br/>
 &nbsp;&nbsp;<span class="id" title="var">decidable</span> (<span class="id" title="var">tfsCurrStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span>).<br/>
-</div>
-
-<div class="doc">
-Proof: Obvious
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">tfsCurrStateNet_bktrk_net</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">ActDiscNet</span>),<br/>
@@ -259,63 +187,31 @@ Proof: Obvious
 &nbsp;&nbsp;<span class="id" title="var">tfsCurrStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> \/<br/>
 &nbsp;&nbsp;(<span class="id" title="tactic">exists</span> <span class="id" title="var">m</span> <span class="id" title="var">mF</span>, <span class="id" title="tactic">exists</span> <span class="id" title="var">p</span>,<br/>
 &nbsp;&nbsp;<span class="id" title="var">tfsNextStateNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> /\ <span class="id" title="var">failSafe</span> <span class="id" title="var">mF</span> /\<br/>
-&nbsp;&nbsp;<span class="id" title="var">mState_in_net</span> (&lt;| <span class="id" title="var">m</span>, <span class="id" title="var">mF</span>, <span class="id" title="var">modeTransTime</span> <span class="id" title="var">m</span> <span class="id" title="var">mF</span> <span class="id" title="var">p</span> |&gt;) <span class="id" title="var">i</span> <span class="id" title="var">n'</span>). <span class="id" title="var">Admitted</span>. </div>
-
-<div class="doc">
-Proof: Lift Back tracking and inter component relationships
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="var">mState_in_net</span> (&lt;| <span class="id" title="var">m</span>, <span class="id" title="var">mF</span>, <span class="id" title="var">modeTransTime</span> <span class="id" title="var">m</span> <span class="id" title="var">mF</span> <span class="id" title="var">p</span> |&gt;) <span class="id" title="var">i</span> <span class="id" title="var">n'</span>). <span class="id" title="var">Admitted</span>. 
 <br/>
 <span class="id" title="keyword">Conjecture</span> <span class="id" title="var">tfsCurrState_del_pres_net</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>),<br/>
 &nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n'</span> -&gt;<br/>
 &nbsp;&nbsp;(<span class="id" title="var">tfsCurrStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> &lt;-&gt; <span class="id" title="var">tfsCurrStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span>).<br/>
-</div>
-
-<div class="doc">
-Proof: del-pres-fwd-net del-pres-bkwd-net
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">mState_switch_states</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">a</span> : <span class="id" title="var">ActDiscNet</span>) (<span class="id" title="var">k</span> <span class="id" title="var">k'</span> : <span class="id" title="var">ModeState</span>), <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">k</span> &lt;&gt; <span class="id" title="var">k'</span> -&gt;<br/>
 &nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">mState_in_net</span> <span class="id" title="var">k</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">mState_in_net</span> <span class="id" title="var">k'</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span> -&gt;<br/>
 &nbsp;&nbsp;(<span class="id" title="var">tfsCurrStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> /\ <span class="id" title="var">tfsBcStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span>) \/<br/>
-&nbsp;&nbsp;(<span class="id" title="var">switchCurrStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> /\ <span class="id" title="var">switchListenStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span>). <span class="id" title="var">Admitted</span>. </div>
-
-<div class="doc">
-Proof: The mState_in_net predicates can be taken apart to show that there's an entity in the network. Then because the
-network is reachable, the software component of this entity is a protocolState process. Also, it can be shown from the semantics of
-entities that the only law (what about init?) that changes the mode state is that in which the software component outputs on mCurr.
-Brute force analysis of the possible states of each 3 components of the softare component show that the only matching cases for this are
-the two disjuncts. That is, the only capability a protocol process has of writing on mCurr is from the overlap component in those specific
-states.
-</div>
-<div class="code">
-
+&nbsp;&nbsp;(<span class="id" title="var">switchCurrStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> /\ <span class="id" title="var">switchListenStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span>). <span class="id" title="var">Admitted</span>. 
 <br/>
 <span class="id" title="keyword">Conjecture</span> <span class="id" title="var">tfsState_del_pres_net</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>),<br/>
 &nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n'</span> -&gt; (<span class="id" title="var">tfsStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> &lt;-&gt; <span class="id" title="var">tfsStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span>).<br/>
-</div>
-
-<div class="doc">
-Proof: del-pres-fwd-net del-pres-bkwd-net
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">switch_states_mState</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">ActDiscNet</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>), <span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">switchCurrStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt;<br/>
-&nbsp;&nbsp;<span class="id" title="var">switchListenStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">nextModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">currModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span>. <span class="id" title="var">Admitted</span>. </div>
+&nbsp;&nbsp;<span class="id" title="var">switchListenStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">nextModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">currModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span>. <span class="id" title="var">Admitted</span>. 
+<br/>
+</div>
 
 <div class="doc">
-Proof: Tracking shows us that the action must be tau, composed of an output from the software process on mCurr and an input
-on the same by the mode state. Then it can be shown separately that an input on the mode state that is nextMode m yields a mode
-state that it currMode m. Which can be lifted to currModeNet.
-<div class="paragraph"> </div>
-
- A network transition which sees a software component of some entity
+A network transition which sees a software component of some entity
 transform to a different software term is necessarily a tau transition.
 </div>
 <div class="code">
@@ -494,26 +390,17 @@ that entity. Then this tactic should solve the goal.
 
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">paused_switch_net</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) :<br/>
-&nbsp;&nbsp;<span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span> -&gt; (<span class="id" title="var">pausedStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> &lt;-&gt; <span class="id" title="var">switchStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span>). <span class="id" title="var">Admitted</span>. </div>
-
-<div class="doc">
-Proof: Lift result from entity level ultimately- analogous theorems except with
-reachableProt and prot level state predicates.
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span> -&gt; (<span class="id" title="var">pausedStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> &lt;-&gt; <span class="id" title="var">switchStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span>). <span class="id" title="var">Admitted</span>. 
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">bcWaitNet_del_bkwd</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">x</span> : <span class="id" title="keyword">Time</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>) : <span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n'</span> -&gt;<br/>
 &nbsp;&nbsp;<span class="id" title="var">bcWaitStateNet</span> <span class="id" title="var">m</span> <span class="id" title="var">x</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">bcWaitStateNet</span> <span class="id" title="var">m</span> (<span class="id" title="var">x</span> +<span class="id" title="var">dt</span>+ <span class="id" title="var">d</span>) <span class="id" title="var">i</span> <span class="id" title="var">n</span>.<br/>
-&nbsp;&nbsp;<span class="id" title="var">Admitted</span>. </div>
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>. 
+<br/>
+</div>
 
 <div class="doc">
-Proof: Well, a backwards delay preservation would give us bcWaitState m x' i n for some x'. But forward tracking would then give us that
-in the derivative state the second parameter is x' - d. So x = x' - d and so x' = x + d, as required.
-<div class="paragraph"> </div>
-
- An entity in an initial network is itself initial.
+An entity in an initial network is itself initial.
 </div>
 <div class="code">
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">initialNet_ent</span> <span class="id" title="var">e</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> : <span class="id" title="var">initialNet</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">e</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> -&gt;<br/>
@@ -535,16 +422,6 @@ that network and adds the hypothesis that the entity in question is initial.
 &nbsp;&nbsp;<span class="id" title="var">U1</span> : ?<span class="id" title="var">e</span> @ ?<span class="id" title="var">i</span> .: ?<span class="id" title="var">n</span> |- <span class="id" title="var">_</span>] =&gt; <span class="id" title="var">lets</span> <span class="id" title="var">U0</span> : <span class="id" title="var">initialNet_ent</span> <span class="id" title="var">U</span> <span class="id" title="var">U1</span> <span class="id" title="keyword">end</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Tactic for contradiction between initialNet and some state predicate.
-Basically what it does is get the goal to the stage where there is a
-hypothesis that says &lt;...&gt;StateProt dormant/sleeping/listening, which is
-immediately solvable by inversion because none of these initial processes
-match the state predicate in quesion.
-</div>
-<div class="code">
 <span class="id" title="keyword">Ltac</span> <span class="id" title="var">initNet_contra</span> <span class="id" title="var">U</span> := <br/>
 &nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">U</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">e</span> <span class="id" title="var">U1</span> <span class="id" title="var">U2</span>]; <span class="id" title="tactic">inversion</span> <span class="id" title="var">U1</span>;<br/>
 &nbsp;&nbsp;<span class="id" title="var">initNet_ent_tac</span>; <span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span> [<span class="id" title="var">U3</span> : [|<span class="id" title="var">_</span>, <span class="id" title="var">_</span>, <span class="id" title="var">_</span>, <span class="id" title="var">_</span>|] = ?<span class="id" title="var">e</span>,<br/>
@@ -574,32 +451,13 @@ If we're nextSince &amp; we can delay, then we're in the ovWait state.
 <div class="code">
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">nextSince_del_ovWait</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>) :<br/>
 &nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">nextSinceStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt;<br/>
-&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span>, <span class="id" title="var">ovWaitStateNet</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> (<span class="id" title="var">delToTime</span> (<span class="id" title="var">x</span> +<span class="id" title="var">dt</span>+ <span class="id" title="var">d</span>)) (<span class="id" title="var">delToTime</span> (<span class="id" title="var">y</span> +<span class="id" title="var">dt</span>+ <span class="id" title="var">d</span>)) <span class="id" title="var">i</span> <span class="id" title="var">n</span>. <span class="id" title="var">Admitted</span>. </div>
-
-<div class="doc">
-Proof: Apply nextSince_rel_state and then eliminate bcReady other urgent states. Also eliminate
-the ovWaitStates whos time parameter is less than d (a weak sort of urgency)- have a weak urgency
-result for this- it will depend on a timed out urgency. In general, the pattern is roughly that,
-we prove P(0) is urgent, then show that P(d) can delay by at most d, this in turn rests on a proof
-about delay prefixes, saying that e(d)P can only delay by d', where d is less than d', when P can
-delay by d' - d.
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span>, <span class="id" title="var">ovWaitStateNet</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> (<span class="id" title="var">delToTime</span> (<span class="id" title="var">x</span> +<span class="id" title="var">dt</span>+ <span class="id" title="var">d</span>)) (<span class="id" title="var">delToTime</span> (<span class="id" title="var">y</span> +<span class="id" title="var">dt</span>+ <span class="id" title="var">d</span>)) <span class="id" title="var">i</span> <span class="id" title="var">n</span>. <span class="id" title="var">Admitted</span>. 
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">switchCurr_switchListen_net_link</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">a</span> : <span class="id" title="var">ActDiscNet</span>) (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) : <br/>
 &nbsp;&nbsp;<span class="id" title="var">switchCurrStateEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">switchListenStateEnt</span> <span class="id" title="var">e'</span> -&gt;<br/>
 &nbsp;&nbsp;<span class="id" title="var">e</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> -&gt; <span class="id" title="var">e'</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt;<br/>
-&nbsp;&nbsp;<span class="id" title="var">a</span> = <span class="id" title="var">anTau</span> /\ <span class="id" title="var">interEnt</span> <span class="id" title="var">e</span> = <span class="id" title="var">interEnt</span> <span class="id" title="var">e'</span>. <span class="id" title="var">Admitted</span>. </div>
-
-<div class="doc">
-Proof: Lift some EA::intercomponent &amp; maybe some linking theorems
-OR
-Use some existing/new inversion tactics for destructing the state predicates and entities.
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="var">a</span> = <span class="id" title="var">anTau</span> /\ <span class="id" title="var">interEnt</span> <span class="id" title="var">e</span> = <span class="id" title="var">interEnt</span> <span class="id" title="var">e'</span>. <span class="id" title="var">Admitted</span>. 
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">init_nextMode_net</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> :<br/>
 &nbsp;&nbsp;<span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">initStateNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">nextModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span>.<br/>
@@ -623,14 +481,7 @@ Use some existing/new inversion tactics for destructing the state predicates and
 &nbsp;&nbsp;<span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">nextModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <br/>
 &nbsp;&nbsp;~(<span class="id" title="var">switchCurrStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> \/ <span class="id" title="var">ovAbortStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> \/<br/>
 &nbsp;&nbsp;<span class="id" title="var">tfsCurrStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span>) -&gt;<br/>
-&nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">nextModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span>. <span class="id" title="var">Admitted</span>. </div>
-
-<div class="doc">
-Proof: Brute force? Inter-component relationships? Is there any
-machinery that you can use to help you prove this one?
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">nextModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span>. <span class="id" title="var">Admitted</span>. 
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">ovWait_del_pres_bkwd_net_strong</span> <span class="id" title="var">n</span> <span class="id" title="var">n'</span> <span class="id" title="var">d</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">i</span> :<br/>
 &nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">ovWaitStateNet</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span> -&gt;<br/>
@@ -642,14 +493,7 @@ machinery that you can use to help you prove this one?
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">nextModeNet_del_pres</span> <span class="id" title="var">n</span> <span class="id" title="var">n'</span> <span class="id" title="var">d</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> :<br/>
 &nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">nextModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">nextModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span>.<br/>
-&nbsp;&nbsp;<span class="id" title="var">Admitted</span>. </div>
-
-<div class="doc">
-Proof: Follows from the semantics. Perhaps there is a similar result
-for the current mode that can be consulted for inspiration
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>. 
 <br/>
 
 <br/>
@@ -667,15 +511,7 @@ for the current mode that can be consulted for inspiration
 <br/>
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">del_listening_net</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>) (<span class="id" title="var">e</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) :<br/>
 &nbsp;&nbsp;<span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">e</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> -&gt; <span class="id" title="var">listeningStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span>.<br/>
-&nbsp;&nbsp;<span class="id" title="var">Admitted</span>. </div>
-
-<div class="doc">
-Proof: Well if the network delays, then any member entity must also be able
-to delay <span class="inlinecode"><span class="id" title="var">del</span></span> <span class="inlinecode"><span class="id" title="var">link</span></span> <span class="inlinecode"><span class="id" title="var">theorem</span>-</span> <span class="inlinecode"><span class="id" title="var">salvaged</span>?</span>. And then we can lift the result
-(EA::del-listening-ent) to get that e is in the listening state, and we're done.
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>. 
 <br/>
 
 <br/>
@@ -693,45 +529,15 @@ to delay <span class="inlinecode"><span class="id" title="var">del</span></span>
 <br/>
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">currMode_pres_bkwd</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">ActDiscNet</span>) (<span class="id" title="var">m'</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) :<br/>
 &nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">currModeNet</span> <span class="id" title="var">m'</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span> -&gt;<br/>
-&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">m</span>, <span class="id" title="var">currModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span>. <span class="id" title="var">Admitted</span>. </div>
-
-<div class="doc">
-Proof: Well currMode m' i n' means that there is some e' @ i .: n'.
-Then we can show by (...salvaged linking theorem of some sort...) that
-there is some e @ i .: n. It is easy then to show that every entity has
-some current mode, and so e has one, call it m, and we're done (after a bit of lifting).
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">m</span>, <span class="id" title="var">currModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span>. <span class="id" title="var">Admitted</span>. 
 <br/>
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">currMode_pres_fwd</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">ActDiscNet</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) :<br/>
 &nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">currModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt;<br/>
-&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">m'</span>, <span class="id" title="var">currModeNet</span> <span class="id" title="var">m'</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span>. <span class="id" title="var">Admitted</span>. </div>
-
-<div class="doc">
-Proof: Analogous to the previous proof except we use some
-(...salvaged linking theorem of some sort...) to show that the number of
-entities are preserved forwards in a network.
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">m'</span>, <span class="id" title="var">currModeNet</span> <span class="id" title="var">m'</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span>. <span class="id" title="var">Admitted</span>. 
 <br/>
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">outgoing_del</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) : <br/>
 &nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">outgoing</span> <span class="id" title="var">v</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt;<br/>
-&nbsp;&nbsp;{<span class="id" title="var">p</span> : <span class="id" title="var">d</span> &lt;= <span class="id" title="var">t</span> | <span class="id" title="var">outgoing</span> <span class="id" title="var">v</span> (<span class="id" title="var">minusTime</span> <span class="id" title="var">t</span> <span class="id" title="var">d</span> <span class="id" title="var">p</span>) <span class="id" title="var">i</span> <span class="id" title="var">n'</span>}. <span class="id" title="var">Admitted</span>. </div>
-
-<div class="doc">
-Proof: Idea is to invert/destruct outgoing to <span class="inlinecode"><span class="id" title="var">p</span>,</span> <span class="inlinecode"><span class="id" title="var">l</span>,</span> <span class="inlinecode">{<span class="id" title="var">li</span>,</span> <span class="inlinecode"><span class="id" title="var">lo</span>,</span> <span class="inlinecode"><span class="id" title="var">ln</span>},</span> <span class="inlinecode"><span class="id" title="var">k</span></span> @ i.: n &amp; v, t : lo
-apply ent-interface del linking tactic
-apply interface-list del linkiing tactic
-*now we have that lo delays to some lo'*
-result &amp; accompanying tactic about timed lists v, t : l &amp; l -d- l' then d &lt;= t &amp;
-v (t - d) : l'
-contstructor &amp; assumption
-.
-</div>
-<div class="code">
-
+&nbsp;&nbsp;{<span class="id" title="var">p</span> : <span class="id" title="var">d</span> &lt;= <span class="id" title="var">t</span> | <span class="id" title="var">outgoing</span> <span class="id" title="var">v</span> (<span class="id" title="var">minusTime</span> <span class="id" title="var">t</span> <span class="id" title="var">d</span> <span class="id" title="var">p</span>) <span class="id" title="var">i</span> <span class="id" title="var">n'</span>}. <span class="id" title="var">Admitted</span>. 
 <br/>
 <span class="id" title="keyword">Corollary</span> <span class="id" title="var">outgoing_del_contra</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) : <span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n'</span> -&gt;  <span class="id" title="var">outgoing</span> <span class="id" title="var">v</span> <span class="id" title="var">zeroTime</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">False</span>. <span class="id" title="tactic">intros</span>.<br/>
@@ -803,95 +609,41 @@ contstructor &amp; assumption
 <br/>
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">incomingNetNotif_disc_pres</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">ActDiscNet</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) :<br/>
 &nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">incomingNetNotif</span> <span class="id" title="var">v</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; 0 &lt; <span class="id" title="var">t</span> -&gt;<br/>
-&nbsp;&nbsp;<span class="id" title="var">incomingNetNotif</span> <span class="id" title="var">v</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span>. <span class="id" title="var">Admitted</span>. </div>
-
-<div class="doc">
-Proof: Analogous to (outgoing_disc_pres).
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="var">incomingNetNotif</span> <span class="id" title="var">v</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span>. <span class="id" title="var">Admitted</span>. 
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">inPos_del_bound_bkwd</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>) (<span class="id" title="var">l'</span> : <span class="id" title="var">Position</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) :<br/>
 &nbsp;&nbsp;<span class="id" title="var">inPosNet</span> <span class="id" title="var">l'</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="tactic">exists</span> <span class="id" title="var">l</span>,<br/>
-&nbsp;&nbsp;<span class="id" title="var">inPosNet</span> <span class="id" title="var">l</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> /\ <span class="id" title="var">dist2d</span> <span class="id" title="var">l</span> <span class="id" title="var">l'</span> &lt;= <span class="id" title="var">speedMax</span> * <span class="id" title="var">d</span>. <span class="id" title="var">Admitted</span>. </div>
-
-<div class="doc">
-Proof: Salvaged from old Coq model (pos_bound?).
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="var">inPosNet</span> <span class="id" title="var">l</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> /\ <span class="id" title="var">dist2d</span> <span class="id" title="var">l</span> <span class="id" title="var">l'</span> &lt;= <span class="id" title="var">speedMax</span> * <span class="id" title="var">d</span>. <span class="id" title="var">Admitted</span>. 
 <br/>
 <span class="id" title="keyword">Conjecture</span> <span class="id" title="var">currMode_intro</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">e</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>),<br/>
 &nbsp;&nbsp;<span class="id" title="var">m</span> = <span class="id" title="var">currModeEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">e</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> -&gt; <span class="id" title="var">currModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: Obvious- lift currModeEnt to currModeNet
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Conjecture</span> <span class="id" title="var">inPos_ex</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">e</span> : <span class="id" title="var">Entity</span>),<br/>
 &nbsp;&nbsp;<span class="id" title="var">e</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> -&gt; <span class="id" title="tactic">exists</span> <span class="id" title="var">l</span>, <span class="id" title="var">inPosNet</span> <span class="id" title="var">l</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: Obvious- every entity has a position
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Conjecture</span> <span class="id" title="var">distNet_intro</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">e1</span> <span class="id" title="var">e2</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">i</span> <span class="id" title="var">j</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">x</span> : <span class="id" title="var">Distance</span>),<br/>
 &nbsp;&nbsp;<span class="id" title="var">e1</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> -&gt; <span class="id" title="var">e2</span> @ <span class="id" title="var">j</span> .: <span class="id" title="var">n</span> -&gt; <span class="id" title="var">x</span> = <span class="id" title="var">mkDistance</span> (<span class="id" title="var">dist2d</span> <span class="id" title="var">e1</span> <span class="id" title="var">e2</span>) -&gt; <span class="id" title="var">distNet</span> <span class="id" title="var">i</span> <span class="id" title="var">j</span> <span class="id" title="var">n</span> <span class="id" title="var">x</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: Obvious from definitions of things
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Conjecture</span> <span class="id" title="var">inPos_pos</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">e</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>) (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>),<br/>
 &nbsp;&nbsp;<span class="id" title="var">e</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> -&gt; <span class="id" title="var">inPosNet</span> <span class="id" title="var">l</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">posEnt</span> <span class="id" title="var">e</span> = <span class="id" title="var">l</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: Obvious- invert/deconstruct inPostNet
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Conjecture</span> <span class="id" title="var">reachable_net_ent</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">e</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>),<br/>
 &nbsp;&nbsp;<span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">e</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> -&gt; <span class="id" title="var">reachableEnt</span> <span class="id" title="var">e</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: Obvious- inversion on reachableNet
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Conjecture</span> <span class="id" title="var">disc_pres_distNet_bkwd</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">ActDiscNet</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">i</span> <span class="id" title="var">j</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">x</span> : <span class="id" title="var">Distance</span>),<br/>
 &nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">distNet</span> <span class="id" title="var">i</span> <span class="id" title="var">j</span> <span class="id" title="var">n'</span> <span class="id" title="var">x</span> -&gt; <span class="id" title="var">distNet</span> <span class="id" title="var">i</span> <span class="id" title="var">j</span> <span class="id" title="var">n</span> <span class="id" title="var">x</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: Obvious- Lift other proofs which say essentially the same thing and apply constructor for distNet
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Conjecture</span> <span class="id" title="var">del_link_distNet_bkwd</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">i</span> <span class="id" title="var">j</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">x'</span> : <span class="id" title="var">Distance</span>),<br/>
 &nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">distNet</span> <span class="id" title="var">i</span> <span class="id" title="var">j</span> <span class="id" title="var">n'</span> <span class="id" title="var">x'</span> -&gt;<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">x</span>, <span class="id" title="var">distNet</span> <span class="id" title="var">i</span> <span class="id" title="var">j</span> <span class="id" title="var">n</span> <span class="id" title="var">x</span> /\ <span class="id" title="var">x</span> &lt;= <span class="id" title="var">x'</span> + 2*<span class="id" title="var">speedMax</span>*<span class="id" title="var">d</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: Obvious- Lift similar proofs &amp; apply distNet constructor
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Conjecture</span> <span class="id" title="var">distNet_elim</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">i</span> <span class="id" title="var">j</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">x</span> : <span class="id" title="var">Distance</span>),<br/>
@@ -922,79 +674,36 @@ Proof: Obvious- Lift similar proofs &amp; apply distNet constructor
 <span class="id" title="keyword">Conjecture</span> <span class="id" title="var">transGuard_disc_pres</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">a</span> : <span class="id" title="var">ActDiscNet</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>),<br/>
 &nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">transGuard</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">transGuard</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: Obvious: discrete action preserves guard on mode state, immediate from mode state semantics
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Conjecture</span> <span class="id" title="var">transGuard_elim</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>),<br/>
 &nbsp;&nbsp;<span class="id" title="var">transGuard</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="tactic">exists</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span>,<br/>
 &nbsp;&nbsp;<span class="id" title="var">mState_in_net</span> (&lt;| <span class="id" title="var">m</span>, <span class="id" title="var">m'</span>, <span class="id" title="var">t</span> |&gt;) <span class="id" title="var">i</span> <span class="id" title="var">n</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: Obvious: transGuard definition
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Conjecture</span> <span class="id" title="var">transGuard_intro</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">m</span> <span class="id" title="var">m'</span> : <span class="id" title="var">Mode</span>), <span class="id" title="var">mState_in_net</span> (&lt;| <span class="id" title="var">m</span>, <span class="id" title="var">m'</span>, <span class="id" title="var">t</span> |&gt;) <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt;<br/>
 &nbsp;&nbsp;<span class="id" title="var">transGuard</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: Immediate from definition of transGuard
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Conjecture</span> <span class="id" title="var">mState_disc_pres</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">a</span> : <span class="id" title="var">ActDiscNet</span>) (<span class="id" title="var">k</span>  : <span class="id" title="var">ModeState</span>), <span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">mState_in_net</span> <span class="id" title="var">k</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt;<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">k'</span>, <span class="id" title="var">mState_in_net</span> <span class="id" title="var">k'</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: Obvious- inversion on mState_in_net, get that there's an entity, apply linking tactic to get entity in derivative,
-then once there's an entity there's going to be a mode state, so mState_in_net is satisfied.
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Conjecture</span> <span class="id" title="var">transGuard_del</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>),<br/>
 &nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">transGuard</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <br/>
 &nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">p</span>, <span class="id" title="var">transGuard</span> (<span class="id" title="var">minusTime</span> <span class="id" title="var">t</span> <span class="id" title="var">d</span> <span class="id" title="var">p</span>) <span class="id" title="var">i</span> <span class="id" title="var">n'</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: Obvious- transGuard definition and mode state semantics
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Conjecture</span> <span class="id" title="var">currModeNet_del_pres</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>), <span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n'</span> -&gt;<br/>
 &nbsp;&nbsp;(<span class="id" title="var">currModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> &lt;-&gt; <span class="id" title="var">currModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span>).<br/>
-</div>
-
-<div class="doc">
-Proof: Obvious- delay preservation tactic
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Conjecture</span> <span class="id" title="var">currModeNet_dec</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>),<br/>
 &nbsp;&nbsp;<span class="id" title="var">currModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> \/ ~<span class="id" title="var">currModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: Obvious- not important to prove as it's just law of excluded middle
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">initial_failSafe</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">e</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) :<br/>
@@ -1008,66 +717,32 @@ Proof: Obvious- not important to prove as it's just law of excluded middle
 &nbsp;&nbsp;(<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">m</span> <span class="id" title="var">m'</span> : <span class="id" title="var">Mode</span>) :<br/>
 &nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">e</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> -&gt; <span class="id" title="var">e'</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n'</span> -&gt;<br/>
 &nbsp;&nbsp;<span class="id" title="var">currModeEnt</span> <span class="id" title="var">e</span> = <span class="id" title="var">m</span> -&gt; <span class="id" title="var">currModeEnt</span> <span class="id" title="var">e'</span> = <span class="id" title="var">m'</span> -&gt; <span class="id" title="var">m</span> &lt;&gt; <span class="id" title="var">m'</span> -&gt;<br/>
-&nbsp;&nbsp;<span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">aeTau</span> -&gt;&gt; <span class="id" title="var">e'</span>. <span class="id" title="var">Admitted</span>. </div>
-
-<div class="doc">
-Proof: EXISITNG THEOREMS OF A SIMILAR NATURE TO HELP YOU SOLVE THIS? LOOK FOR M &lt;&gt; M'
-Case analyse the action a and in all cases where the action isn't tau, the mode states are equal, giving a contradiction. This leaves only the case where a is a tau. In this case, we apply a linking theorem to get that the tau was done by some entity while the rest of the entities were preserved. Well, then, the entity that did the tau must be our entity e, because otherwise its preservation would imply the equality of the modes, which is a contradiction.
-<div class="paragraph"> </div>
-
- Broadly speaking, a linking theorem.
-</div>
-<div class="code">
+&nbsp;&nbsp;<span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">aeTau</span> -&gt;&gt; <span class="id" title="var">e'</span>. <span class="id" title="var">Admitted</span>. 
+<br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">reachable_net_prot</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>) (<span class="id" title="var">h</span> : <span class="id" title="var">Interface</span>) (<span class="id" title="var">k</span> : <span class="id" title="var">ModeState</span>),<br/>
 &nbsp;&nbsp;<span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span> -&gt; [|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|] @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> -&gt;<br/>
-&nbsp;&nbsp;<span class="id" title="var">reachableProt</span> <span class="id" title="var">p</span>. <span class="id" title="var">Admitted</span>. </div>
-
-<div class="doc">
-Proof: DOES THEOREM LIKE THIS ALREADY EXIST? Induction on reachableNet and some linking results
-<div class="paragraph"> </div>
-
- Delay preserves the current mode
-</div>
-<div class="code">
+&nbsp;&nbsp;<span class="id" title="var">reachableProt</span> <span class="id" title="var">p</span>. <span class="id" title="var">Admitted</span>. 
+<br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">currMode_del_pres_bkwd</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) :<br/>
-&nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">currModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">currModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span>. <span class="id" title="var">Admitted</span>. </div>
-
-<div class="doc">
-Proof: Follows directly from mode state semantics, and linking of delay from network to entity to modestate
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">currModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">currModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span>. <span class="id" title="var">Admitted</span>. 
 <br/>
 <span class="id" title="keyword">Conjecture</span> <span class="id" title="var">inPos_ent_net</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>) (<span class="id" title="var">e</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>),<br/>
 &nbsp;&nbsp;<span class="id" title="var">inPosEnt</span> <span class="id" title="var">l</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">e</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> -&gt; <span class="id" title="var">inPosNet</span> <span class="id" title="var">l</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: Obvious from definitions
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Conjecture</span> <span class="id" title="var">inPos_unique</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">l</span> <span class="id" title="var">l'</span> : <span class="id" title="var">Position</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>),<br/>
 &nbsp;&nbsp;<span class="id" title="var">inPosNet</span> <span class="id" title="var">l</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">inPosNet</span> <span class="id" title="var">l'</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">l</span> = <span class="id" title="var">l'</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: Obvious- inversion and apply entInNetUnique
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">outNet_incomingNetNotif</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>) (<span class="id" title="var">r</span> : <span class="id" title="var">Distance</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) : <span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- ([-<span class="id" title="var">v</span>, <span class="id" title="var">l</span>, <span class="id" title="var">r</span>-]) /! <span class="id" title="var">i</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt;<br/>
-&nbsp;&nbsp;<span class="id" title="var">incomingNetNotif</span> ((<span class="id" title="var">baseDistance</span> <span class="id" title="var">r</span>)::<span class="id" title="var">v</span>) <span class="id" title="var">adaptNotif</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span>. <span class="id" title="var">Admitted</span>. </div>
+&nbsp;&nbsp;<span class="id" title="var">incomingNetNotif</span> ((<span class="id" title="var">baseDistance</span> <span class="id" title="var">r</span>)::<span class="id" title="var">v</span>) <span class="id" title="var">adaptNotif</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span>. <span class="id" title="var">Admitted</span>. 
+<br/>
+</div>
 
 <div class="doc">
-Proof: Follows from interface semantics.
-<div class="paragraph"> </div>
-
- Linking theorem.
+Linking theorem.
 </div>
 <div class="code">
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">incoming_net_ent</span> (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) :<br/>
@@ -1095,14 +770,6 @@ Linking theorem.
 &nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Can be used directly for this particular protocol with 3 software components. Constructs the derivative triple and all the
-delays between the corresponding components, as well as the position bound. Specification is somewhat crude, but easy to manipulate,
-particularly with a tactic.
-</div>
-<div class="code">
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">net_del_elim</span> <span class="id" title="var">q</span> <span class="id" title="var">q0</span> <span class="id" title="var">q1</span> <span class="id" title="var">l</span> <span class="id" title="var">h</span> <span class="id" title="var">k</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">n'</span> <span class="id" title="var">d</span> :<br/>
 &nbsp;&nbsp;[|<span class="id" title="var">q</span> $||$ <span class="id" title="var">q0</span> $||$ <span class="id" title="var">q1</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|] @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> -&gt;<br/>
 &nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n'</span> -&gt;<br/>
@@ -1110,35 +777,14 @@ particularly with a tactic.
 &nbsp;&nbsp;[|<span class="id" title="var">q'</span> $||$ <span class="id" title="var">q0'</span> $||$ <span class="id" title="var">q1'</span>, <span class="id" title="var">l'</span>, <span class="id" title="var">h'</span>, <span class="id" title="var">k'</span>|] @ <span class="id" title="var">i</span> .: <span class="id" title="var">n'</span> /\<br/>
 &nbsp;&nbsp;<span class="id" title="var">q</span> -<span class="id" title="var">PD</span>- <span class="id" title="var">d</span> -<span class="id" title="var">PD</span>&gt; <span class="id" title="var">q'</span> /\ <span class="id" title="var">q0</span> -<span class="id" title="var">PD</span>- <span class="id" title="var">d</span> -<span class="id" title="var">PD</span>&gt; <span class="id" title="var">q0'</span> /\ <span class="id" title="var">q1</span> -<span class="id" title="var">PD</span>- <span class="id" title="var">d</span> -<span class="id" title="var">PD</span>&gt; <span class="id" title="var">q1'</span> /\<br/>
 &nbsp;&nbsp;<span class="id" title="var">h</span> -<span class="id" title="var">i</span>- <span class="id" title="var">d</span> -<span class="id" title="var">i</span>&gt; <span class="id" title="var">h'</span> /\ <span class="id" title="var">k</span> -<span class="id" title="var">ms</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">k'</span> /\<br/>
-&nbsp;&nbsp;<span class="id" title="var">dist2d</span> <span class="id" title="var">l</span> <span class="id" title="var">l'</span> &lt;= <span class="id" title="var">speedMax</span> * <span class="id" title="var">d</span>. <span class="id" title="var">Admitted</span>. </div>
-
-<div class="doc">
-Proof: First apply linking theorem for the entity. Then destruct the derivative entity. Then show that the delay between the entities
-can only happen when the interface and mode state components also delay, and the distance inequality condition holds, giving the final three goals.
-The first four goals then follow from an application of a result for software components: triples of processes always delay to triples, with each
-individual component delaying to the corresponding component
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="var">dist2d</span> <span class="id" title="var">l</span> <span class="id" title="var">l'</span> &lt;= <span class="id" title="var">speedMax</span> * <span class="id" title="var">d</span>. <span class="id" title="var">Admitted</span>. 
 <br/>
 <span class="id" title="keyword">Conjecture</span> <span class="id" title="var">currMode_ent_ex</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>),<br/>
 &nbsp;&nbsp;<span class="id" title="var">currModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> &lt;-&gt; <span class="id" title="tactic">exists</span> <span class="id" title="var">e</span>, <span class="id" title="var">e</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> /\ <span class="id" title="var">currModeEnt</span> <span class="id" title="var">e</span> = <span class="id" title="var">m</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: Obvious from definitions
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Conjecture</span> <span class="id" title="var">nextMode_ent_ex</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>),<br/>
 &nbsp;&nbsp;<span class="id" title="var">nextModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> &lt;-&gt; <span class="id" title="tactic">exists</span> <span class="id" title="var">e</span>, <span class="id" title="var">e</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> /\ <span class="id" title="var">nextModeEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">e</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: Obvious from definitions
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Ltac</span> <span class="id" title="var">currMode_ent_ex_tac</span> <span class="id" title="var">e</span> <span class="id" title="var">U</span> :=<br/>
@@ -1198,13 +844,7 @@ The nextSinceState relation can be broken down into the following cases.
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">link_net_ent_disc</span> :<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">ActDiscNet</span>),<br/>
 &nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">e</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> -&gt; <span class="id" title="var">e'</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n'</span>-&gt;<br/>
-&nbsp;&nbsp;(<span class="id" title="var">e</span> = <span class="id" title="var">e'</span> \/ (<span class="id" title="tactic">exists</span> <span class="id" title="var">a'</span>, <span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">a'</span> -&gt;&gt; <span class="id" title="var">e'</span>)). <span class="id" title="var">Admitted</span>. </div>
-
-<div class="doc">
-Proof: Case analyse the network transition and this follows from the semantics
-</div>
-<div class="code">
-
+&nbsp;&nbsp;(<span class="id" title="var">e</span> = <span class="id" title="var">e'</span> \/ (<span class="id" title="tactic">exists</span> <span class="id" title="var">a'</span>, <span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">a'</span> -&gt;&gt; <span class="id" title="var">e'</span>)). <span class="id" title="var">Admitted</span>. 
 <br/>
 <span class="id" title="keyword">Ltac</span> <span class="id" title="var">link_netentdisc_tac</span> <span class="id" title="var">b</span> :=<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
@@ -1315,15 +955,7 @@ Tactic for eliminating two contradictory state predicates H and H1
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">ovWait_track_net</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span> <span class="id" title="var">t</span> <span class="id" title="var">t'</span> <span class="id" title="var">x</span> <span class="id" title="var">x'</span> <span class="id" title="var">y</span> <span class="id" title="var">y'</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">n'</span> <span class="id" title="var">a</span> :<br/>
 &nbsp;&nbsp;<span class="id" title="var">ovWaitStateNet</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">ovWaitStateNet</span> <span class="id" title="var">m'</span> <span class="id" title="var">t'</span> <span class="id" title="var">x'</span> <span class="id" title="var">y'</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span> -&gt;<br/>
-&nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">m</span> = <span class="id" title="var">m'</span> /\ <span class="id" title="var">t</span> = <span class="id" title="var">t'</span> /\ <span class="id" title="var">x</span> = <span class="id" title="var">x'</span> /\ <span class="id" title="var">y</span> = <span class="id" title="var">y'</span>. <span class="id" title="var">Admitted</span>. </div>
-
-<div class="doc">
-Proof: Apply a tactic to extract the underlying process state predicates- at the
-lowest level e.g. ovWaitState p2 (tactic already exists I think?).
-Then apply a matching tactic at this level, and you should be done.
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">m</span> = <span class="id" title="var">m'</span> /\ <span class="id" title="var">t</span> = <span class="id" title="var">t'</span> /\ <span class="id" title="var">x</span> = <span class="id" title="var">x'</span> /\ <span class="id" title="var">y</span> = <span class="id" title="var">y'</span>. <span class="id" title="var">Admitted</span>. 
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">ovWait_prev_net</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">n'</span> <span class="id" title="var">a</span> : <span class="id" title="var">ovWaitStateNet</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span> -&gt;<br/>
 &nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt;<br/>

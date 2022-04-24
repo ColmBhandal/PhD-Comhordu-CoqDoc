@@ -58,13 +58,6 @@ if time allowed it.
 <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.NARTop</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Used to exploit a symmetry in the following proof, essentially continues on the proof
-from where it is applied
-</div>
-<div class="code">
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">safety_aux</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">X</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) (<span class="id" title="var">e1</span> <span class="id" title="var">e2</span> : <span class="id" title="var">Entity</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">i</span> <span class="id" title="var">j</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">H</span> : (<span class="id" title="var">i</span> &lt;&gt; <span class="id" title="var">j</span>)%<span class="id" title="var">nat</span>) (<span class="id" title="var">H0</span> : <span class="id" title="var">e1</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span>) (<span class="id" title="var">H1</span> : <span class="id" title="var">e2</span> @ <span class="id" title="var">j</span> .: <span class="id" title="var">n</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">x</span> : <span class="id" title="var">Distance</span>) (<span class="id" title="var">Heqx</span> : <span class="id" title="var">x</span> = <span class="id" title="var">mkDistance</span> (<span class="id" title="var">dist2d</span> <span class="id" title="var">e1</span> <span class="id" title="var">e2</span>)) (<span class="id" title="var">mdc</span> : <span class="id" title="var">Distance</span>) (<span class="id" title="var">m1</span> : <span class="id" title="var">Mode</span>)<br/>
@@ -140,20 +133,6 @@ from where it is applied
 &nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">transMaxBound</span>. <span class="id" title="keyword">Qed</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-This is the main result stating the correctness of the protocol. It says that if a network
-is reachable, then it is safe. To recap, what this means is that, if we start out a system in
-which all the entities are fail safe and running the protocol process as their software
-component, and we allow this system to evolve via any finite number of delays and discrete
-actions as per our transition semantics, then we end up with a network which is safe. Safety
-itself is defined elsewhere, but basically means that all pairs of entities in the network are
-separated by a sufficient distance to ensure that they are not incompatible according to their
-respective modes. The sufficiency of the distance in question is in turn decided by parameters
-of the specific system in question
-</div>
-<div class="code">
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">safety</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">safe</span> <span class="id" title="var">n</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">safe</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="var">addHyp</span> (<span class="id" title="var">dec_compatible</span> <span class="id" title="var">e1</span> <span class="id" title="var">e2</span>). <span class="id" title="var">appDisj</span> <span class="id" title="var">H2</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">compatible</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H2</span>. <span class="id" title="var">remember</span> (<span class="id" title="var">dist2d</span> <span class="id" title="var">e1</span> <span class="id" title="var">e2</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">x</span>.<br/>
@@ -180,11 +159,6 @@ of the specific system in question
 &nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">safety_aux</span>;<span class="id" title="var">eassumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">notEq_symm</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">distSymmetric</span> <span class="id" title="tactic">in</span> <span class="id" title="var">Heqx'</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">minDistCompSymmetric</span> <span class="id" title="tactic">in</span> <span class="id" title="var">Heqmdc</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">safety_aux</span>;<span class="id" title="var">eassumption</span>.<br/>
-</div>
-
-<div class="doc">
-Proof is then continued by the auxiliary result safety_aux</div>
-<div class="code">
  <span class="id" title="keyword">Qed</span>.<br/>
 </div>
 <hr/>This page has been generated by <a href="http://coq.inria.fr/">coqdoc</a>

@@ -70,12 +70,6 @@ A timed list is a list of timed elements.
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">TimedList</span> : <span class="id" title="keyword">Type</span> := <span class="id" title="var">list</span> <span class="id" title="var">TimedEl</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-An action is either a delay, an input or an output.
-</div>
-<div class="code">
 <span class="id" title="keyword">Inductive</span> <span class="id" title="var">ActTimedList</span> :=<br/>
 &nbsp;&nbsp;| <span class="id" title="var">atlDel</span> :&gt; <span class="id" title="var">Delay</span> -&gt; <span class="id" title="var">ActTimedList</span><br/>
 &nbsp;&nbsp;| <span class="id" title="var">atlIn</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span> -&gt; <span class="id" title="var">ActTimedList</span><br/>
@@ -304,12 +298,6 @@ An input list can always input a message.
 &nbsp;&nbsp;<span class="id" title="var">actEnabledInList</span> <span class="id" title="var">l</span> (<span class="id" title="var">v</span>??). <br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Semantics for the output list.
-</div>
-<div class="code">
 <span class="id" title="keyword">Inductive</span> <span class="id" title="var">stepOutputList</span> : <span class="id" title="var">OutputList</span> -&gt; <span class="id" title="var">ActTimedList</span> -&gt; <span class="id" title="var">OutputList</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
 &nbsp;&nbsp;</div>
 
@@ -335,12 +323,6 @@ Lift the timed list semantics to these specialised semantics.
 &nbsp;&nbsp;<span class="id" title="var">l</span> -<span class="id" title="var">ol</span>- <span class="id" title="var">d</span> +<span class="id" title="var">d</span>+ <span class="id" title="var">d'</span> -<span class="id" title="var">ol</span>&gt; <span class="id" title="var">l''</span>. <br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Semantics for the notification list.
-</div>
-<div class="code">
 <span class="id" title="keyword">Inductive</span> <span class="id" title="var">stepNotifList</span> : <span class="id" title="var">NotifList</span> -&gt; <span class="id" title="var">ActTimedList</span> -&gt; <span class="id" title="var">NotifList</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
 &nbsp;&nbsp;</div>
 
@@ -533,32 +515,14 @@ An interface is always enabled on an input on the channel chanIOEnv.
 <br/>
 <span class="id" title="keyword">Conjecture</span> <span class="id" title="var">outList_received_in</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">l</span> <span class="id" title="var">l'</span> : <span class="id" title="var">OutputList</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>),<br/>
 &nbsp;&nbsp;<span class="id" title="var">l</span> -<span class="id" title="var">ol</span>- <span class="id" title="var">v</span> ?? -<span class="id" title="var">ol</span>&gt; <span class="id" title="var">l'</span> -&gt; &lt;(<span class="id" title="var">v</span>, <span class="id" title="var">msgLatency</span>)&gt; <span class="id" title="var">_</span>: <span class="id" title="var">outList</span> <span class="id" title="var">l'</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: Obvious from outList semantics
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Conjecture</span> <span class="id" title="var">inList_received_in</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">l</span> <span class="id" title="var">l'</span> : <span class="id" title="var">InputList</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>),<br/>
 &nbsp;&nbsp;<span class="id" title="var">l</span> -<span class="id" title="var">il</span>- <span class="id" title="var">v</span> ?? -<span class="id" title="var">il</span>&gt; <span class="id" title="var">l'</span> -&gt; &lt;(<span class="id" title="var">v</span>, <span class="id" title="var">msgLatency</span>)&gt; <span class="id" title="var">_</span>: <span class="id" title="var">inList</span> <span class="id" title="var">l'</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: Obvious from inList semantics
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Conjecture</span> <span class="id" title="var">notifList_received_in</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">l</span> <span class="id" title="var">l'</span> : <span class="id" title="var">NotifList</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>),<br/>
 &nbsp;&nbsp;<span class="id" title="var">l</span> -<span class="id" title="var">nl</span>- <span class="id" title="var">v</span> ?? -<span class="id" title="var">nl</span>&gt; <span class="id" title="var">l'</span> -&gt; &lt;(<span class="id" title="var">v</span>, <span class="id" title="var">msgLatency</span>)&gt; <span class="id" title="var">_</span>: <span class="id" title="var">notifList</span> <span class="id" title="var">l'</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: Obvious from notifList semantics
-</div>
-<div class="code">
 
 <br/>
 

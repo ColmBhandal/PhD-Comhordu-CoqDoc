@@ -189,13 +189,6 @@ maps every variable to itself, with the eVar constructor as a wrapper.
 &nbsp;&nbsp;(<span class="id" title="var">eVar</span> <span class="id" title="var">v</span>).<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Maps the function s over e, replacing all variables with their
-corresponding expression..
-</div>
-<div class="code">
 <span class="id" title="keyword">Fixpoint</span> <span class="id" title="var">subExp</span> (<span class="id" title="var">s</span> : <span class="id" title="var">Subst</span>) (<span class="id" title="var">e</span> : <span class="id" title="var">Exp</span>) : <span class="id" title="var">Exp</span> :=<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">e</span> <span class="id" title="keyword">with</span><br/>
 &nbsp;&nbsp;| <span class="id" title="var">eVar</span> <span class="id" title="var">v</span> =&gt; <span class="id" title="var">s</span> <span class="id" title="var">v</span><br/>
@@ -210,12 +203,6 @@ corresponding expression..
 &nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-If one number is less than another, then they are not equal.
-</div>
-<div class="code">
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">lt_neq_nat</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">n</span> <span class="id" title="var">m</span> : <span class="id" title="var">nat</span>,<br/>
 &nbsp;&nbsp;<span class="id" title="var">n</span> &lt; <span class="id" title="var">m</span> -&gt; <span class="id" title="var">n</span> &lt;&gt; <span class="id" title="var">m</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">induction</span> <span class="id" title="var">n</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">m</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>.<br/>
@@ -225,12 +212,6 @@ If one number is less than another, then they are not equal.
 &nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="keyword">Qed</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Given any two numbers, they are either equal or not.
-</div>
-<div class="code">
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">natDec</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">n</span> <span class="id" title="var">m</span> : <span class="id" title="var">nat</span>,<br/>
 &nbsp;&nbsp;{<span class="id" title="var">n</span> = <span class="id" title="var">m</span>} + {<span class="id" title="var">n</span> &lt;&gt; <span class="id" title="var">m</span>}. <span class="id" title="tactic">intros</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">assert</span> ({<span class="id" title="var">n</span> &lt; <span class="id" title="var">m</span>} + {<span class="id" title="var">n</span> = <span class="id" title="var">m</span>} + {<span class="id" title="var">m</span> &lt; <span class="id" title="var">n</span>}).<br/>
@@ -240,12 +221,6 @@ Given any two numbers, they are either equal or not.
 &nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">symmetry</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Given any two variables, they are either equal or not.
-</div>
-<div class="code">
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">varEqDec</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> : <span class="id" title="var">Var</span>,<br/>
 &nbsp;&nbsp;{<span class="id" title="var">x</span> = <span class="id" title="var">y</span>} + {<span class="id" title="var">x</span> &lt;&gt; <span class="id" title="var">y</span>}.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">x</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">y</span>.<br/>
@@ -255,12 +230,6 @@ Given any two variables, they are either equal or not.
 &nbsp;&nbsp;<span class="id" title="keyword">Qed</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-True if the arguments are equal, false otherwise.
-</div>
-<div class="code">
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">varEq</span> (<span class="id" title="var">v1</span> <span class="id" title="var">v2</span> : <span class="id" title="var">Var</span>) : <span class="id" title="var">bool</span> :=<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">match</span> (<span class="id" title="var">varEqDec</span> <span class="id" title="var">v1</span> <span class="id" title="var">v2</span>) <span class="id" title="keyword">with</span><br/>
 &nbsp;&nbsp;| <span class="id" title="tactic">left</span> <span class="id" title="var">_</span> =&gt; <span class="id" title="var">true</span><br/>
@@ -268,26 +237,10 @@ True if the arguments are equal, false otherwise.
 &nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Stolen from tutorial. Takes any function with domain Var and overrides
-it with a new v -&gt; x pair.
-</div>
-<div class="code">
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">update</span> {<span class="id" title="var">X</span> : <span class="id" title="keyword">Type</span>} (<span class="id" title="var">f</span> : <span class="id" title="var">Var</span> -&gt; <span class="id" title="var">X</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">Var</span>) (<span class="id" title="var">x</span> : <span class="id" title="var">X</span>) : (<span class="id" title="var">Var</span> -&gt; <span class="id" title="var">X</span>) :=<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">fun</span> <span class="id" title="var">v'</span> =&gt; <span class="id" title="keyword">if</span> (<span class="id" title="var">varEq</span> <span class="id" title="var">v</span> <span class="id" title="var">v'</span>) <span class="id" title="keyword">then</span> <span class="id" title="var">x</span> <span class="id" title="keyword">else</span> (<span class="id" title="var">f</span> <span class="id" title="var">v'</span>).<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Turns a pair of lists lv : <span class="inlinecode"><span class="id" title="var">variables</span></span> le : <span class="inlinecode"><span class="id" title="var">expressions</span></span> into a substitution function
-from variables to expressions which is the identity at all points except those in lv,
-which are mapped to their corresponding element of le. Note: If values are repeated in lv,
-then earlier values override later ones.
-</div>
-<div class="code">
 <span class="id" title="keyword">Fixpoint</span> <span class="id" title="var">listsToSub</span> (<span class="id" title="var">lv</span> : <span class="id" title="var">list</span> <span class="id" title="var">Var</span>) (<span class="id" title="var">lex</span> : <span class="id" title="var">list</span> <span class="id" title="var">Exp</span>) : <span class="id" title="var">Subst</span> :=<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">lv</span> , <span class="id" title="var">lex</span> <span class="id" title="keyword">with</span><br/>
 &nbsp;&nbsp;| <span class="id" title="var">v</span> :: <span class="id" title="var">lv'</span> , <span class="id" title="var">e</span> :: <span class="id" title="var">lex'</span> =&gt; (<span class="id" title="var">update</span> (<span class="id" title="var">listsToSub</span> <span class="id" title="var">lv'</span> <span class="id" title="var">lex'</span>) <span class="id" title="var">v</span> <span class="id" title="var">e</span>)<br/>
@@ -296,22 +249,10 @@ then earlier values override later ones.
 &nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Applies the substitution to each element of the list.
-</div>
-<div class="code">
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">listSub</span> (<span class="id" title="var">s</span> : <span class="id" title="var">Subst</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">list</span> <span class="id" title="var">Exp</span>) : <span class="id" title="var">list</span> <span class="id" title="var">Exp</span> :=<br/>
 &nbsp;&nbsp;<span class="id" title="var">map</span> (<span class="id" title="var">subExp</span> <span class="id" title="var">s</span>) <span class="id" title="var">l</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Is the variable v in the list lv.
-</div>
-<div class="code">
 <span class="id" title="keyword">Fixpoint</span> <span class="id" title="var">inVarList</span> (<span class="id" title="var">v</span> : <span class="id" title="var">Var</span>) (<span class="id" title="var">lv</span> : <span class="id" title="var">list</span> <span class="id" title="var">Var</span>) : <span class="id" title="var">bool</span> :=<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">lv</span> <span class="id" title="keyword">with</span><br/>
 &nbsp;&nbsp;| [] =&gt; <span class="id" title="var">false</span><br/>
@@ -319,12 +260,6 @@ Is the variable v in the list lv.
 &nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Resets all the variables in lv to map to themselves.
-</div>
-<div class="code">
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">resetSub</span> (<span class="id" title="var">s</span> : <span class="id" title="var">Subst</span>) (<span class="id" title="var">lv</span> : <span class="id" title="var">list</span> <span class="id" title="var">Var</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">Var</span>) : <span class="id" title="var">Exp</span> :=<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">match</span> (<span class="id" title="var">inVarList</span> <span class="id" title="var">v</span> <span class="id" title="var">lv</span>) <span class="id" title="keyword">with</span><br/>
 &nbsp;&nbsp;| <span class="id" title="var">true</span> =&gt; <span class="id" title="var">eVar</span> <span class="id" title="var">v</span><br/>
@@ -379,13 +314,6 @@ expressions.
 &nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">x</span> <span class="id" title="keyword">end</span>; <span class="id" title="tactic">inversion</span> <span class="id" title="var">H1</span>; <span class="id" title="tactic">constructor</span>. <span class="id" title="keyword">Qed</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Evaluation on terms of Exp. Note that only closed terms will actually evaluate to
-something. If we can prove evalExp e b then e evaluates to b.
-</div>
-<div class="code">
 <span class="id" title="keyword">Inductive</span> <span class="id" title="var">evalExp</span> : <span class="id" title="var">Exp</span> -&gt; <span class="id" title="var">BaseType</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
 &nbsp;&nbsp;| <span class="id" title="var">evalBase</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">b</span> : <span class="id" title="var">BaseType</span>, <span class="id" title="var">evalExp</span> (<span class="id" title="var">eBase</span> <span class="id" title="var">b</span>) <span class="id" title="var">b</span><br/>
 &nbsp;&nbsp;| <span class="id" title="var">evalSub</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">e1</span> <span class="id" title="var">e2</span> : <span class="id" title="var">Exp</span>) (<span class="id" title="var">b1</span> <span class="id" title="var">b2</span> : <span class="id" title="var">BaseType</span>) (<span class="id" title="var">r1</span> <span class="id" title="var">r2</span> : <span class="id" title="var">nonnegreal</span>),<br/>
@@ -654,26 +582,12 @@ A function that tries to evaluate the expression e into a time or fails.
 &nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-List the eval relation to work between lists of expressions and lists of values.
-l1 l2 is a member of this relation iff the ith element of l1 evaluates to the ith element
-of l2 for all i.
-</div>
-<div class="code">
 <span class="id" title="keyword">Inductive</span> <span class="id" title="var">evalExpLists</span> : <span class="id" title="var">list</span> <span class="id" title="var">Exp</span> -&gt; <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
 &nbsp;&nbsp;| <span class="id" title="var">evalElNil</span> : <span class="id" title="var">evalExpLists</span> [] []<br/>
 &nbsp;&nbsp;| <span class="id" title="var">evalElCons</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">e</span> : <span class="id" title="var">Exp</span>) (<span class="id" title="var">b</span> : <span class="id" title="var">BaseType</span>) (<span class="id" title="var">l1</span> : <span class="id" title="var">list</span> <span class="id" title="var">Exp</span>) (<span class="id" title="var">l2</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>),<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">evalExp</span> <span class="id" title="var">e</span> <span class="id" title="var">b</span> -&gt; <span class="id" title="var">evalExpLists</span> <span class="id" title="var">l1</span> <span class="id" title="var">l2</span> -&gt; <span class="id" title="var">evalExpLists</span> (<span class="id" title="var">e</span> :: <span class="id" title="var">l1</span>) (<span class="id" title="var">b</span> :: <span class="id" title="var">l2</span>).<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Convert a list of base values to a list of expressions.
-</div>
-<div class="code">
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">listBaselistExp</span> (<span class="id" title="var">l1</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>) : <span class="id" title="var">list</span> <span class="id" title="var">Exp</span> :=<br/>
 &nbsp;&nbsp;<span class="id" title="var">map</span> <span class="id" title="var">eBase</span> <span class="id" title="var">l1</span>.<br/>
 
@@ -709,13 +623,6 @@ Equality is decidable on boolean expressions.
 &nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H2</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="keyword">Qed</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-This essentially lifts the substitution function for the expression language up
-to the boolean expression language.
-</div>
-<div class="code">
 <span class="id" title="keyword">Fixpoint</span> <span class="id" title="var">subBoolExp</span> (<span class="id" title="var">s</span> : <span class="id" title="var">Subst</span>) (<span class="id" title="var">b</span> : <span class="id" title="var">BoolExp</span>) : <span class="id" title="var">BoolExp</span> :=<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">b</span> <span class="id" title="keyword">with</span><br/>
 &nbsp;&nbsp;| <span class="id" title="var">bSufficient</span> <span class="id" title="var">e1</span> <span class="id" title="var">e2</span> =&gt; <span class="id" title="var">bSufficient</span> (<span class="id" title="var">subExp</span> <span class="id" title="var">s</span> <span class="id" title="var">e1</span>) (<span class="id" title="var">subExp</span> <span class="id" title="var">s</span> <span class="id" title="var">e2</span>)<br/>
@@ -725,13 +632,6 @@ to the boolean expression language.
 &nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Evaluation relation on boolean expressions. A boolean expression may evaluate
-to a boolean value.
-</div>
-<div class="code">
 <span class="id" title="keyword">Inductive</span> <span class="id" title="var">evalBoolExp</span> : <span class="id" title="var">BoolExp</span> -&gt; <span class="id" title="var">bool</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
 &nbsp;&nbsp;| <span class="id" title="var">bevalSufficient</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">e1</span> <span class="id" title="var">e2</span> : <span class="id" title="var">Exp</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">r</span> : <span class="id" title="var">Distance</span>),<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">evalExp</span> <span class="id" title="var">e1</span> <span class="id" title="var">m</span> -&gt; <span class="id" title="var">evalExp</span> <span class="id" title="var">e2</span> <span class="id" title="var">r</span> -&gt;<br/>
@@ -822,12 +722,6 @@ every expression evaluates to at most one value.
 &nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">H</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="keyword">Qed</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-The boolean expression relation is sound with respect to the function.
-</div>
-<div class="code">
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">evalBoolExpRelFun</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">e</span> : <span class="id" title="var">BoolExp</span>) (<span class="id" title="var">b</span> : <span class="id" title="var">bool</span>),<br/>
 &nbsp;&nbsp;<span class="id" title="var">evalBoolExp</span> <span class="id" title="var">e</span> <span class="id" title="var">b</span> -&gt; <span class="id" title="var">evalBoolExpFun</span> <span class="id" title="var">e</span> = <span class="id" title="var">Some</span> <span class="id" title="var">b</span>. <span class="id" title="tactic">intros</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">induction</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">evalExpRelFun</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">evalExpRelFun</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H0</span>.<br/>
@@ -845,12 +739,6 @@ The boolean expression relation is sound with respect to the function.
 <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">Bool</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-The boolean expression function is sound with respect to the relation.
-</div>
-<div class="code">
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">evalBoolExpFunRel</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">e</span> : <span class="id" title="var">BoolExp</span>) (<span class="id" title="var">b</span> : <span class="id" title="var">bool</span>),<br/>
 &nbsp;&nbsp;<span class="id" title="var">evalBoolExpFun</span> <span class="id" title="var">e</span> = <span class="id" title="var">Some</span> <span class="id" title="var">b</span> -&gt; <span class="id" title="var">evalBoolExp</span> <span class="id" title="var">e</span> <span class="id" title="var">b</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">e</span>; <span class="id" title="tactic">intros</span>.<br/>
 </div>
@@ -931,13 +819,6 @@ evaluate to true, and vice versa.
 &nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">H</span> <span class="id" title="tactic">in</span> <span class="id" title="var">Heqb</span>. <span class="id" title="tactic">symmetry</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>. <span class="id" title="keyword">Qed</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-A discrete action is either an input of values on a channel, an output of
-values on a channel or a silent (tau) action.
-</div>
-<div class="code">
 <span class="id" title="keyword">Inductive</span> <span class="id" title="var">DiscAct</span> :=<br/>
 &nbsp;&nbsp;| <span class="id" title="var">inAct</span> : <span class="id" title="var">Channel</span> -&gt; <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span> -&gt; <span class="id" title="var">DiscAct</span><br/>
 &nbsp;&nbsp;| <span class="id" title="var">outAct</span> : <span class="id" title="var">Channel</span> -&gt; <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span> -&gt; <span class="id" title="var">DiscAct</span><br/>
@@ -1174,12 +1055,6 @@ Lift an expression to a list of expressions.
 <span class="id" title="keyword">Coercion</span> <span class="id" title="var">liftExpList</span> (<span class="id" title="var">e</span> : <span class="id" title="var">Exp</span>) : <span class="id" title="var">list</span> <span class="id" title="var">Exp</span> := [<span class="id" title="var">e</span>].<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Lift a time to an exp.
-</div>
-<div class="code">
 <span class="id" title="keyword">Coercion</span> <span class="id" title="var">liftTimeExp</span> (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) : <span class="id" title="var">Exp</span> := <span class="id" title="var">eBase</span> (<span class="id" title="var">baseTime</span> <span class="id" title="var">t</span>).<br/>
 
 <br/>
@@ -1211,14 +1086,6 @@ The substitution of l -&gt; liftListVarExp l is equal to the identity substituti
 &nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Every list substitution has a "normal" form. That is, if we have a substitution
-x -&gt; l, then there is some l' which is the same length as x such that the substitution
-x -&gt; l' is equal to x -&gt; l (according to functional extensionality).
-</div>
-<div class="code">
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">listSubNormal</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">x</span> : <span class="id" title="var">list</span> <span class="id" title="var">Var</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">list</span> <span class="id" title="var">Exp</span>),<br/>
 &nbsp;&nbsp;{<span class="id" title="var">l'</span> : <span class="id" title="var">list</span> <span class="id" title="var">Exp</span> | <span class="id" title="var">length</span> <span class="id" title="var">l'</span> = <span class="id" title="var">length</span> <span class="id" title="var">x</span> /\<br/>
 &nbsp;&nbsp;<span class="id" title="var">listsToSub</span> <span class="id" title="var">x</span> <span class="id" title="var">l</span> = <span class="id" title="var">listsToSub</span> <span class="id" title="var">x</span> <span class="id" title="var">l'</span>}. <span class="id" title="tactic">induction</span> <span class="id" title="var">x</span>; <span class="id" title="tactic">intros</span>.<br/>
@@ -1249,12 +1116,6 @@ In the case where the target list is not empty, we can proceed by induction.
 &nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">IHe</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">IHe</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="keyword">Qed</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-The identity substitution leaves lists unchanged.
-</div>
-<div class="code">
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">idSubList</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">l</span> : <span class="id" title="var">list</span> <span class="id" title="var">Exp</span>),<br/>
 &nbsp;&nbsp;<span class="id" title="var">listSub</span> <span class="id" title="var">idSubst</span> <span class="id" title="var">l</span> = <span class="id" title="var">l</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">l</span>. <span class="id" title="tactic">reflexivity</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">IHl</span>. <span class="id" title="tactic">rewrite</span> (<span class="id" title="var">idSubExp</span> <span class="id" title="var">a</span>). <span class="id" title="tactic">reflexivity</span>. <span class="id" title="keyword">Qed</span>.<br/>
@@ -1379,12 +1240,6 @@ agrees with the former on all variables in the source of the former.
 <span class="id" title="keyword">Notation</span> &quot;l1 &lt;[] l2" := (<span class="id" title="var">preordBindList</span> <span class="id" title="var">l1</span> <span class="id" title="var">l2</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 70).<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-The empty list is the bottom element of the lattice.
-</div>
-<div class="code">
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">preord_emp</span> (<span class="id" title="var">l</span> : <span class="id" title="var">list</span> (<span class="id" title="var">Var</span> * <span class="id" title="var">Exp</span>)) :<br/>
 &nbsp;&nbsp;[] &lt;[] <span class="id" title="var">l</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">preordBindList</span>. <span class="id" title="tactic">intros</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>. <span class="id" title="keyword">Qed</span>.<br/>
@@ -1466,13 +1321,6 @@ The source of l with l' excluded is included within the source of l.
 &nbsp;&nbsp;<span class="id" title="tactic">induction</span> <span class="id" title="var">l</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-If we exclude l' from l, then the source of the resultant list has no elements in
-common with l'.
-</div>
-<div class="code">
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">excludeSrc_inter_emp</span> (<span class="id" title="var">l</span> : <span class="id" title="var">list</span> (<span class="id" title="var">Var</span> * <span class="id" title="var">Exp</span>)) (<span class="id" title="var">l'</span> : <span class="id" title="var">list</span> <span class="id" title="var">Var</span>) : <br/>
 &nbsp;&nbsp;<span class="id" title="var">set_inter</span> <span class="id" title="var">eqDecVar</span> (<span class="id" title="var">splitSrc</span> (<span class="id" title="var">excludeSrc</span> <span class="id" title="var">l</span> <span class="id" title="var">l'</span>)) <span class="id" title="var">l'</span> = []. <span class="id" title="tactic">induction</span> <span class="id" title="var">l</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">reflexivity</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">excludeSrc</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">a</span>. <span class="id" title="var">remember</span> (<span class="id" title="var">in_dec</span> <span class="id" title="var">eqDecVar</span> <span class="id" title="var">v</span> <span class="id" title="var">l'</span>).<br/>
@@ -1616,12 +1464,6 @@ v excluded is less than l2.
 &nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">IHl2</span>. <span class="id" title="keyword">Qed</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Builds the identity bindings list for a given source list x.
-</div>
-<div class="code">
 <span class="id" title="keyword">Fixpoint</span> <span class="id" title="var">idBindList</span> (<span class="id" title="var">x</span> : <span class="id" title="var">list</span> <span class="id" title="var">Var</span>) : <span class="id" title="var">list</span> (<span class="id" title="var">Var</span> * <span class="id" title="var">Exp</span>) :=<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">x</span> <span class="id" title="keyword">with</span><br/>
 &nbsp;&nbsp;| [] =&gt; []<br/>
@@ -1629,13 +1471,6 @@ Builds the identity bindings list for a given source list x.
 &nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-The identity bind list as created by the said function gives
-rise to the identity substitution.
-</div>
-<div class="code">
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">idBindList_idSub</span> (<span class="id" title="var">x</span> : <span class="id" title="var">list</span> <span class="id" title="var">Var</span>) :<br/>
 &nbsp;&nbsp;<span class="id" title="var">bindListToSub</span> (<span class="id" title="var">idBindList</span> <span class="id" title="var">x</span>) = <span class="id" title="var">idSubst</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">functional_extensionality</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="var">remember</span> (<span class="id" title="var">idBindList</span> <span class="id" title="var">x</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">l</span>. <span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">l</span>.<br/>
@@ -1887,12 +1722,6 @@ preceded in the list, and thus overwritten, by (x, e').
 &nbsp;&nbsp;<span class="id" title="keyword">Qed</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-An alternative characterisation of the preorder.
-</div>
-<div class="code">
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">preordBindListAlt</span> (<span class="id" title="var">l1</span> <span class="id" title="var">l2</span> : <span class="id" title="var">list</span> (<span class="id" title="var">Var</span> * <span class="id" title="var">Exp</span>)) :<br/>
 &nbsp;&nbsp;<span class="id" title="var">l1</span> &lt;[] <span class="id" title="var">l2</span> &lt;-&gt;<br/>
 &nbsp;&nbsp;(<span class="id" title="keyword">forall</span> <span class="id" title="var">x</span> : <span class="id" title="var">Var</span>, <span class="id" title="var">x</span> <span class="id" title="var">_</span>: (<span class="id" title="var">splitSrc</span> <span class="id" title="var">l1</span>) -&gt; <span class="id" title="var">x</span> <span class="id" title="var">_</span>: (<span class="id" title="var">splitSrc</span> <span class="id" title="var">l2</span>) /\<br/>
@@ -2052,13 +1881,6 @@ after the reset operation.
 &nbsp;&nbsp;<span class="id" title="tactic">symmetry</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="keyword">Qed</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-The substitution formed after excluding x from l is the same as
-that formed from l with x reset.
-</div>
-<div class="code">
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">exclude_reset</span> (<span class="id" title="var">l</span> : <span class="id" title="var">list</span> (<span class="id" title="var">Var</span> * <span class="id" title="var">Exp</span>)) (<span class="id" title="var">x</span> : <span class="id" title="var">list</span> <span class="id" title="var">Var</span>) : <br/>
 &nbsp;&nbsp;<span class="id" title="var">bindListToSub</span> (<span class="id" title="var">excludeSrc</span> <span class="id" title="var">l</span> <span class="id" title="var">x</span>) = <span class="id" title="var">resetSub</span> (<span class="id" title="var">bindListToSub</span> <span class="id" title="var">l</span>) <span class="id" title="var">x</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">functional_extensionality</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">l</span>.<br/>
@@ -2130,26 +1952,11 @@ as characterised by the matchExp relation.
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">decMatchExp</span> (<span class="id" title="var">e1</span> <span class="id" title="var">e2</span> : <span class="id" title="var">Exp</span>) :<br/>
 &nbsp;&nbsp;<span class="id" title="var">decidable</span> (<span class="id" title="tactic">exists</span> <span class="id" title="var">l</span>, <span class="id" title="var">matchExp</span> <span class="id" title="var">e1</span> <span class="id" title="var">e2</span> <span class="id" title="var">l</span>).<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">e1</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">e2</span>; <span class="id" title="tactic">intros</span>;<br/>
-&nbsp;&nbsp;</div>
-
-<div class="doc">
-For the special case where e2 is a variable.
-</div>
-<div class="code">
+&nbsp;&nbsp;<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">try</span> <span class="id" title="tactic">solve</span> [<span class="id" title="tactic">left</span>; <span class="id" title="tactic">exists</span> ([(<span class="id" title="var">v</span>, <span class="id" title="var">e1</span>)]); <span class="id" title="tactic">constructor</span>]; <span class="id" title="tactic">destruct</span> <span class="id" title="var">e1</span>;<br/>
-&nbsp;&nbsp;</div>
-
-<div class="doc">
-For all the cases where the structures of e2 and e1 differ.
-</div>
-<div class="code">
+&nbsp;&nbsp;<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">try</span> <span class="id" title="tactic">solve</span> [<span class="id" title="tactic">right</span>; <span class="id" title="tactic">unfold</span> <span class="id" title="var">not</span>; <span class="id" title="tactic">intros</span>; <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>; <span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>];<br/>
-&nbsp;&nbsp;</div>
-
-<div class="doc">
-For the inductive case with two hypotheses
-</div>
-<div class="code">
+&nbsp;&nbsp;<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">try</span> (<span class="id" title="var">addHyp</span> (<span class="id" title="var">IHe2_1</span> <span class="id" title="var">e1_1</span>); <span class="id" title="tactic">clear</span> <span class="id" title="var">IHe2_1</span>; <span class="id" title="tactic">rename</span> <span class="id" title="var">H</span> <span class="id" title="var">into</span> <span class="id" title="var">Q1</span>;<br/>
 &nbsp;&nbsp;<span class="id" title="var">addHyp</span> (<span class="id" title="var">IHe2_2</span> <span class="id" title="var">e1_2</span>); <span class="id" title="tactic">clear</span> <span class="id" title="var">IHe2_2</span>; <span class="id" title="tactic">rename</span> <span class="id" title="var">H</span> <span class="id" title="var">into</span> <span class="id" title="var">Q2</span>;<br/>
 &nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">Q1</span>;[<span class="id" title="var">invertClear</span> <span class="id" title="var">Q2</span>;<br/>
@@ -2194,12 +2001,6 @@ For the inductive case with two hypotheses
 &nbsp;&nbsp;<span class="id" title="tactic">f_equal</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">IHmatchExp</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-The free variables of an expression- drill down to all the eVar constructors.
-</div>
-<div class="code">
 <span class="id" title="keyword">Fixpoint</span> <span class="id" title="var">freeVarsExp</span> (<span class="id" title="var">e</span> : <span class="id" title="var">Exp</span>) : <span class="id" title="tactic">set</span> <span class="id" title="var">Var</span> :=<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">e</span> <span class="id" title="keyword">with</span><br/>
 &nbsp;&nbsp;| <span class="id" title="var">eVar</span> <span class="id" title="var">v</span> =&gt; [<span class="id" title="var">v</span>]<br/>
@@ -2242,12 +2043,6 @@ The free variables of an expression- drill down to all the eVar constructors.
 &nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-TO GO: COMH BASICS.
-</div>
-<div class="code">
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">in_cons_not</span> {<span class="id" title="var">X</span> : <span class="id" title="keyword">Type</span>} (<span class="id" title="var">p</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">a</span> <span class="id" title="var">b</span> : <span class="id" title="var">X</span>), {<span class="id" title="var">a</span> = <span class="id" title="var">b</span>} + {<span class="id" title="var">a</span> &lt;&gt; <span class="id" title="var">b</span>})<br/>
 &nbsp;&nbsp;(<span class="id" title="var">x</span> <span class="id" title="var">y</span> : <span class="id" title="var">X</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">list</span> <span class="id" title="var">X</span>) :<br/>
 &nbsp;&nbsp;<span class="id" title="var">x</span> <span class="id" title="var">_</span>: (<span class="id" title="var">y</span> :: <span class="id" title="var">l</span>) -&gt; <span class="id" title="var">x</span> = <span class="id" title="var">y</span> \/ <span class="id" title="var">x</span> &lt;&gt; <span class="id" title="var">y</span> /\ <span class="id" title="var">x</span> <span class="id" title="var">_</span>: <span class="id" title="var">l</span>. <span class="id" title="tactic">intros</span>.<br/>
@@ -2490,12 +2285,6 @@ boolean expressions, as characterised by the matchExp relation.
 &nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H1</span>. <span class="id" title="tactic">exists</span> <span class="id" title="var">x2</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-TO GO: COMH BASICS
-</div>
-<div class="code">
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">split_append_fst</span> {<span class="id" title="var">A</span> <span class="id" title="var">B</span> : <span class="id" title="keyword">Type</span>} (<span class="id" title="var">l1</span> <span class="id" title="var">l2</span> : <span class="id" title="var">list</span> (<span class="id" title="var">A</span> * <span class="id" title="var">B</span>)) :<br/>
 &nbsp;&nbsp;<span class="id" title="var">fst</span> (<span class="id" title="tactic">split</span> (<span class="id" title="var">l1</span> ++ <span class="id" title="var">l2</span>)) = <span class="id" title="var">fst</span> (<span class="id" title="tactic">split</span> <span class="id" title="var">l1</span>) ++ <span class="id" title="var">fst</span> (<span class="id" title="tactic">split</span> <span class="id" title="var">l2</span>).<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">induction</span> <span class="id" title="var">l1</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">a</span>. <span class="id" title="tactic">simpl</span>.<br/>
@@ -2504,12 +2293,6 @@ TO GO: COMH BASICS
 &nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">IHl1</span>. <span class="id" title="keyword">Qed</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-TO GO: COMH BASICS
-</div>
-<div class="code">
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">split_append_snd</span> {<span class="id" title="var">A</span> <span class="id" title="var">B</span> : <span class="id" title="keyword">Type</span>} (<span class="id" title="var">l1</span> <span class="id" title="var">l2</span> : <span class="id" title="var">list</span> (<span class="id" title="var">A</span> * <span class="id" title="var">B</span>)) :<br/>
 &nbsp;&nbsp;<span class="id" title="var">snd</span> (<span class="id" title="tactic">split</span> (<span class="id" title="var">l1</span> ++ <span class="id" title="var">l2</span>)) = <span class="id" title="var">snd</span> (<span class="id" title="tactic">split</span> <span class="id" title="var">l1</span>) ++ <span class="id" title="var">snd</span> (<span class="id" title="tactic">split</span> <span class="id" title="var">l2</span>).<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">induction</span> <span class="id" title="var">l1</span>. <span class="id" title="tactic">reflexivity</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">a</span>. <span class="id" title="tactic">simpl</span>.<br/>
@@ -2539,12 +2322,6 @@ TO GO: COMH BASICS
 &nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">right</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-TO GO: Comh Basics
-</div>
-<div class="code">
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">in_sing</span> {<span class="id" title="var">X</span> : <span class="id" title="keyword">Type</span>} (<span class="id" title="var">x</span> <span class="id" title="var">y</span> : <span class="id" title="var">X</span>) :<br/>
 &nbsp;&nbsp;<span class="id" title="var">x</span> <span class="id" title="var">_</span>: [<span class="id" title="var">y</span>] -&gt; <span class="id" title="var">x</span> = <span class="id" title="var">y</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">H0</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">reflexivity</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H0</span>. <span class="id" title="keyword">Qed</span>.<br/>
@@ -2784,12 +2561,6 @@ means that all variables in x are only mapped to themselves by l.
 &nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">H1</span>. <span class="id" title="tactic">symmetry</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H5</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-To Go: COMH BASICS
-</div>
-<div class="code">
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">notIn_cons</span> {<span class="id" title="var">X</span> : <span class="id" title="keyword">Type</span>} (<span class="id" title="var">x</span> <span class="id" title="var">y</span> : <span class="id" title="var">X</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">list</span> <span class="id" title="var">X</span>) : <br/>
 &nbsp;&nbsp;~ <span class="id" title="var">x</span> <span class="id" title="var">_</span>: (<span class="id" title="var">y</span> :: <span class="id" title="var">l</span>) -&gt; ~ <span class="id" title="var">x</span> <span class="id" title="var">_</span>: <span class="id" title="var">l</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">unfold</span> <span class="id" title="var">not</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">in_cons</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
@@ -3367,13 +3138,6 @@ hypotheses.
 <span class="id" title="keyword">Ltac</span> <span class="id" title="var">clean_proc_hyp</span> <span class="id" title="var">U</span> := <span class="id" title="var">gen_app_intro</span> <span class="id" title="var">clean_proc</span> <span class="id" title="var">U</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-If an expression evaluates to some b, then applying a substitution to this expression
-leaves it unchanged. The intuition is that evaluation entails no free variables.
-</div>
-<div class="code">
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">eval_pres_sub</span> <span class="id" title="var">e</span> <span class="id" title="var">b</span> <span class="id" title="var">s</span> : <span class="id" title="var">e</span> |<span class="id" title="var">_</span>| <span class="id" title="var">b</span> -&gt; <span class="id" title="var">subExp</span> <span class="id" title="var">s</span> <span class="id" title="var">e</span> = <span class="id" title="var">e</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">H</span>; <span class="id" title="tactic">simpl</span>;<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">try</span> (<span class="id" title="tactic">rewrite</span> <span class="id" title="var">IHevalExp1</span>; <span class="id" title="tactic">rewrite</span> <span class="id" title="var">IHevalExp2</span>); <span class="id" title="tactic">try</span> <span class="id" title="tactic">rewrite</span> <span class="id" title="var">IHevalExp</span>; <span class="id" title="tactic">reflexivity</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">Qed</span>.<br/>

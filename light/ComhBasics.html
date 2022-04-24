@@ -33,16 +33,10 @@ are defined here such as the notion of a network of entities.
 
 <br/>
 <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.Extras.LibTactics</span>.<br/>
-<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">Fourier_util</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">Coq.Reals.Reals</span>.<br/>
 
 <br/>
 <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Export</span> <span class="id" title="var">List</span>.<br/>
-</div>
-
-<div class="doc">
-Notations stolen from tutorial.
-</div>
-<div class="code">
 <span class="id" title="keyword">Notation</span> &quot;x :: l" := (<span class="id" title="var">cons</span> <span class="id" title="var">x</span> <span class="id" title="var">l</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 60, <span class="id" title="tactic">right</span> <span class="id" title="keyword">associativity</span>).<br/>
 <span class="id" title="keyword">Notation</span> &quot;[ ]" := <span class="id" title="var">nil</span>.<br/>
 <span class="id" title="keyword">Notation</span> &quot;[ x , .. , y ]" := (<span class="id" title="var">cons</span> <span class="id" title="var">x</span> .. (<span class="id" title="var">cons</span> <span class="id" title="var">y</span> <span class="id" title="var">nil</span>) ..).<br/>
@@ -72,12 +66,6 @@ A time value is a non negative real number.
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">zeroTime</span> : <span class="id" title="keyword">Time</span> := <span class="id" title="var">mkTime</span> <span class="id" title="var">zeroNonneg</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Solves the goal 0 &lt;= u where u is some time.
-</div>
-<div class="code">
 <span class="id" title="keyword">Ltac</span> <span class="id" title="var">timeNonneg</span> := <br/>
 &nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
 &nbsp;&nbsp;| [ |- 0 &lt;= (<span class="id" title="var">nonneg</span> (<span class="id" title="var">time</span> ?<span class="id" title="var">t</span>))] =&gt; <span class="id" title="var">unwrap2_apply2</span> <span class="id" title="var">t</span><br/>
@@ -94,12 +82,6 @@ A delay is a positive real number.
 <span class="id" title="keyword">Record</span> <span class="id" title="var">Delay</span> := <span class="id" title="var">mkDelay</span> {<span class="id" title="var">delay</span> :&gt; <span class="id" title="var">posreal</span>}.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Solves the goal 0 &lt; u where u is some delay.
-</div>
-<div class="code">
 <span class="id" title="keyword">Ltac</span> <span class="id" title="var">delPos</span> :=<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
 &nbsp;&nbsp;| [ |- 0 &lt; (<span class="id" title="var">pos</span> (<span class="id" title="var">delay</span> ?<span class="id" title="var">d</span>))] =&gt; <span class="id" title="var">unwrap2_apply2</span> <span class="id" title="var">d</span><br/>
@@ -247,12 +229,6 @@ There either exists an element at position i or there doesn't.
 &nbsp;&nbsp;<span class="id" title="var">decidable</span> (<span class="id" title="tactic">exists</span> <span class="id" title="var">a</span>, <span class="id" title="var">a</span> -@ <span class="id" title="var">i</span> -: <span class="id" title="var">l</span>). <br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Equality is decidable for times.
-</div>
-<div class="code">
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">eqDecTime</span> : <span class="id" title="var">eqDec</span> <span class="id" title="keyword">Time</span>. <br/>
 
 <br/>
@@ -268,12 +244,6 @@ Equality is decidable on Delays.
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">eqDecDistance</span> : <span class="id" title="var">eqDec</span> <span class="id" title="var">Distance</span>. <br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Returns t1 - t2, or None if t1 &lt; t2.
-</div>
-<div class="code">
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">subtractTime</span> (<span class="id" title="var">t1</span> <span class="id" title="var">t2</span> : <span class="id" title="keyword">Time</span>) : <span class="id" title="var">option</span> <span class="id" title="keyword">Time</span> :=<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">r1</span> := <span class="id" title="var">nonneg</span> <span class="id" title="var">t1</span> <span class="id" title="tactic">in</span> <span class="id" title="keyword">let</span> <span class="id" title="var">r2</span> := <span class="id" title="var">nonneg</span> <span class="id" title="var">t2</span> <span class="id" title="tactic">in</span><br/>
 &nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">total_order_T</span> <span class="id" title="var">r1</span> <span class="id" title="var">r2</span> <span class="id" title="keyword">with</span><br/>
@@ -317,13 +287,6 @@ Add a delay to a time to get a delay.
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">addDelayComm</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">d</span> <span class="id" title="var">d'</span> : <span class="id" title="var">Delay</span>), <span class="id" title="var">d</span> +<span class="id" title="var">d</span>+ <span class="id" title="var">d'</span> = <span class="id" title="var">d'</span> +<span class="id" title="var">d</span>+ <span class="id" title="var">d</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-If there is some delays d and d', and they are being
-added with the left one as a time, then they can be added as normal.
-</div>
-<div class="code">
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">timeDelAddSwitch</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">d</span> <span class="id" title="var">d'</span> : <span class="id" title="var">Delay</span>),<br/>
 &nbsp;&nbsp;<span class="id" title="var">d</span> +<span class="id" title="var">dt</span>+ <span class="id" title="var">d'</span> = <span class="id" title="var">d</span> +<span class="id" title="var">d</span>+ <span class="id" title="var">d'</span>. <br/>
 
@@ -381,12 +344,6 @@ Adding a time that has been subtracted gives back the original result.
 &nbsp;&nbsp;<span class="id" title="var">d</span> = <span class="id" title="var">t</span> +<span class="id" title="var">dt</span>+ (<span class="id" title="var">minusDelay</span> <span class="id" title="var">d</span> <span class="id" title="var">t</span> <span class="id" title="var">p</span>). <br/>
 
 <br/>
-</div>
-
-<div class="doc">
-The right summand in a sum of delays is less than the total sum.
-</div>
-<div class="code">
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">addDelayLtR</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">d1</span> <span class="id" title="var">d2</span> : <span class="id" title="var">Delay</span>),<br/>
 &nbsp;&nbsp;<span class="id" title="var">d2</span> &lt; <span class="id" title="var">d1</span> +<span class="id" title="var">d</span>+ <span class="id" title="var">d2</span>. <br/>
 
@@ -411,13 +368,6 @@ Communtativity of times in a sum of three terms.
 &nbsp;&nbsp;<span class="id" title="var">t1</span> +<span class="id" title="var">dt</span>+ (<span class="id" title="var">t2</span> +<span class="id" title="var">dt</span>+ <span class="id" title="var">d</span>) = <span class="id" title="var">t2</span> +<span class="id" title="var">dt</span>+ (<span class="id" title="var">t1</span> +<span class="id" title="var">dt</span>+ <span class="id" title="var">d</span>). <br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Subtract R2 from R1. Requires a proof that R2 is indeed less
-than or equal r1 so that the result is a Time.
-</div>
-<div class="code">
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">minusTime</span> (<span class="id" title="var">r1</span> <span class="id" title="var">r2</span> : <span class="id" title="var">R</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">r2</span> &lt;= <span class="id" title="var">r1</span>) : <span class="id" title="keyword">Time</span> :=<br/>
 &nbsp;&nbsp;&nbsp;<span class="id" title="var">mkTime</span> (<span class="id" title="var">mknonnegreal</span> (<span class="id" title="var">r1</span> - <span class="id" title="var">r2</span>) (<span class="id" title="var">Rge_le</span> (<span class="id" title="var">r1</span> - <span class="id" title="var">r2</span>) 0<br/>
 &nbsp;&nbsp;&nbsp;(<span class="id" title="var">Rge_minus</span> <span class="id" title="var">r1</span> <span class="id" title="var">r2</span> (<span class="id" title="var">Rle_ge</span> <span class="id" title="var">r2</span> <span class="id" title="var">r1</span> <span class="id" title="var">p</span>)))).<br/>
@@ -488,12 +438,6 @@ The time between initiating the sending of a message and its actual delivery.
 <span class="id" title="keyword">Axiom</span> <span class="id" title="var">msgLatency</span> : <span class="id" title="keyword">Time</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-We assume a maximum speed at which entities may travel.
-</div>
-<div class="code">
 <span class="id" title="keyword">Axiom</span> <span class="id" title="var">speedMax</span> : <span class="id" title="var">nonnegreal</span>.<br/>
 
 <br/>
@@ -628,12 +572,6 @@ the time it takes any entity to reach a failsafe mode.
 <span class="id" title="keyword">Axiom</span> <span class="id" title="var">transMax</span> : <span class="id" title="keyword">Time</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-A little extra positive time that ensures we wait beyond the boundary
-</div>
-<div class="code">
 <span class="id" title="keyword">Axiom</span> <span class="id" title="var">waitSurplus</span> : <span class="id" title="var">Delay</span>.<br/>
 
 <br/>
@@ -850,13 +788,6 @@ r &lt;= r'.
 <span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">nat_scope</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-If a property p is true of the number j, and j &lt;= k, then there is some
-largest j' between j and k such that p is true at j'.
-</div>
-<div class="code">
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">rightmost</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">j</span> <span class="id" title="var">k</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">nat</span> -&gt; <span class="id" title="keyword">Prop</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">K</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">i</span> : <span class="id" title="var">nat</span>, <span class="id" title="var">decidable</span> (<span class="id" title="var">p</span> <span class="id" title="var">i</span>)),<br/>
 &nbsp;&nbsp;<span class="id" title="var">p</span> <span class="id" title="var">j</span> -&gt; <span class="id" title="var">j</span> &lt;= <span class="id" title="var">k</span> -&gt;<br/>
@@ -910,13 +841,6 @@ The upper bound of the pre bc suff interval is positive
 <span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">nat_scope</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-The same theorem as rightmost but with negation of P as existential and P as
-universal properties.
-</div>
-<div class="code">
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">rightmostNeg</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">j</span> <span class="id" title="var">k</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">nat</span> -&gt; <span class="id" title="keyword">Prop</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">K</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">i</span> : <span class="id" title="var">nat</span>, <span class="id" title="var">decidable</span> (<span class="id" title="var">p</span> <span class="id" title="var">i</span>)),<br/>
 &nbsp;&nbsp;~<span class="id" title="var">p</span> <span class="id" title="var">j</span> -&gt; <span class="id" title="var">j</span> &lt;= <span class="id" title="var">k</span> -&gt;<br/>
@@ -924,38 +848,17 @@ universal properties.
 &nbsp;&nbsp;<span class="id" title="keyword">forall</span> <span class="id" title="var">x</span> : <span class="id" title="var">nat</span>, <span class="id" title="var">j'</span> &lt; <span class="id" title="var">x</span> &lt;= <span class="id" title="var">k</span> -&gt; <span class="id" title="var">p</span> <span class="id" title="var">x</span>. <br/>
 
 <br/>
-</div>
-
-<div class="doc">
-This characterisation of le leaves does the inductive part by
-subtracting from the lesser number rather than adding to the larger
-one, and makes certain proofs easier.
-</div>
-<div class="code">
 <span class="id" title="keyword">Inductive</span> <span class="id" title="var">leAlt</span> : <span class="id" title="var">nat</span> -&gt; <span class="id" title="var">nat</span>-&gt; <span class="id" title="keyword">Prop</span> :=<br/>
 &nbsp;&nbsp;| <span class="id" title="var">leaRefl</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> : <span class="id" title="var">nat</span>), <span class="id" title="var">leAlt</span> <span class="id" title="var">n</span> <span class="id" title="var">n</span><br/>
 &nbsp;&nbsp;| <span class="id" title="var">leaSucc</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">m</span> <span class="id" title="var">n</span> : <span class="id" title="var">nat</span>), <span class="id" title="var">leAlt</span> (<span class="id" title="var">S</span> <span class="id" title="var">m</span>) <span class="id" title="var">n</span> -&gt; <span class="id" title="var">leAlt</span> <span class="id" title="var">m</span> <span class="id" title="var">n</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-This is the key difference between leAlt and le.
-</div>
-<div class="code">
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">leAlt_S</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">m</span> <span class="id" title="var">n</span> : <span class="id" title="var">nat</span>), <span class="id" title="var">leAlt</span> <span class="id" title="var">m</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">leAlt</span> <span class="id" title="var">m</span> (<span class="id" title="var">S</span> <span class="id" title="var">n</span>).<br/>
 
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">leAltLe</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">m</span> <span class="id" title="var">n</span> : <span class="id" title="var">nat</span>), <span class="id" title="var">m</span> &lt;= <span class="id" title="var">n</span> &lt;-&gt; <span class="id" title="var">leAlt</span> <span class="id" title="var">m</span> <span class="id" title="var">n</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-If a property p is true of the number k, and j &lt;= k,
-then there is some smallest j' between j and k such that p is true at j'.
-</div>
-<div class="code">
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">leftmost</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">j</span> <span class="id" title="var">k</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">nat</span> -&gt; <span class="id" title="keyword">Prop</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">K</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">i</span> : <span class="id" title="var">nat</span>, <span class="id" title="var">decidable</span> (<span class="id" title="var">p</span> <span class="id" title="var">i</span>)),<br/>
 &nbsp;&nbsp;<span class="id" title="var">p</span> <span class="id" title="var">k</span> -&gt; <span class="id" title="var">j</span> &lt;= <span class="id" title="var">k</span> -&gt;<br/>
@@ -963,13 +866,6 @@ then there is some smallest j' between j and k such that p is true at j'.
 &nbsp;&nbsp;<span class="id" title="keyword">forall</span> <span class="id" title="var">x</span> : <span class="id" title="var">nat</span>, <span class="id" title="var">j</span> &lt;= <span class="id" title="var">x</span> &lt; <span class="id" title="var">j'</span> -&gt; ~ <span class="id" title="var">p</span> <span class="id" title="var">x</span>. <br/>
 
 <br/>
-</div>
-
-<div class="doc">
-The same theorem as leftmost but with
-negation of P as existential and P as universal properties.
-</div>
-<div class="code">
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">leftmostNeg</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">j</span> <span class="id" title="var">k</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">nat</span> -&gt; <span class="id" title="keyword">Prop</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">K</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">i</span> : <span class="id" title="var">nat</span>, <span class="id" title="var">decidable</span> (<span class="id" title="var">p</span> <span class="id" title="var">i</span>)),<br/>
 &nbsp;&nbsp;~<span class="id" title="var">p</span> <span class="id" title="var">k</span> -&gt; <span class="id" title="var">j</span> &lt;= <span class="id" title="var">k</span> -&gt;<br/>
@@ -977,13 +873,6 @@ negation of P as existential and P as universal properties.
 &nbsp;&nbsp;<span class="id" title="keyword">forall</span> <span class="id" title="var">x</span> : <span class="id" title="var">nat</span>, <span class="id" title="var">j</span> &lt;= <span class="id" title="var">x</span> &lt; <span class="id" title="var">j'</span> -&gt; <span class="id" title="var">p</span> <span class="id" title="var">x</span>. <br/>
 
 <br/>
-</div>
-
-<div class="doc">
-If p is true at j and j &lt;= k, then there is some rightmost
-j' such that p is true from j to j' and either ~p is true at j'+1 or j' = k.
-</div>
-<div class="code">
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">rightmostCont</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">j</span> <span class="id" title="var">k</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">nat</span> -&gt; <span class="id" title="keyword">Prop</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">K</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">i</span> : <span class="id" title="var">nat</span>, <span class="id" title="var">decidable</span> (<span class="id" title="var">p</span> <span class="id" title="var">i</span>)),<br/>
 &nbsp;&nbsp;<span class="id" title="var">p</span> <span class="id" title="var">j</span> -&gt; <span class="id" title="var">j</span> &lt;= <span class="id" title="var">k</span> -&gt;<br/>
@@ -995,12 +884,6 @@ j' such that p is true from j to j' and either ~p is true at j'+1 or j' = k.
 <span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">R_scope</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-If u = 0 as a real, then u = zeroTime.
-</div>
-<div class="code">
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">timeZero</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">u</span> : <span class="id" title="keyword">Time</span>),<br/>
 &nbsp;&nbsp;(<span class="id" title="var">nonneg</span> (<span class="id" title="var">time</span> <span class="id" title="var">u</span>)) = 0 -&gt; <span class="id" title="var">u</span> = <span class="id" title="var">zeroTime</span>. <br/>
 
@@ -1008,12 +891,6 @@ If u = 0 as a real, then u = zeroTime.
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">speedMax_double_nonneg</span> : 0 &lt;= 2*<span class="id" title="var">speedMax</span>. <br/>
 
 <br/>
-</div>
-
-<div class="doc">
-All numbers within the preDeliveredInterval are strictly positive.
-</div>
-<div class="code">
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">inPreBcSuffPos</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">u</span> : <span class="id" title="keyword">Time</span>),<br/>
 &nbsp;&nbsp;<span class="id" title="var">u</span> [:] (<span class="id" title="var">preDeliveredInterval</span> <span class="id" title="var">m</span>) -&gt; 0 &lt; <span class="id" title="var">u</span>. <br/>
 
@@ -1085,11 +962,8 @@ All numbers within the preDeliveredInterval are strictly positive.
 
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">possIncDist_positive</span> <span class="id" title="var">m1</span> <span class="id" title="var">m2</span> : 0 &lt; <span class="id" title="var">possIncDist</span> <span class="id" title="var">m1</span> <span class="id" title="var">m2</span>.<br/>
-</div>
 
-<div class="doc">
-Old proof broken - needs to be reproved. Result is pretty obvious.</div>
-<div class="code">
+<br/>
 </div>
 <hr/>This page has been generated by <a href="http://coq.inria.fr/">coqdoc</a>
 </div>

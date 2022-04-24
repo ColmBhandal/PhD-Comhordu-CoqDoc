@@ -41,12 +41,6 @@ School of Computer Science and Statistics, Trinity College, Dublin, Ireland.
 <br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Names for defining parametrised processes.
-</div>
-<div class="code">
 <span class="id" title="keyword">Inductive</span> <span class="id" title="var">Name</span> := <span class="id" title="var">bcWaitN</span> | <span class="id" title="var">sleepingN</span> | <span class="id" title="var">bcReadyN</span> | <span class="id" title="var">dormantN</span> | <span class="id" title="var">initN</span> | <br/>
 &nbsp;&nbsp;<span class="id" title="var">ovWaitN</span> | <span class="id" title="var">ovReadyN</span> | <span class="id" title="var">switchBcN</span> | <span class="id" title="var">switchCurrN</span> | <span class="id" title="var">switchListenN</span> | <span class="id" title="var">ovAbortN</span> | <br/>
 &nbsp;&nbsp;<span class="id" title="var">tfsStartN</span> | <span class="id" title="var">tfsNextN</span> | <span class="id" title="var">tfsCurrN</span> | <span class="id" title="var">tfsBcN</span> | <span class="id" title="var">tfsListenN</span> | <span class="id" title="var">listeningN</span> | <span class="id" title="var">checkRangeN</span> | <br/>
@@ -65,12 +59,6 @@ Equality is decidable on names.
 &nbsp;&nbsp;<span class="id" title="tactic">left</span>; <span class="id" title="tactic">reflexivity</span>. <span class="id" title="keyword">Qed</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-The set of process terms, which may have free variables in them.
-</div>
-<div class="code">
 <span class="id" title="keyword">Inductive</span> <span class="id" title="var">ProcTerm</span> : <span class="id" title="keyword">Type</span> :=<br/>
 &nbsp;&nbsp;| <span class="id" title="var">nilProc</span> : <span class="id" title="var">ProcTerm</span><br/>
 &nbsp;&nbsp;| <span class="id" title="var">outPrefix</span> : <span class="id" title="var">Channel</span> -&gt; <span class="id" title="var">list</span> <span class="id" title="var">Exp</span> -&gt; <span class="id" title="var">ProcTerm</span> -&gt; <span class="id" title="var">ProcTerm</span><br/>
@@ -157,22 +145,8 @@ Equality is decidable on ProcTerms.
 <br/>
 
 <br/>
-</div>
 
-<div class="doc">
-Note that the specification of the protocol ideally should be left separate to the
-language specification. Specifying the protocol here entangles it with the language.
-A more general language definition would be in terms of a def relation that is left
-unspecified. However, specifying the protocol and the def relation here has the advantage
-that we can prove certain desirable language properties based on the finiteness of the
-def relation that would otherwise be unprovable. These properties are of significant
-practical use and so we choose to specify the language and protocol in this way despite its
-conceptual messiness.
-<div class="paragraph"> </div>
-
- Aliases for variables to decrease verbosity
-</div>
-<div class="code">
+<br/>
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">vM</span> := (<span class="id" title="var">var</span> 0).<br/>
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">vMF</span> := (<span class="id" title="var">var</span> 1).<br/>
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">vM'</span> := (<span class="id" title="var">var</span> 2).<br/>
@@ -298,12 +272,6 @@ States for handling messages
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">paused</span> := <span class="id" title="var">chanUnpause</span>? <span class="id" title="var">listeningN</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Redefining pair notation as it was overwritten by interval notation for real numbers.
-</div>
-<div class="code">
 <span class="id" title="keyword">Notation</span> &quot;( a , b )" := (<span class="id" title="var">pair</span> <span class="id" title="var">a</span> <span class="id" title="var">b</span>).<br/>
 
 <br/>
@@ -359,14 +327,6 @@ have made for more cumbersome developments later on.
 <br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Susbstitution of expressions for variables in a term. Essentially maps
-the substitution across the term, calling on expression substitution in the
-meantime.
-</div>
-<div class="code">
 <span class="id" title="keyword">Fixpoint</span> <span class="id" title="var">subProcTerm</span> (<span class="id" title="var">s</span> : <span class="id" title="var">Subst</span>) (<span class="id" title="var">t</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="var">ProcTerm</span> :=<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="var">t</span> <span class="id" title="keyword">with</span><br/>
 &nbsp;&nbsp;| <span class="id" title="var">nilProc</span> =&gt; <span class="id" title="var">nilProc</span><br/>
@@ -381,12 +341,6 @@ meantime.
 &nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-An action is either discrete or timed.
-</div>
-<div class="code">
 <span class="id" title="keyword">Inductive</span> <span class="id" title="var">Act</span> :=<br/>
 &nbsp;&nbsp;| <span class="id" title="var">actDisc</span> :&gt; <span class="id" title="var">DiscAct</span> -&gt; <span class="id" title="var">Act</span><br/>
 &nbsp;&nbsp;| <span class="id" title="var">actTime</span> :&gt; <span class="id" title="var">Delay</span> -&gt; <span class="id" title="var">Act</span>.<br/>
@@ -406,14 +360,6 @@ while a delay has a duration equal to the amount of the delay.
 &nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-The discrete action semantics over process terms. The triple p d q is a member
-of this relation iff the process p can perform the discrete action d and evolve
-to the process q.
-</div>
-<div class="code">
 <span class="id" title="keyword">Inductive</span> <span class="id" title="var">stepDiscProc</span> : <span class="id" title="var">ProcTerm</span> -&gt; <span class="id" title="var">DiscAct</span> -&gt; <span class="id" title="var">ProcTerm</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
 &nbsp;&nbsp;| <span class="id" title="var">stepDpOut</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">c</span> : <span class="id" title="var">Channel</span>) (<span class="id" title="var">l1</span> : <span class="id" title="var">list</span> <span class="id" title="var">Exp</span>) (<span class="id" title="var">l2</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>),<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">evalExpLists</span> <span class="id" title="var">l1</span> <span class="id" title="var">l2</span> -&gt; <span class="id" title="var">stepDiscProc</span> (<span class="id" title="var">outPrefix</span> <span class="id" title="var">c</span> <span class="id" title="var">l1</span> <span class="id" title="var">p</span>) (<span class="id" title="var">outAct</span> <span class="id" title="var">c</span> <span class="id" title="var">l2</span>) <span class="id" title="var">p</span><br/>
@@ -453,17 +399,8 @@ If the list of base values l1 matches the list of variables l2 in length, then
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">stepDiscProc</span> <span class="id" title="var">p</span> <span class="id" title="var">d</span> <span class="id" title="var">p'</span> -&gt; <span class="id" title="var">evalExpFunTime</span> <span class="id" title="var">e</span> = <span class="id" title="var">Some</span> <span class="id" title="var">zeroTime</span> -&gt; <span class="id" title="var">stepDiscProc</span> (<span class="id" title="var">del</span> <span class="id" title="var">e</span> <span class="id" title="var">p</span>) <span class="id" title="var">d</span> <span class="id" title="var">p'</span>.<br/>
 
 <br/>
-</div>
 
-<div class="doc">
-Here is some machinery that will lay the groundwork for the delay semantics and also for
-certain language properties.
-<div class="paragraph"> </div>
-
- For every delay d and term t, approximates whether or not the action a can be performed
-within (but not including) d units of time by a derivative of t.
-</div>
-<div class="code">
+<br/>
 <span class="id" title="keyword">Inductive</span> <span class="id" title="var">sort</span> : <span class="id" title="var">DiscAct</span> -&gt; <span class="id" title="var">Delay</span> -&gt; <span class="id" title="var">ProcTerm</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
 &nbsp;&nbsp;| <span class="id" title="var">sortOut</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">c</span> : <span class="id" title="var">Channel</span>) (<span class="id" title="var">l1</span> : <span class="id" title="var">list</span> <span class="id" title="var">Exp</span>) (<span class="id" title="var">l2</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>),<br/>
@@ -488,13 +425,6 @@ within (but not including) d units of time by a derivative of t.
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">evalExpFunTime</span> <span class="id" title="var">e</span> = <span class="id" title="var">Some</span> <span class="id" title="var">t</span> -&gt; <span class="id" title="var">sort</span> <span class="id" title="var">a</span> <span class="id" title="var">d</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">sort</span> <span class="id" title="var">a</span> (<span class="id" title="var">addDelayTime</span> <span class="id" title="var">t</span> <span class="id" title="var">d</span>) (<span class="id" title="var">del</span> <span class="id" title="var">e</span> <span class="id" title="var">p</span>).<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-A process p is discrete action enabled for the discrete action a iff
-there is some process p' such that p transitions to p' via a.
-</div>
-<div class="code">
 <span class="id" title="keyword">Inductive</span> <span class="id" title="var">discActEnabled</span> (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">DiscAct</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
 &nbsp;&nbsp;<span class="id" title="var">dae</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">p'</span> : <span class="id" title="var">ProcTerm</span>, <span class="id" title="var">stepDiscProc</span> <span class="id" title="var">p</span> <span class="id" title="var">a</span> <span class="id" title="var">p'</span> -&gt; <span class="id" title="var">discActEnabled</span> <span class="id" title="var">p</span> <span class="id" title="var">a</span>.<br/>
 
@@ -504,12 +434,6 @@ there is some process p' such that p transitions to p' via a.
 <br/>
 
 <br/>
-</div>
-
-<div class="doc">
-The timed action semantics over processes.
-</div>
-<div class="code">
 <span class="id" title="keyword">Inductive</span> <span class="id" title="var">stepTimedProc</span> : <span class="id" title="var">ProcTerm</span> -&gt; <span class="id" title="var">Delay</span> -&gt; <span class="id" title="var">ProcTerm</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
 &nbsp;&nbsp;| <span class="id" title="var">stepTpNil</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>, <span class="id" title="var">stepTimedProc</span> <span class="id" title="var">nilProc</span> <span class="id" title="var">d</span> <span class="id" title="var">nilProc</span><br/>
 &nbsp;&nbsp;| <span class="id" title="var">stepTpOut</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>) (<span class="id" title="var">c</span> : <span class="id" title="var">Channel</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">list</span> <span class="id" title="var">Exp</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>),<br/>
@@ -555,12 +479,6 @@ If the guard is ill formed, we just let the process idle.
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">evalExpFunTime</span> <span class="id" title="var">e</span> = <span class="id" title="var">None</span> -&gt; <span class="id" title="var">stepTimedProc</span> (<span class="id" title="var">del</span> <span class="id" title="var">e</span> <span class="id" title="var">p</span>) <span class="id" title="var">d</span> (<span class="id" title="var">del</span> <span class="id" title="var">e</span> <span class="id" title="var">p</span>).<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-The mixture between the discrete and timed action semantics.
-</div>
-<div class="code">
 <span class="id" title="keyword">Inductive</span> <span class="id" title="var">stepProc</span> (<span class="id" title="var">t</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="var">Act</span> -&gt; <span class="id" title="var">ProcTerm</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
 &nbsp;&nbsp;| <span class="id" title="var">stepPDisc</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">a</span> : <span class="id" title="var">DiscAct</span>) (<span class="id" title="var">t'</span> : <span class="id" title="var">ProcTerm</span>),<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">stepDiscProc</span> <span class="id" title="var">t</span> <span class="id" title="var">a</span> <span class="id" title="var">t'</span> -&gt; <span class="id" title="var">stepProc</span> <span class="id" title="var">t</span> <span class="id" title="var">a</span> <span class="id" title="var">t'</span><br/>
@@ -589,13 +507,6 @@ linking them.
 <span class="id" title="keyword">Notation</span> &quot;p1 -P=&gt; p2" := (<span class="id" title="var">stepProcRefl</span> <span class="id" title="var">p1</span> <span class="id" title="var">p2</span>) (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 50).<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-A process p is timed action enabled for the delay d iff
-there is some process p' such that p transitions to p' via d.
-</div>
-<div class="code">
 <span class="id" title="keyword">Inductive</span> <span class="id" title="var">timedActEnabled</span> (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
 &nbsp;&nbsp;<span class="id" title="var">tae</span> : <span class="id" title="keyword">forall</span> <span class="id" title="var">p'</span> : <span class="id" title="var">ProcTerm</span>, <span class="id" title="var">stepTimedProc</span> <span class="id" title="var">p</span> <span class="id" title="var">d</span> <span class="id" title="var">p'</span> -&gt; <span class="id" title="var">timedActEnabled</span> <span class="id" title="var">p</span> <span class="id" title="var">d</span>.<br/>
 
@@ -973,13 +884,6 @@ A version of sortDeriv but as an equivalence rather than an implication.
 <span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">R_scope</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Sort captures at least all the actions that are available within the delay d. The converse
-of this theorem is not true: sort does over-approximate.
-</div>
-<div class="code">
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">sort_complete</span> <span class="id" title="var">d</span> <span class="id" title="var">a</span> <span class="id" title="var">p</span> :<br/>
 &nbsp;&nbsp;<span class="id" title="var">a</span> &lt;&gt; <span class="id" title="var">tauAct</span> /\ (<span class="id" title="var">discActEnabled</span> <span class="id" title="var">p</span> <span class="id" title="var">a</span> \/<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">d'</span> <span class="id" title="var">p'</span>, <span class="id" title="var">delay</span> <span class="id" title="var">d'</span> &lt; <span class="id" title="var">delay</span> <span class="id" title="var">d</span> /\ <span class="id" title="var">p</span> -<span class="id" title="var">PD</span>- <span class="id" title="var">d'</span> -<span class="id" title="var">PD</span>&gt; <span class="id" title="var">p'</span> /\ <span class="id" title="var">discActEnabled</span> <span class="id" title="var">p'</span> <span class="id" title="var">a</span>)<br/>
@@ -1929,13 +1833,6 @@ This should prove that any such term has some minGuard.
 <span class="id" title="keyword">Ltac</span> <span class="id" title="var">outListAuto</span> := <span class="id" title="tactic">repeat</span> <span class="id" title="var">outListAutoSing</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Every application term has a list of output actions. This result relies on the
-specifics of the definition relation we have defined.
-</div>
-<div class="code">
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">outListAppEx</span> (<span class="id" title="var">h</span> : <span class="id" title="var">Name</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">list</span> <span class="id" title="var">Exp</span>) :<br/>
 &nbsp;&nbsp;{<span class="id" title="var">l'</span> : <span class="id" title="var">list</span> <span class="id" title="var">ChanStamped</span> | <span class="id" title="var">outListProc</span> (<span class="id" title="var">h</span> $(<span class="id" title="var">l</span>)$) <span class="id" title="var">l'</span>}. <span class="id" title="var">remember</span> (<span class="id" title="var">def</span> <span class="id" title="var">h</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">e</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">symmetry</span> <span class="id" title="tactic">in</span> <span class="id" title="var">Heqe</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">e</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">x</span> <span class="id" title="var">p</span>]. <span class="id" title="tactic">destruct</span> <span class="id" title="var">h</span>;<br/>
@@ -1953,12 +1850,6 @@ This next block of code replaces the application of a name to a generic list of
 &nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">Heqe</span>; <span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">H2</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>; <span class="id" title="var">listGen</span> <span class="id" title="var">H</span> <span class="id" title="var">l'</span>; <span class="id" title="tactic">simpl</span>); <span class="id" title="var">outListAuto</span>. <span class="id" title="keyword">Qed</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-For every process there is a list of output actions for that process.
-</div>
-<div class="code">
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">outListEx</span> (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : {<span class="id" title="var">l</span> : <span class="id" title="var">list</span> <span class="id" title="var">ChanStamped</span> | <span class="id" title="var">outListProc</span> <span class="id" title="var">p</span> <span class="id" title="var">l</span>}.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">induction</span> <span class="id" title="var">p</span>; <span class="id" title="tactic">try</span> <span class="id" title="tactic">solve</span> [<span class="id" title="tactic">exists</span> <span class="id" title="var">chanStampedNil</span>; <span class="id" title="tactic">constructor</span>]. <span class="id" title="var">addHyp</span> (<span class="id" title="var">evalExpListsExDec</span> <span class="id" title="var">l</span>).<br/>
 &nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">X</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">X0</span>. <span class="id" title="tactic">exists</span> [(<span class="id" title="var">c</span>, <span class="id" title="var">length</span> <span class="id" title="var">l</span>)]. <span class="id" title="tactic">eapply</span> <span class="id" title="var">outlOutEval</span>.<br/>
@@ -2096,13 +1987,6 @@ This should prove that any such term has some minGuard.
 <span class="id" title="keyword">Ltac</span> <span class="id" title="var">inListAuto</span> := <span class="id" title="tactic">repeat</span> <span class="id" title="var">inListAutoSing</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Every application term has a list of input actions. This result relies on the
-specifics of the definition relation we have defined.
-</div>
-<div class="code">
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">inListAppEx</span> (<span class="id" title="var">h</span> : <span class="id" title="var">Name</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">list</span> <span class="id" title="var">Exp</span>) :<br/>
 &nbsp;&nbsp;{<span class="id" title="var">l'</span> : <span class="id" title="var">list</span> <span class="id" title="var">ChanStamped</span> | <span class="id" title="var">inListProc</span> (<span class="id" title="var">h</span> $(<span class="id" title="var">l</span>)$) <span class="id" title="var">l'</span>}. <span class="id" title="var">remember</span> (<span class="id" title="var">def</span> <span class="id" title="var">h</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">e</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">symmetry</span> <span class="id" title="tactic">in</span> <span class="id" title="var">Heqe</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">e</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">x</span> <span class="id" title="var">p</span>]. <span class="id" title="tactic">destruct</span> <span class="id" title="var">h</span>;<br/>
@@ -2120,12 +2004,6 @@ This next block of code replaces the application of a name to a generic list of
 &nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">Heqe</span>; <span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">H2</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>; <span class="id" title="var">listGen</span> <span class="id" title="var">H</span> <span class="id" title="var">l'</span>; <span class="id" title="tactic">simpl</span>); <span class="id" title="var">inListAuto</span>. <span class="id" title="keyword">Qed</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-For every process there is a list of input actions for that process.
-</div>
-<div class="code">
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">inListEx</span> (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : {<span class="id" title="var">l</span> : <span class="id" title="var">list</span> <span class="id" title="var">ChanStamped</span> | <span class="id" title="var">inListProc</span> <span class="id" title="var">p</span> <span class="id" title="var">l</span>}.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">induction</span> <span class="id" title="var">p</span>; <span class="id" title="tactic">try</span> <span class="id" title="tactic">solve</span> [<span class="id" title="tactic">exists</span> <span class="id" title="var">chanStampedNil</span>; <span class="id" title="tactic">constructor</span>]. <span class="id" title="tactic">exists</span> [(<span class="id" title="var">c</span>, <span class="id" title="var">length</span> <span class="id" title="var">l</span>)].<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">constructor</span>. <span class="id" title="var">remember</span> (<span class="id" title="var">evalBoolExpFunTot</span> <span class="id" title="var">b</span>). <span class="id" title="tactic">destruct</span> <span class="id" title="var">b0</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">IHp</span>.<br/>
@@ -2144,12 +2022,6 @@ For every process there is a list of input actions for that process.
 &nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">Heqo</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H</span>. <span class="id" title="keyword">Qed</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Equality is decidable on stamped channels.
-</div>
-<div class="code">
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">eqDecChanStamped</span> (<span class="id" title="var">c1</span> <span class="id" title="var">c2</span> : <span class="id" title="var">ChanStamped</span>) :<br/>
 &nbsp;&nbsp;{<span class="id" title="var">c1</span> = <span class="id" title="var">c2</span>} + {<span class="id" title="var">c1</span> &lt;&gt; <span class="id" title="var">c2</span>}. <span class="id" title="tactic">destruct</span> <span class="id" title="var">c1</span>, <span class="id" title="var">c2</span>. <span class="id" title="var">addHyp</span> (<span class="id" title="var">eqDecChannel</span> <span class="id" title="var">c</span> <span class="id" title="var">c0</span>).<br/>
 &nbsp;&nbsp;<span class="id" title="var">addHyp</span> (<span class="id" title="var">natDec</span> <span class="id" title="var">n</span> <span class="id" title="var">n0</span>). <span class="id" title="var">invertClear</span> <span class="id" title="var">H</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">subst</span>. <span class="id" title="tactic">left</span>.<br/>
@@ -2302,12 +2174,6 @@ on their input/output and output/input lists and checking that they evaluate to 
 &nbsp;&nbsp;-&gt; <span class="id" title="var">noSync</span> <span class="id" title="var">p</span> <span class="id" title="var">q</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-The no sync predicate is decidable.
-</div>
-<div class="code">
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">noSyncDec</span> (<span class="id" title="var">p</span> <span class="id" title="var">q</span> : <span class="id" title="var">ProcTerm</span>) :<br/>
 &nbsp;&nbsp;<span class="id" title="var">decidable</span> (<span class="id" title="var">noSync</span> <span class="id" title="var">p</span> <span class="id" title="var">q</span>). <span class="id" title="var">addHyp</span> (<span class="id" title="var">inListEx</span> <span class="id" title="var">p</span>). <span class="id" title="var">addHyp</span> (<span class="id" title="var">inListEx</span> <span class="id" title="var">q</span>).<br/>
 &nbsp;&nbsp;<span class="id" title="var">addHyp</span> (<span class="id" title="var">outListEx</span> <span class="id" title="var">p</span>). <span class="id" title="var">addHyp</span> (<span class="id" title="var">outListEx</span> <span class="id" title="var">q</span>). <span class="id" title="var">invertClear</span> <span class="id" title="var">H</span>.<br/>
@@ -2341,12 +2207,6 @@ of both components of the parallel.
 &nbsp;&nbsp;<span class="id" title="var">d</span> %; <span class="id" title="var">p</span> -&gt; <span class="id" title="var">d</span> %; <span class="id" title="var">q</span> -&gt; (<br/>
 &nbsp;&nbsp;(<span class="id" title="keyword">forall</span> <span class="id" title="var">a</span> : <span class="id" title="var">DiscAct</span>, <span class="id" title="var">sort</span> <span class="id" title="var">a</span> <span class="id" title="var">d</span> <span class="id" title="var">p</span> -&gt; ~<span class="id" title="var">sort</span> (<span class="id" title="var">a</span>^) <span class="id" title="var">d</span> <span class="id" title="var">q</span>) &lt;-&gt;<br/>
 &nbsp;&nbsp;<span class="id" title="var">noSync</span> <span class="id" title="var">p</span> <span class="id" title="var">q</span>). <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">parPrecMgEquiv</span>; [|<span class="id" title="tactic">assumption</span>|<span class="id" title="tactic">assumption</span>].<br/>
-</div>
-
-<div class="doc">
-Left to right.
-</div>
-<div class="code">
 &nbsp;&nbsp;<span class="id" title="tactic">split</span>. <span class="id" title="var">addHyp</span> (<span class="id" title="var">inListEx</span> <span class="id" title="var">p</span>). <span class="id" title="var">addHyp</span> (<span class="id" title="var">inListEx</span> <span class="id" title="var">q</span>).<br/>
 &nbsp;&nbsp;<span class="id" title="var">addHyp</span> (<span class="id" title="var">outListEx</span> <span class="id" title="var">p</span>). <span class="id" title="var">addHyp</span> (<span class="id" title="var">outListEx</span> <span class="id" title="var">q</span>). <span class="id" title="var">invertClear</span> <span class="id" title="var">H1</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H2</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H3</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H4</span>.<br/>
@@ -2372,12 +2232,6 @@ Left to right.
 &nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">H8</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H6</span>. <span class="id" title="var">addHyp</span> (<span class="id" title="var">inListEnabled</span> <span class="id" title="var">c</span> <span class="id" title="var">p</span> <span class="id" title="var">l1</span> <span class="id" title="var">x</span> <span class="id" title="var">H5</span> <span class="id" title="var">H6</span>).<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">False_ind</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H4</span> <span class="id" title="keyword">with</span> (<span class="id" title="var">a</span> := (<span class="id" title="var">c</span>;? <span class="id" title="var">x</span>)); <span class="id" title="tactic">try</span> <span class="id" title="tactic">assumption</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">not</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H11</span>.<br/>
-</div>
-
-<div class="doc">
-Right to left.
-</div>
-<div class="code">
 &nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">not</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H1</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">a</span>; [<span class="id" title="tactic">clear</span> <span class="id" title="var">H2</span> | <span class="id" title="tactic">clear</span> <span class="id" title="var">H2</span> | <span class="id" title="tactic">apply</span> <span class="id" title="var">H2</span>; <span class="id" title="tactic">reflexivity</span>].<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">rename</span> <span class="id" title="var">l</span> <span class="id" title="var">into</span> <span class="id" title="var">v</span>. <span class="id" title="var">addHyp</span> (<span class="id" title="var">enabledInList</span> <span class="id" title="var">c</span> <span class="id" title="var">p</span> <span class="id" title="var">l1</span> <span class="id" title="var">v</span> <span class="id" title="var">H5</span> <span class="id" title="var">H3</span>).<br/>
@@ -2390,12 +2244,6 @@ Right to left.
 &nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">H10</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H11</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H11</span>. <span class="id" title="keyword">Qed</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-For any pair of processes, there is a minGuard that is common to both.
-</div>
-<div class="code">
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">minGuardCommon</span> (<span class="id" title="var">p</span> <span class="id" title="var">q</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="tactic">exists</span> <span class="id" title="var">d</span>,<br/>
 &nbsp;&nbsp;<span class="id" title="var">d</span> %; <span class="id" title="var">p</span> /\ <span class="id" title="var">d</span> %; <span class="id" title="var">q</span>. <span class="id" title="var">addHyp</span> (<span class="id" title="var">minGuardExists</span> <span class="id" title="var">p</span>). <span class="id" title="var">addHyp</span> (<span class="id" title="var">minGuardExists</span> <span class="id" title="var">q</span>).<br/>
 &nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H0</span>. <span class="id" title="var">addHyp</span> (<span class="id" title="var">Rle_lt_dec</span> <span class="id" title="var">x</span> <span class="id" title="var">x0</span>).<br/>
@@ -2404,12 +2252,6 @@ For any pair of processes, there is a minGuard that is common to both.
 &nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">minGuardLe</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H1</span>; <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-For any pair of delay enabled processes, there is a delay that is common to both.
-</div>
-<div class="code">
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">taeCommon</span> (<span class="id" title="var">p1</span> <span class="id" title="var">p2</span> : <span class="id" title="var">ProcTerm</span>) :<br/>
 &nbsp;&nbsp;(<span class="id" title="tactic">exists</span> <span class="id" title="var">d</span>, <span class="id" title="var">timedActEnabled</span> <span class="id" title="var">p1</span> <span class="id" title="var">d</span>) -&gt; (<span class="id" title="tactic">exists</span> <span class="id" title="var">d</span>, <span class="id" title="var">timedActEnabled</span> <span class="id" title="var">p2</span> <span class="id" title="var">d</span>) -&gt;<br/>
 &nbsp;&nbsp;(<span class="id" title="tactic">exists</span> <span class="id" title="var">d</span>, <span class="id" title="var">timedActEnabled</span> <span class="id" title="var">p1</span> <span class="id" title="var">d</span> /\ <span class="id" title="var">timedActEnabled</span> <span class="id" title="var">p2</span> <span class="id" title="var">d</span>).<br/>
@@ -2477,12 +2319,6 @@ Otherwise we just take the head of the list as a witness.
 &nbsp;&nbsp;<span class="id" title="var">addHyp</span> (<span class="id" title="var">outListEnabled</span> <span class="id" title="var">c</span> <span class="id" title="var">p</span> <span class="id" title="var">l3</span> <span class="id" title="var">n</span> <span class="id" title="var">H1</span> <span class="id" title="var">H0</span>). <span class="id" title="var">invertClear</span> <span class="id" title="var">H6</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H7</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">H6</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H5</span>. <span class="id" title="var">addHyp</span> (<span class="id" title="var">inListEnabled</span> <span class="id" title="var">c</span> <span class="id" title="var">q</span> <span class="id" title="var">l1</span> <span class="id" title="var">x</span> <span class="id" title="var">H4</span> <span class="id" title="var">H5</span>).<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">exists</span> (<span class="id" title="var">c</span> ;! <span class="id" title="var">x</span>). <span class="id" title="tactic">split</span>; <span class="id" title="tactic">assumption</span>.<br/>
-</div>
-
-<div class="doc">
-And do the very same for the symmetrical case.
-</div>
-<div class="code">
 &nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">set_In</span> <span class="id" title="var">c</span> (<span class="id" title="var">set_inter</span> <span class="id" title="var">eqDecChanStamped</span> <span class="id" title="var">l4</span> <span class="id" title="var">l2</span>)).<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">Heqs</span>. <span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">reflexivity</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="var">addHyp</span> <span class="id" title="var">H0</span>. (<span class="id" title="tactic">apply</span> <span class="id" title="var">set_inter_elim1</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H0</span>). (<span class="id" title="tactic">apply</span> <span class="id" title="var">set_inter_elim2</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H5</span>).<br/>
@@ -2492,12 +2328,6 @@ And do the very same for the symmetrical case.
 &nbsp;&nbsp;<span class="id" title="tactic">exists</span> (<span class="id" title="var">c</span> ;? <span class="id" title="var">x</span>). <span class="id" title="tactic">split</span>; <span class="id" title="tactic">assumption</span>. <span class="id" title="keyword">Qed</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Progress says that a process can either delay or perform a tau.
-</div>
-<div class="code">
 <span class="id" title="keyword">Definition</span> <span class="id" title="tactic">progress</span> (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <span class="id" title="keyword">Prop</span> :=<br/>
 &nbsp;&nbsp;&nbsp;<span class="id" title="var">discActEnabled</span> <span class="id" title="var">p</span> <span class="id" title="var">tauAct</span> \/ <span class="id" title="tactic">exists</span> <span class="id" title="var">d</span>, <span class="id" title="var">timedActEnabled</span> <span class="id" title="var">p</span> <span class="id" title="var">d</span>.<br/>
 
@@ -2629,13 +2459,6 @@ This should prove that any such term can progress.
 <span class="id" title="keyword">Ltac</span> <span class="id" title="var">progressAuto</span> := <span class="id" title="tactic">repeat</span> <span class="id" title="var">progressAutoSing</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Every application term can progress. This result relies on the
-specifics of the definition relation we have defined, using a cheeky automation tactic.
-</div>
-<div class="code">
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">progressApp</span> (<span class="id" title="var">h</span> : <span class="id" title="var">Name</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">list</span> <span class="id" title="var">Exp</span>) :<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">progress</span> (<span class="id" title="var">h</span> $(<span class="id" title="var">l</span>)$). <span class="id" title="var">remember</span> (<span class="id" title="var">def</span> <span class="id" title="var">h</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">e</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">symmetry</span> <span class="id" title="tactic">in</span> <span class="id" title="var">Heqe</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">e</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">x</span> <span class="id" title="var">p</span>]. <span class="id" title="tactic">destruct</span> <span class="id" title="var">h</span>;<br/>
@@ -2667,24 +2490,11 @@ d.
 &nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">progressSum</span>; [<span class="id" title="tactic">apply</span> <span class="id" title="var">IHp1</span> | <span class="id" title="tactic">apply</span> <span class="id" title="var">IHp2</span>].<br/>
 &nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">IHp1</span>. <span class="id" title="tactic">left</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">dae</span>. <span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H0</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">IHp2</span>. <span class="id" title="tactic">left</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">dae</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">stepDpParR</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H1</span>.<br/>
-</div>
-
-<div class="doc">
-Special case: par- both can delay. We now do case analysis on whether or not
-  p and q can synchronise.
-</div>
-<div class="code">
 &nbsp;&nbsp;<span class="id" title="var">addHyp</span> (<span class="id" title="var">noSyncDec</span> <span class="id" title="var">p1</span> <span class="id" title="var">p2</span>). <span class="id" title="var">invertClear</span> <span class="id" title="var">H1</span>; [<span class="id" title="tactic">right</span> | <span class="id" title="tactic">left</span>].<br/>
 &nbsp;&nbsp;<span class="id" title="var">addHyp</span> (<span class="id" title="var">taeMinGuardCommon</span> <span class="id" title="var">p1</span> <span class="id" title="var">p2</span> <span class="id" title="var">H</span> <span class="id" title="var">H0</span>). <span class="id" title="var">invertClear</span> <span class="id" title="var">H1</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="var">decompose</span> [<span class="id" title="var">and</span>] <span class="id" title="var">H3</span>. <span class="id" title="tactic">clear</span> <span class="id" title="var">H3</span>. <span class="id" title="tactic">rename</span> <span class="id" title="var">x</span> <span class="id" title="var">into</span> <span class="id" title="var">d</span>. <span class="id" title="tactic">exists</span> <span class="id" title="var">d</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H1</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H5</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">tae</span>. <span class="id" title="tactic">constructor</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H3</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">H1</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">parPrecMgEquiv2</span>; <span class="id" title="tactic">assumption</span>.<br/>
-</div>
-
-<div class="doc">
-Now we're at the case where they don't synchronise.
-</div>
-<div class="code">
 &nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">noSyncNotExistsSync</span> <span class="id" title="tactic">in</span> <span class="id" title="var">H2</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H2</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H1</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H2</span>. <span class="id" title="var">invertClear</span> <span class="id" title="var">H3</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">x</span>; <span class="id" title="tactic">eapply</span> <span class="id" title="var">dae</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">eapply</span> <span class="id" title="var">stepDpSyncRL</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H1</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">H2</span>.<br/>

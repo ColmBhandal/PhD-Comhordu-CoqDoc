@@ -24,10 +24,11 @@
 <div class="doc">
 This file was written by Colm Bhandal, PhD student, Foundations and Methods group,
 School of Computer Science and Statistics, Trinity College, Dublin, Ireland.
+<div class="paragraph"> </div>
+
+*************************** Standard Imports 
 </div>
 <div class="code">
-
-<br/>
 
 <br/>
 <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">Program.Equality</span>.<br/>
@@ -108,18 +109,6 @@ School of Computer Science and Statistics, Trinity College, Dublin, Ireland.
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">tfsNext_tfs_mode_eq</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">m1</span> <span class="id" title="var">m2</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>),<br/>
 &nbsp;&nbsp;<span class="id" title="var">tfs</span> <span class="id" title="var">m1</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">tfsNextStateNet</span> <span class="id" title="var">m2</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">m1</span> = <span class="id" title="var">m2</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: Induction on tfs. BaseType case fails by state pred elim with tfsNext. Discrete inductive
-case can use back-tracking to show that the previous state was either tfsStart or tfsNext. In the former
-case, we use an auxiliary theorem (...write it...) like this one except instead of tfsNextStateNet m2 i n we
-have tfsStartStateNet i n  and currModeNet m2. In the latter case, as in the delay inductive case (due to delay pres),
-we can just apply I.H. For the discrete case, a result currModeNet_switch_states will do (the possible states contradict
-the one given) to give the mode equality for this state. In the timed case, a delay preservation result
-on currModeNet suffices
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">nextSince_rel_state</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>)<br/>
@@ -129,13 +118,6 @@ on currModeNet suffices
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">nextSince_next</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>),<br/>
 &nbsp;&nbsp;<span class="id" title="var">nextSince</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">nextModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: Strtengthen the statement to replace nextSince with nextSinceState.
-Then split into the different nextSinceState cases and use an aux lemma for each.
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">delivered_received</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">r</span> <span class="id" title="var">x</span> : <span class="id" title="var">Distance</span>)<br/>
@@ -152,12 +134,6 @@ Then split into the different nextSinceState cases and use an aux lemma for each
 &nbsp;&nbsp;(<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) : <br/>
 &nbsp;&nbsp;<span class="id" title="var">tfsCurrStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">tfs</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt;<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">t'</span>, <span class="id" title="var">transGuard</span> <span class="id" title="var">t'</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> /\ <span class="id" title="var">t</span> + <span class="id" title="var">t'</span> &lt;= <span class="id" title="var">trans</span> <span class="id" title="var">m</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: Induction on tfs.
-</div>
-<div class="code">
 
 <br/>
 
@@ -171,42 +147,16 @@ Proof: Induction on tfs.
 &nbsp;&nbsp;<span class="id" title="var">outgoing</span> <span class="id" title="var">v</span> <span class="id" title="var">zeroTime</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt;<br/>
 &nbsp;&nbsp;<span class="id" title="var">outgoing</span> <span class="id" title="var">v</span> <span class="id" title="var">zeroTime</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span> \/<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">r</span>, <span class="id" title="var">delivered</span> ([-<span class="id" title="var">v</span>, <span class="id" title="var">l</span>, <span class="id" title="var">r</span>-]) <span class="id" title="var">zeroTime</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span> (<span class="id" title="var">reachNetDisc</span> <span class="id" title="var">n</span> <span class="id" title="var">n'</span> <span class="id" title="var">a</span> <span class="id" title="var">p</span> <span class="id" title="var">w</span>).<br/>
-</div>
-
-<div class="doc">
-Proof: In steps above
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">notifAbortPathNet_urgent</span> (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>) :<br/>
-&nbsp;&nbsp;<span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">notifAbortPathNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">False</span>. </div>
-
-<div class="doc">
-Proof: lift from...EA::urgency... urgent-path
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">notifAbortPathNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">False</span>. 
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">notifBadPathNet_urgent</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">n'</span> <span class="id" title="var">d</span> :<br/>
-&nbsp;&nbsp;<span class="id" title="var">notifBadPathNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">False</span>. </div>
-
-<div class="doc">
-Proof: Follows from urgency results from all underlying component states.
-Urgency holds in each one because there is always a synch possible with the
-mode state or the overlap component. urgent-path
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="var">notifBadPathNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">False</span>. 
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">msgBadPathNet_urgent</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) :<br/>
-&nbsp;&nbsp;<span class="id" title="var">msgBadPathNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">False</span>. </div>
-
-<div class="doc">
-Proof: Lift urgency from EA urgency result. urgent-path
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="var">msgBadPathNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">False</span>. 
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">msgAbort_paused_disj_net</span> (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) :<br/>
 &nbsp;&nbsp;<span class="id" title="var">msgAbortPathNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">pausedStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">False</span>.<br/>
@@ -220,27 +170,12 @@ If we are switching from a tfs state to a non tfs state, then we cannot be currS
 <div class="code">
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">tfsState_not_currSince</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">ActDiscNet</span>) (<span class="id" title="var">w</span> : <span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span>) :<br/>
-&nbsp;&nbsp;<span class="id" title="var">tfsStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; ~<span class="id" title="var">tfsStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span> -&gt; ~<span class="id" title="var">currSince</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span>. </div>
-
-<div class="doc">
-Proof: Well, such a switch would mean we are going from tfsListen to dormant. And we can
-show in a separate result that the tfsListen state implies that we're not currSince (which
-in turn is because the tfsBc state is not currSince, which again in turn is because it is
-preceded by an output on mCurr to switch the mode to some fail safe mode
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="var">tfsStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; ~<span class="id" title="var">tfsStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span> -&gt; ~<span class="id" title="var">currSince</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span>. 
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">msgBad_disc_net</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">ActDiscNet</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) (<span class="id" title="var">w</span> : <span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span>) :<br/>
 &nbsp;&nbsp;<span class="id" title="var">msgBadPathNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">currModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt;<br/>
-&nbsp;&nbsp;<span class="id" title="var">msgBadPathNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span> \/ <span class="id" title="var">tfs</span> <span class="id" title="var">m</span> <span class="id" title="var">zeroTime</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span> (<span class="id" title="var">reachNetDisc</span> <span class="id" title="var">n</span> <span class="id" title="var">n'</span> <span class="id" title="var">a</span> <span class="id" title="var">p</span> <span class="id" title="var">w</span>). </div>
-
-<div class="doc">
-Proof: Decompose msgBadPath. For all cases but one, fwd-tracking gives that either the state is preserved or the next state is also on the bad path, which is the LHS. The only exception is the badOvlp state, in which case the future may be the listening state. In this case though, fwd-tracking gives that the transition was an output on bad. Now, this must be matched in order for a synch to occur, and the only possible match is from the overlap component. There are 3 states in which this listens on bad. We can eliminate tfsListen and tfsCurr because they would imply that the entity is alredy tfs, which contradicts the assumption that it was on the msgBadPath: the definition of msgBadPath dictates that an entity is not tfs. Thus the remaining case is the transition from ovWait to tfsStart, giving the base case for tfs, which is the RHS exactly.
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="var">msgBadPathNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span> \/ <span class="id" title="var">tfs</span> <span class="id" title="var">m</span> <span class="id" title="var">zeroTime</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span> (<span class="id" title="var">reachNetDisc</span> <span class="id" title="var">n</span> <span class="id" title="var">n'</span> <span class="id" title="var">a</span> <span class="id" title="var">p</span> <span class="id" title="var">w</span>). 
 <br/>
 </div>
 
@@ -251,69 +186,26 @@ With a time parameter of 0, the tfs relation is preserved
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">tfs_zero_disc_pres</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">ActDiscNet</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) (<span class="id" title="var">w</span> : <span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span>) :<br/>
 &nbsp;&nbsp;<span class="id" title="var">tfs</span> <span class="id" title="var">m</span> <span class="id" title="var">zeroTime</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt;<br/>
-&nbsp;&nbsp;<span class="id" title="var">tfs</span> <span class="id" title="var">m</span> <span class="id" title="var">zeroTime</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span> (<span class="id" title="var">reachNetDisc</span> <span class="id" title="var">n</span> <span class="id" title="var">n'</span> <span class="id" title="var">a</span> <span class="id" title="var">p</span> <span class="id" title="var">w</span>). </div>
-
-<div class="doc">
-Proof: A state that is tfs with 0 time parameter must be either tfsStart, tfsNext or a guarded tfsCurr. It can be shown
-by tracking that the first two cases are either preserved or go to the next case, ending at tfsCurr. This in turn is then delay
-guarded, because a next mode has just been written to the mode state and the state can only be left by writing mCurr to the mode
-state, which is only possible when this delay expires. But since the time parameter to tfs is 0, time can't pass, and so the entity
-remains stuck in this state.
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="var">tfs</span> <span class="id" title="var">m</span> <span class="id" title="var">zeroTime</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span> (<span class="id" title="var">reachNetDisc</span> <span class="id" title="var">n</span> <span class="id" title="var">n'</span> <span class="id" title="var">a</span> <span class="id" title="var">p</span> <span class="id" title="var">w</span>). 
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">ovWait_nextSince_time</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">t</span> <span class="id" title="var">t1</span>: <span class="id" title="keyword">Time</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) :<br/>
 &nbsp;&nbsp;<span class="id" title="var">ovWaitStateNet</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">nextSince</span> <span class="id" title="var">m</span> <span class="id" title="var">t1</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">period</span> <span class="id" title="var">m</span> - <span class="id" title="var">y</span> &lt;= <span class="id" title="var">t1</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: Induction on next since. The base case gives that y = period m,
-so the LHS of the inequality is 0 and trivially true. For the discrete
-inductive case, neither t1 nor y changes, and so the I.H. suffices.
-For the timed inductive case, y decreases and t1 increases proportionally.
-Hence both sides of the inequality increase by the same amount, which can be
-cancelled, and then the I.H. is applicable.
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">nextSince_ovWait_modes_eq</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">m1</span> <span class="id" title="var">m2</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">t</span> <span class="id" title="var">t1</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> : <span class="id" title="keyword">Time</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) :<br/>
-&nbsp;&nbsp;<span class="id" title="var">ovWaitStateNet</span> <span class="id" title="var">m1</span> <span class="id" title="var">t</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">nextSince</span> <span class="id" title="var">m2</span> <span class="id" title="var">t1</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">m1</span> = <span class="id" title="var">m2</span>. </div>
-
-<div class="doc">
-Proof: Generalise the statement to include a similar statement about ovReadyState, then proceed by induction on nextSince. Back tracking
-shows that ovReadySate and ovWaitState are predecessors to each other and so the I.H. carries forward. The base case follows directly from the
-definition of nextSince.
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="var">ovWaitStateNet</span> <span class="id" title="var">m1</span> <span class="id" title="var">t</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">nextSince</span> <span class="id" title="var">m2</span> <span class="id" title="var">t1</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">m1</span> = <span class="id" title="var">m2</span>. 
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">bcWait_bktrk_net</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">x</span> : <span class="id" title="keyword">Time</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">ActDiscNet</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) :<br/>
 &nbsp;&nbsp;<span class="id" title="var">bcWaitStateNet</span> <span class="id" title="var">m</span> <span class="id" title="var">x</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt;<br/>
 &nbsp;&nbsp;<span class="id" title="var">bcWaitStateNet</span> <span class="id" title="var">m</span> <span class="id" title="var">x</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> \/ (<span class="id" title="var">sleepingStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> /\ <span class="id" title="var">x</span> = <span class="id" title="var">zeroTime</span>) \/<br/>
 &nbsp;&nbsp;(<span class="id" title="tactic">exists</span> <span class="id" title="var">l</span>, <span class="id" title="var">bcReadyStateNet</span> <span class="id" title="var">m</span> <span class="id" title="var">l</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> /\ <span class="id" title="var">x</span> = <span class="id" title="var">period</span> <span class="id" title="var">m</span> /\<br/>
-&nbsp;&nbsp;<span class="id" title="var">sent</span> [<span class="id" title="var">baseMode</span> <span class="id" title="var">m</span>, <span class="id" title="var">basePosition</span> <span class="id" title="var">l</span>] <span class="id" title="var">zeroTime</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span>). </div>
-
-<div class="doc">
-Proof: Lift back tracking result.
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="var">sent</span> [<span class="id" title="var">baseMode</span> <span class="id" title="var">m</span>, <span class="id" title="var">basePosition</span> <span class="id" title="var">l</span>] <span class="id" title="var">zeroTime</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span>). 
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">msgAbortPathNet_urgent</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">n'</span> <span class="id" title="var">d</span> :<br/>
 &nbsp;&nbsp;<span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">msgAbortPathNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">False</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: Synchronisation is always possible for the msgAbortPath states between the
-listener component and either the position, the mode state or the overlap component.
-Hence a delay would violate the noSynch property, and so cannot exist.
-</div>
-<div class="code">
 
 <br/>
 

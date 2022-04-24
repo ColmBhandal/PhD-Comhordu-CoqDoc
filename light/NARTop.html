@@ -24,10 +24,11 @@
 <div class="doc">
 This file was written by Colm Bhandal, PhD student, Foundations and Methods group,
 School of Computer Science and Statistics, Trinity College, Dublin, Ireland.
+<div class="paragraph"> </div>
+
+*************************** Standard Imports 
 </div>
 <div class="code">
-
-<br/>
 
 <br/>
 <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">Equality</span>.<br/>
@@ -53,12 +54,6 @@ School of Computer Science and Statistics, Trinity College, Dublin, Ireland.
 <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.EntAuxResults</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Net Aux Results Imports 
-</div>
-<div class="code">
 <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.NARInsuff</span>.<br/>
 <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.NARMisc</span>.<br/>
 <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.NARMsgPosition</span>.<br/>
@@ -68,12 +63,6 @@ Net Aux Results Imports
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">currSince_lower_bound</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) : <span class="id" title="var">currSince</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt;<br/>
 &nbsp;&nbsp;<span class="id" title="var">msgLatency</span> + <span class="id" title="var">Rmax</span> <span class="id" title="var">adaptNotif</span> <span class="id" title="var">transMax</span> &lt; <span class="id" title="var">t</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: Induction on currSince.
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">maxAnTrans_positive</span> : 0 &lt;= <span class="id" title="var">Rmax</span> <span class="id" title="var">adaptNotif</span> <span class="id" title="var">transMax</span>.<br/>
@@ -121,76 +110,27 @@ Proof: Induction on currSince.
 <br/>
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">tfsBc_not_currSince</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">t</span>  : <span class="id" title="keyword">Time</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) :<br/>
-&nbsp;&nbsp;<span class="id" title="var">tfsBcStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">currSince</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">False</span>. </div>
-
-<div class="doc">
-Proof: Induction on currSince. The base case fails because tfsBcState is not switchListen.
-The delay case is easy because by (...backwards del pres state...) the previous state is
-tfsBc also, and we just apply the I.H. to get false. The discrete case proceeds by
-(...backtracking...) on tfsBcState to get that the previous state was either tfsBc state or
-tfsCurr. In the former case, applying the I.H. will do. In the latter, we can show that the
-current mode is no longer m. We do this by showing that the mode was m in the previous
-state (currSince-curr) and then showing that the mode transition relation is anti-reflexive
-&amp; by (...tracking...) we know the action linking the states is a synch on mCurr, so the new
-mode must be different to m, which contradicts the currSince discrete constructor that
-required the currMode to be m.
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="var">tfsBcStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">currSince</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">False</span>. 
 <br/>
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">currSince_bc_state</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) : <span class="id" title="var">currSince</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt;<br/>
 &nbsp;&nbsp;(<span class="id" title="tactic">exists</span> <span class="id" title="var">x</span>, <span class="id" title="var">bcWaitStateNet</span> <span class="id" title="var">m</span> <span class="id" title="var">x</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span>) \/<br/>
-&nbsp;&nbsp;(<span class="id" title="tactic">exists</span> <span class="id" title="var">l</span>, <span class="id" title="var">bcReadyStateNet</span> <span class="id" title="var">m</span> <span class="id" title="var">l</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span>). </div>
+&nbsp;&nbsp;(<span class="id" title="tactic">exists</span> <span class="id" title="var">l</span>, <span class="id" title="var">bcReadyStateNet</span> <span class="id" title="var">m</span> <span class="id" title="var">l</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span>). 
+<br/>
+</div>
 
 <div class="doc">
-Proof: Induction on currSince. In the base case, we have that the overlap component has
-gone from switchCurr to switchListen, in which case the broadcast component can be shown to
-have stayed the same (...). But in a separate result (...EA::inter_component...) we can
-show that switchCurrState m implies bcWaitState m, and since the broadcast component has
-not changed across the transition, we have our left disjunct to satisfy our goal. Now,
-for the inductive cases, we can apply the I.H. and then do a case analysis on the previous
-state.
-For the bcReady state, we can show (...fwd_track...) that it is either preserved or
-transitions to bcWait by a discrete transition, giving us our goal. We can also show that
-is urgent, allowing us to proceed with a contradiction in the delay inductive case.
-For the bcWait state, it is easy to show (...delay_pres_state...) that the delay transition
-preserves this state. For the discrete transition case, we assume that our goal does not
-hold towards a contradiction. Well then the broadcast component must be in the sleeping
-state. Then we can show (...tracking...) that the action linking the states must be a tau,
-with the broadcast component contributing an input on trans. Now, it can be shown
-(...activation...) that the only state willing to output on trans is tfsBc. But we can show
-elsewhere (tfsBc_not_currSince) that tfsBc implies that we are not currSince, which
-contradicts the hypothesis.
-<div class="paragraph"> </div>
-
- If we're currSince &amp; we can delay, then we're in the bcWait state.
+If we're currSince &amp; we can delay, then we're in the bcWait state.
 </div>
 <div class="code">
 <span class="id" title="keyword">Corollary</span> <span class="id" title="var">currSince_del_bcWait</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) :<br/>
 &nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">currSince</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt;<br/>
-&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">x</span>, <span class="id" title="var">bcWaitStateNet</span> <span class="id" title="var">m</span> (<span class="id" title="var">delToTime</span> (<span class="id" title="var">x</span> +<span class="id" title="var">dt</span>+ <span class="id" title="var">d</span>)) <span class="id" title="var">i</span> <span class="id" title="var">n</span>. </div>
-
-<div class="doc">
-Proof: Apply currSince_bc_state and then eliminate bcReady as it is urgent
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">x</span>, <span class="id" title="var">bcWaitStateNet</span> <span class="id" title="var">m</span> (<span class="id" title="var">delToTime</span> (<span class="id" title="var">x</span> +<span class="id" title="var">dt</span>+ <span class="id" title="var">d</span>)) <span class="id" title="var">i</span> <span class="id" title="var">n</span>. 
 <br/>
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">bcWait_currSince_time</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">x</span> <span class="id" title="var">t</span>: <span class="id" title="keyword">Time</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) :<br/>
 &nbsp;&nbsp;<span class="id" title="var">bcWaitStateNet</span> <span class="id" title="var">m</span> <span class="id" title="var">x</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">currSince</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">period</span> <span class="id" title="var">m</span> - <span class="id" title="var">x</span> &lt;= <span class="id" title="var">t</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: Induction on currSince.
-Base case: x = period m, so &lt;= t is trivial.
-Discrete inductive: x and t preserved so I.H. carries forth.
-Delay inductive: x decreases, t increases, so I.H. is more than enough.
-
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">bcWait_sent</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">x</span> : <span class="id" title="keyword">Time</span>)<br/>

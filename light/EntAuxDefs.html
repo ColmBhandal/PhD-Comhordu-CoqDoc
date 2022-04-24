@@ -24,12 +24,14 @@
 <div class="doc">
 This file was written by Colm Bhandal, PhD student, Foundations and Methods group,
 School of Computer Science and Statistics, Trinity College, Dublin, Ireland.
+<div class="paragraph"> </div>
+
+*************************** Standard Imports 
+<div class="paragraph"> </div>
+
+*************************** Specialised Imports 
 </div>
 <div class="code">
-
-<br/>
-
-<br/>
 
 <br/>
 <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.StandardResults</span>.<br/>
@@ -172,31 +174,18 @@ incomingEnt v e means v is in the incoming list of the interface of e.
 
 <br/>
 <span class="id" title="keyword">Parameter</span> <span class="id" title="var">reachableEnt</span> : <span class="id" title="var">Entity</span> -&gt; <span class="id" title="keyword">Prop</span>.<br/>
-</div>
-
-<div class="doc">
-Idea: Reflexivie transitive closure of initialEnt under entity transition relations
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Parameter</span> <span class="id" title="var">nextModeEnt</span> : <span class="id" title="var">Mode</span> -&gt; <span class="id" title="var">Entity</span> -&gt; <span class="id" title="keyword">Prop</span>.<br/>
-</div>
-
-<div class="doc">
-Idea: Inductive with one constructor, in which the entity has mode state &lt;m, m', d&gt;, with m' the parameter to this relation
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Parameter</span> <span class="id" title="var">inPosEnt</span> : <span class="id" title="var">Position</span> -&gt; <span class="id" title="var">Entity</span> -&gt; <span class="id" title="keyword">Prop</span>.<br/>
+
+<br/>
 </div>
 
 <div class="doc">
-Idea: Analogous to nextModeEnt except with position vs. mode state
-<div class="paragraph"> </div>
-
- An entity is initial if its consitutent process is
+An entity is initial if its consitutent process is
 initial and its mode state is a stable, failSafe mode.
 </div>
 <div class="code">

@@ -24,10 +24,11 @@
 <div class="doc">
 This file was written by Colm Bhandal, PhD student, Foundations and Methods group,
 School of Computer Science and Statistics, Trinity College, Dublin, Ireland.
+<div class="paragraph"> </div>
+
+*************************** Standard Imports 
 </div>
 <div class="code">
-
-<br/>
 
 <br/>
 <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">Equality</span>.<br/>
@@ -62,12 +63,6 @@ School of Computer Science and Statistics, Trinity College, Dublin, Ireland.
 &nbsp;&nbsp;(<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) :<br/>
 &nbsp;&nbsp;<span class="id" title="var">sent</span> <span class="id" title="var">v</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="keyword">forall</span> <span class="id" title="var">q</span> : <span class="id" title="var">t</span> &lt; <span class="id" title="var">msgLatency</span>,<br/>
 &nbsp;&nbsp;<span class="id" title="var">outgoing</span> <span class="id" title="var">v</span> (<span class="id" title="var">minusTime</span> <span class="id" title="var">msgLatency</span> <span class="id" title="var">t</span> (<span class="id" title="var">Rlt_le</span> <span class="id" title="var">t</span> <span class="id" title="var">msgLatency</span> <span class="id" title="var">q</span>)) <span class="id" title="var">i</span> <span class="id" title="var">n</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: Induction on sent.
-</div>
-<div class="code">
 &nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">H</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="var">invertClear</span> <span class="id" title="var">H2</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="var">addHyp</span> (<span class="id" title="var">outList_received_in</span> <span class="id" title="var">l2</span> <span class="id" title="var">l2'</span> <span class="id" title="var">v</span> <span class="id" title="var">H5</span>).<br/>
@@ -91,12 +86,6 @@ Proof: Induction on sent.
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">fst_sent</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) : <span class="id" title="var">nextSince</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt;<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">l0</span>, <span class="id" title="var">sent</span> [<span class="id" title="var">baseMode</span> <span class="id" title="var">m</span>, <span class="id" title="var">basePosition</span> <span class="id" title="var">l0</span>] <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: By induction on nextSince.
-</div>
-<div class="code">
 &nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">H</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="var">state_pred_net_destr</span> <span class="id" title="var">H0</span>. <span class="id" title="var">state_pred_net_destr</span> <span class="id" title="var">H1</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="var">link_netentdisc_tac</span> <span class="id" title="var">b</span>.<br/>
@@ -108,12 +97,6 @@ Proof: By induction on nextSince.
 &nbsp;&nbsp;(<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) : <span class="id" title="var">sent</span> <span class="id" title="var">v</span> <span class="id" title="var">msgLatency</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt;<br/>
 &nbsp;&nbsp;<span class="id" title="var">outgoing</span> <span class="id" title="var">v</span> <span class="id" title="var">zeroTime</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> \/<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">r</span> <span class="id" title="var">l</span>, <span class="id" title="var">delivered</span> ([-<span class="id" title="var">v</span>, <span class="id" title="var">l</span>, <span class="id" title="var">r</span>-]) <span class="id" title="var">zeroTime</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: By induction on sent.
-</div>
-<div class="code">
 &nbsp;&nbsp;<span class="id" title="var">introz</span> <span class="id" title="var">U</span>. <span class="id" title="var">remember</span> <span class="id" title="var">msgLatency</span> <span class="id" title="keyword">as</span> <span class="id" title="var">mL</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">U</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="var">false</span>. <span class="id" title="tactic">eapply</span> <span class="id" title="var">Rlt_not_le</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">msgLatency_positive</span>. <span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">HeqmL</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">Rle_refl</span>.<br/>
@@ -138,13 +121,6 @@ Proof: By induction on sent.
 &nbsp;&nbsp;(<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) : <span class="id" title="var">sent</span> <span class="id" title="var">v</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="keyword">forall</span> <span class="id" title="var">q</span> : <span class="id" title="var">msgLatency</span> &lt; <span class="id" title="var">t</span>,<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">r</span> <span class="id" title="var">l</span>,<br/>
 &nbsp;&nbsp;<span class="id" title="var">delivered</span> ([-<span class="id" title="var">v</span>, <span class="id" title="var">l</span>, <span class="id" title="var">r</span>-]) (<span class="id" title="var">minusTime</span> <span class="id" title="var">t</span> <span class="id" title="var">msgLatency</span> (<span class="id" title="var">Rlt_le</span> <span class="id" title="var">msgLatency</span> <span class="id" title="var">t</span> <span class="id" title="var">q</span>)) <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: Induction on sent. Well the base case can be immediately discarded due to the
-  contradiction of t = 0 and mL &lt; t, given that mL is positive.
-</div>
-<div class="code">
 &nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">H</span>. <span class="id" title="var">contradict</span> <span class="id" title="var">q</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">Rle_not_lt</span>. <span class="id" title="tactic">simpl</span>. <span class="id" title="var">timeNonneg</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="var">addHyp</span> (<span class="id" title="var">IHsent</span> <span class="id" title="var">q</span>). <span class="id" title="tactic">clear</span> <span class="id" title="var">IHsent</span>. <span class="id" title="var">decompose</span> [<span class="id" title="var">ex</span>] <span class="id" title="var">H0</span>. <span class="id" title="tactic">clear</span> <span class="id" title="var">H0</span>. <span class="id" title="tactic">rename</span> <span class="id" title="var">x0</span> <span class="id" title="var">into</span> <span class="id" title="var">l</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">rename</span> <span class="id" title="var">x</span> <span class="id" title="var">into</span> <span class="id" title="var">r</span>.<br/>
@@ -181,12 +157,6 @@ Proof: Induction on sent. Well the base case can be immediately discarded due to
 &nbsp;&nbsp;(<span class="id" title="var">l</span> <span class="id" title="var">l0</span> : <span class="id" title="var">Position</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) :<br/>
 &nbsp;&nbsp;<span class="id" title="var">sent</span> [<span class="id" title="var">baseMode</span> <span class="id" title="var">m</span>, <span class="id" title="var">basePosition</span> <span class="id" title="var">l0</span>] <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">inPosNet</span> <span class="id" title="var">l</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt;<br/>
 &nbsp;&nbsp;<span class="id" title="var">dist2d</span> <span class="id" title="var">l</span> <span class="id" title="var">l0</span> &lt;= <span class="id" title="var">speedMax</span>*<span class="id" title="var">t</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: By induction on the proof of sent.
-</div>
-<div class="code">
 &nbsp;&nbsp;<span class="id" title="tactic">intros</span>. <span class="id" title="tactic">generalize</span> <span class="id" title="tactic">dependent</span> <span class="id" title="var">l</span>. <span class="id" title="tactic">induction</span> <span class="id" title="var">H</span>; <span class="id" title="tactic">intros</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">rename</span> <span class="id" title="var">H3</span> <span class="id" title="var">into</span> <span class="id" title="var">QQ</span>. <span class="id" title="tactic">rename</span> <span class="id" title="var">H2</span> <span class="id" title="var">into</span> <span class="id" title="var">H3</span>. <span class="id" title="tactic">rename</span> <span class="id" title="var">H1</span> <span class="id" title="var">into</span> <span class="id" title="var">H2</span>. <span class="id" title="tactic">rename</span> <span class="id" title="var">H0</span> <span class="id" title="var">into</span> <span class="id" title="var">H1</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">rename</span> <span class="id" title="var">QQ</span> <span class="id" title="var">into</span> <span class="id" title="var">H0</span>. <span class="id" title="var">swapRename</span> <span class="id" title="var">l</span> <span class="id" title="var">l1</span>.<br/>

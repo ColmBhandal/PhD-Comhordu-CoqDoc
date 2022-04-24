@@ -24,10 +24,11 @@
 <div class="doc">
 This file was written by Colm Bhandal, PhD student, Foundations and Methods group,
 School of Computer Science and Statistics, Trinity College, Dublin, Ireland.
+<div class="paragraph"> </div>
+
+*************************** Standard Imports 
 </div>
 <div class="code">
-
-<br/>
 
 <br/>
 <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.Extras.LibTactics</span>.<br/>
@@ -69,12 +70,6 @@ School of Computer Science and Statistics, Trinity College, Dublin, Ireland.
 &nbsp;&nbsp;<span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">a</span> -&gt;&gt; <span class="id" title="var">e'</span> -&gt; <span class="id" title="var">tfsNextStateEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">e</span> \/ <span class="id" title="var">tfsStartStateEnt</span> <span class="id" title="var">e</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="var">Admitted</span>. 
 <br/>
-</div>
-
-<div class="doc">
-In here, I'd like results that relate the states of things within a reachable entity e.g. the state of the software component and the mode state.
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">currEq_mode</span> <span class="id" title="var">m</span> <span class="id" title="var">m''</span> <span class="id" title="var">e</span> :<br/>
@@ -84,39 +79,12 @@ In here, I'd like results that relate the states of things within a reachable en
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">ovAbort_unstable</span> <span class="id" title="var">e</span> : <span class="id" title="var">reachableEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">ovAbortStateEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">unstable</span> (<span class="id" title="var">mstEnt</span> <span class="id" title="var">e</span>).<br/>
 &nbsp;&nbsp;<span class="id" title="var">introz</span> <span class="id" title="var">U</span>. <span class="id" title="var">Admitted</span>. 
 <br/>
-</div>
-
-<div class="doc">
-If an entity is in the tfsCurr state, then the mext mode exists and is failsafe.
-</div>
-<div class="code">
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">tfsCurr_failSafe</span> (<span class="id" title="var">e</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) :<br/>
 &nbsp;&nbsp;<span class="id" title="var">tfsCurrStateEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="tactic">exists</span> <span class="id" title="var">m</span>, <span class="id" title="var">nextModeEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">e</span> /\ <span class="id" title="var">failSafe</span> <span class="id" title="var">m</span>.<br/>
-&nbsp;&nbsp;<span class="id" title="var">Admitted</span>. </div>
-
-<div class="doc">
-GENERAL TACTICS WOULD BE USEFUL HERE, BECAUSE THERE ARE 3 FAIRLY SMILAR THEOREMS TO COME.
-Proof: Look at the overlap component. Upon entering this state, it must have written out a fail safe mode
-to the mode state- in particular, the successor to the current mode.
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>. 
 <br/>
-</div>
-
-<div class="doc">
-If an entity is in the tfsBc state, then the current mode of that entity
-is failsafe.
-</div>
-<div class="code">
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">tfsBc_failSafe</span> (<span class="id" title="var">e</span> : <span class="id" title="var">Entity</span>) :<br/>
 &nbsp;&nbsp;<span class="id" title="var">tfsBcStateEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">failSafe</span> (<span class="id" title="var">currModeEnt</span> <span class="id" title="var">e</span>).<br/>
-</div>
-
-<div class="doc">
-Proof: Backtracking gives that the previous state was tfsCurrState
-</div>
-<div class="code">
 &nbsp;&nbsp;<span class="id" title="var">introz</span> <span class="id" title="var">U</span>. <span class="id" title="var">Admitted</span>. 
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">tfsNext_currMode</span> <span class="id" title="var">e</span> <span class="id" title="var">m</span> :<br/>
@@ -124,49 +92,29 @@ Proof: Backtracking gives that the previous state was tfsCurrState
 &nbsp;&nbsp;<span class="id" title="var">introz</span> <span class="id" title="var">U</span>.<br/>
  <span class="id" title="var">Admitted</span>. 
 <br/>
-</div>
-
-<div class="doc">
-If we're in the state switchCurr m', then the next mode is m'.
-Corollary: switchCurr is urgent.
-</div>
-<div class="code">
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">switchCurr_mState</span> (<span class="id" title="var">e</span> : <span class="id" title="var">Entity</span>) :<br/>
 &nbsp;&nbsp;<span class="id" title="var">reachableEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">switchCurrStateEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="tactic">exists</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span>,<br/>
-&nbsp;&nbsp;<span class="id" title="var">mstEnt</span> <span class="id" title="var">e</span> = &lt;| <span class="id" title="var">m</span>, <span class="id" title="var">m'</span>, <span class="id" title="var">zeroTime</span> |&gt;. <span class="id" title="var">Admitted</span>. </div>
+&nbsp;&nbsp;<span class="id" title="var">mstEnt</span> <span class="id" title="var">e</span> = &lt;| <span class="id" title="var">m</span>, <span class="id" title="var">m'</span>, <span class="id" title="var">zeroTime</span> |&gt;. <span class="id" title="var">Admitted</span>. 
+<br/>
+</div>
 
 <div class="doc">
-Proof: Inductgion on reachabledEnt.
-Relies on a chain of support of similar results for switchBc, ovWait,
-ovReady and init. Each one relying on the last. The ovWait and ovReady ones
-would need to be proved by mutual induction.
-<div class="paragraph"> </div>
-
- If an entity is in a state ready to output some m l from the broadcast component,
+If an entity is in a state ready to output some m l from the broadcast component,
 then it is in the position l.
 </div>
 <div class="code">
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">bcReady_pos</span> (<span class="id" title="var">e</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>) :<br/>
-&nbsp;&nbsp;<span class="id" title="var">reachableEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">bcReadyStateEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">l</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">inPosEnt</span> <span class="id" title="var">l</span> <span class="id" title="var">e</span>. <span class="id" title="var">Admitted</span>. </div>
+&nbsp;&nbsp;<span class="id" title="var">reachableEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">bcReadyStateEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">l</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">inPosEnt</span> <span class="id" title="var">l</span> <span class="id" title="var">e</span>. <span class="id" title="var">Admitted</span>. 
+<br/>
+</div>
 
 <div class="doc">
-Proof: Induction on reachableEnt. The only way to enter bcReady m l is
-by reading the current position l, and by urgency no time can pass in the state,
-and then by disc_pre_pos <span class="inlinecode"><span class="id" title="var">salvaged</span></span> the position is the same. 
-<div class="paragraph"> </div>
-
- If an entity is in a state ready to output some m l from the overlap component,
+If an entity is in a state ready to output some m l from the overlap component,
 then it is in the position l.
 </div>
 <div class="code">
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">ovReady_pos</span> (<span class="id" title="var">e</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>) :<br/>
-&nbsp;&nbsp;<span class="id" title="var">reachableEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">ovReadyStateEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">l</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">inPosEnt</span> <span class="id" title="var">l</span> <span class="id" title="var">e</span>. <span class="id" title="var">Admitted</span>. </div>
-
-<div class="doc">
-Proof: Analogous to that of bcReady_pos.
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="var">reachableEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">ovReadyStateEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">l</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">inPosEnt</span> <span class="id" title="var">l</span> <span class="id" title="var">e</span>. <span class="id" title="var">Admitted</span>. 
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">tfsListen_paused</span> <span class="id" title="var">p1</span> <span class="id" title="var">p2</span> <span class="id" title="var">p3</span> :<br/>
 &nbsp;&nbsp;&nbsp;<span class="id" title="var">tfsListenStateProt</span> (<span class="id" title="var">p1</span> $||$ <span class="id" title="var">p2</span> $||$ <span class="id" title="var">p3</span>) -&gt; <span class="id" title="var">pausedStateProt</span> (<span class="id" title="var">p1</span> $||$ <span class="id" title="var">p2</span> $||$ <span class="id" title="var">p3</span>).<br/>
@@ -185,19 +133,8 @@ If an entity inputs a message then that message is incoming.
 &nbsp;&nbsp;<span class="id" title="tactic">reflexivity</span>. <span class="id" title="tactic">inversion</span> <span class="id" title="var">H10</span>. <span class="id" title="keyword">Qed</span>.<br/>
 
 <br/>
-</div>
 
-<div class="doc">
-Here we prove simple urgency results which will refer to individual states rather
-than more complicated predicates such as msgBadPath. The urgency results usually follow
-one of two patterns. Either a synchronisation happens between two of the sub-terms in
-the software process, or it happens between the software process and another component
-i.e. the mode state or the interface component.
-<div class="paragraph"> </div>
-
- Urgency Pre-processing Tactics 
-</div>
-<div class="code">
+<br/>
 
 <br/>
 <span class="id" title="keyword">Ltac</span> <span class="id" title="var">urgency_pre_tac</span> := <br/>
@@ -279,12 +216,6 @@ Same as urgency_pre_tac2 but the state predicate has 2 parameters.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">try</span> (<span class="id" title="tactic">assert</span> (<span class="id" title="var">S</span> <span class="id" title="var">x1</span> <span class="id" title="var">x2</span> <span class="id" title="var">p3</span>) <span class="id" title="keyword">as</span> <span class="id" title="var">TS</span>; [<span class="id" title="tactic">inversion</span> <span class="id" title="var">TP</span>; <span class="id" title="tactic">assumption</span> | ]) <span class="id" title="keyword">end</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Urgency Results 
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">gotMsgStateEnt_urgent</span> (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>) <span class="id" title="var">m</span> <span class="id" title="var">l</span> :<br/>
@@ -323,15 +254,6 @@ Urgency Results
 &nbsp;&nbsp;-&gt; <span class="id" title="var">False</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="var">urgency_pre_tac2</span> <span class="id" title="var">tfsListenStateEnt</span> <span class="id" title="var">tfsListenStateProt</span> <span class="id" title="var">tfsListenState</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="var">del_triple_sort_tac</span>.<br/>
-</div>
-
-<div class="doc">
-It can be shown that tfsListen is only reached by the overlap when the listener
-  component is paused. This in turn implies the listener component is listening on the
-  channel unpause. Since the overlap component can clearly output on this channel, a
-  synch is possible, and so by maximal progress delay cannot happen.
-</div>
-<div class="code">
 &nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">PA</span> : <span class="id" title="var">tfsListen_paused</span> <span class="id" title="var">TP</span>. <span class="id" title="tactic">assert</span> (<span class="id" title="var">pausedState</span> <span class="id" title="var">p3</span>). <span class="id" title="tactic">inversion</span> <span class="id" title="var">PA</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">assumption</span>. <span class="id" title="var">lets</span> <span class="id" title="var">PAP</span> : <span class="id" title="var">paused_unpause_in_sort</span> <span class="id" title="var">H</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">TAP</span> : <span class="id" title="var">tfsListen_unpause_out_sort</span> <span class="id" title="var">TS</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">SORT2_3</span> <span class="id" title="tactic">in</span> <span class="id" title="var">TAP</span>.<br/>
@@ -363,16 +285,6 @@ It can be shown that tfsListen is only reached by the overlap when the listener
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">bcReady_urgent</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>) : <span class="id" title="keyword">forall</span> (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>),<br/>
 &nbsp;&nbsp;<span class="id" title="var">reachableEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">bcReadyStateEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">l</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">e</span> -<span class="id" title="var">ED</span>- <span class="id" title="var">d</span> -&gt;&gt; <span class="id" title="var">e'</span> <br/>
 &nbsp;&nbsp;-&gt; <span class="id" title="var">False</span>. <span class="id" title="var">urgency_pre_tac2_2</span> <span class="id" title="var">bcReadyStateEnt</span> <span class="id" title="var">bcReadyStateProt</span> <span class="id" title="var">bcReadyState</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: By activation, the bcReady state can be shown to be capable of outputting on
-  chanOutProc. Separately, the interface component can be shown to always be available for
-  input on this channel, i.e. it can always buffer a message from the software component.
-  Thus, a synch between software and interface is possible, violating the "noSynch" condition
-  that must hold for the entity to delay. Hence delay cannot happen.
-</div>
-<div class="code">
 &nbsp;&nbsp;<span class="id" title="var">noSyncNow_tac</span>. <span class="id" title="var">lets</span> <span class="id" title="var">BO</span> : <span class="id" title="var">bcReady_outProc_out</span> <span class="id" title="var">TS</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">discActEnabled</span> <span class="id" title="var">p0</span> (<span class="id" title="var">chanOutProc</span>;! [<span class="id" title="var">baseMode</span> <span class="id" title="var">m</span>, <span class="id" title="var">basePosition</span> <span class="id" title="var">l</span>])) <span class="id" title="keyword">as</span> <span class="id" title="var">DA</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">TR</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">parTriple_dae_intro1</span>. <span class="id" title="tactic">assumption</span>.<br/>
@@ -386,16 +298,6 @@ Proof: By activation, the bcReady state can be shown to be capable of outputting
 &nbsp;&nbsp;-&gt; <span class="id" title="var">False</span>. <span class="id" title="tactic">intros</span> <span class="id" title="var">e</span> <span class="id" title="var">e'</span> <span class="id" title="var">d</span>. <span class="id" title="var">introz</span> <span class="id" title="var">U</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">OUS</span> : <span class="id" title="var">ovAbort_unstable</span> <span class="id" title="var">U</span> <span class="id" title="var">U0</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="var">urgency_pre_tac2</span> <span class="id" title="var">ovAbortStateEnt</span> <span class="id" title="var">ovAbortStateProt</span> <span class="id" title="var">ovAbortState</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: Show that the mode state is not stable whenever we
-  get into this state, which will require showing that the mode state is unstable
-  for init, ovWait, and ovReady- by induction on reachableEnt I suppose. Then
-  we show that stable! is activated on ovAbort, and hence a synch can happen with
-  the mode state, so by progress there is no delay possible.
-</div>
-<div class="code">
 &nbsp;&nbsp;<span class="id" title="var">noSyncNow_tac</span>. <span class="id" title="var">lets</span> <span class="id" title="var">OAS</span> : <span class="id" title="var">ovAbort_stable_out</span> <span class="id" title="var">TS</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">US</span> : <span class="id" title="var">unstable_stable_in</span> <span class="id" title="var">OUS</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">assert</span> (<span class="id" title="var">discActEnabled</span> <span class="id" title="var">p0</span> (<span class="id" title="var">chanMStable</span> *!)) <span class="id" title="keyword">as</span> <span class="id" title="var">DA</span>.<br/>
@@ -458,13 +360,6 @@ Proof: Show that the mode state is not stable whenever we
 &nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">SORT2_3</span> <span class="id" title="tactic">in</span> <span class="id" title="var">SOU</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">SOU</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">PIU</span>. <span class="id" title="keyword">Qed</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-In here, results about the path predicates. Mostly what we're concerned
-with is preservation of the path predicates.
-</div>
-<div class="code">
 
 <br/>
 
@@ -502,65 +397,18 @@ The interface component is irrelevant to the msgAbortPath.
 <br/>
 
 <br/>
-</div>
-
-<div class="doc">
-A reachable entity that can delay is in the listening state.
-</div>
-<div class="code">
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">del_listening_pre</span> (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>) :<br/>
 &nbsp;&nbsp;<span class="id" title="var">reachableEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">e</span> -<span class="id" title="var">ED</span>- <span class="id" title="var">d</span> -&gt;&gt; <span class="id" title="var">e'</span> -&gt; <br/>
 &nbsp;&nbsp;<span class="id" title="var">abortOvlpStateEnt</span> <span class="id" title="var">e</span> \/ <span class="id" title="var">badOvlpStateEnt</span> <span class="id" title="var">e</span> \/ <span class="id" title="var">listeningStateEnt</span> <span class="id" title="var">e</span> \/ <span class="id" title="var">pausedStateEnt</span> <span class="id" title="var">e</span>.<br/>
-&nbsp;&nbsp;<span class="id" title="var">introz</span> <span class="id" title="var">U</span>. <span class="id" title="var">Admitted</span>. </div>
-
-<div class="doc">
-Proof: Since the entity is reachable, we know it has a listener
-component (...reachableProt_triple...), so we do a case analysis as to what the location
-of the listener component is. In most cases, we can show by simple urgency results that
-a discrete action is possible via the listener synchronising with another component of
-the entity. The remaining cases that aren't urgent are exactly the conclusion to this
-result, and we're done.
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="var">introz</span> <span class="id" title="var">U</span>. <span class="id" title="var">Admitted</span>. 
 <br/>
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">del_ovlp</span> (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>) : <br/>
 &nbsp;&nbsp;<span class="id" title="var">reachableEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">e</span> -<span class="id" title="var">ED</span>- <span class="id" title="var">d</span> -&gt;&gt; <span class="id" title="var">e'</span> -&gt;<br/>
 &nbsp;&nbsp;<span class="id" title="var">dormantStateEnt</span> <span class="id" title="var">e</span> \/ <span class="id" title="var">tfsCurrStateEnt</span> <span class="id" title="var">e</span> \/<br/>
-&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">m</span>, <span class="id" title="tactic">exists</span> <span class="id" title="var">t</span>, <span class="id" title="tactic">exists</span> <span class="id" title="var">x</span>, <span class="id" title="tactic">exists</span> <span class="id" title="var">y</span>, <span class="id" title="var">ovWaitStateEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">e</span> . <span class="id" title="var">Admitted</span>. </div>
-
-<div class="doc">
-Proof: Case analyse the overlap component of the software
-process in e and eliminate most other possibilities by simple urgency results.
-For the tfsListen case, apply (del_listening_pre). A corollary of this is that
-the listener component is always capable of input on unpause or output on bad
-or abort, and since tfsListen can do all three, a synch is always possible,
-hence our urgency by progress. This should cover all states except those in our
-conclusion, and we're done.
-<div class="paragraph"> </div>
-
- A reachable entity that can delay is in the listening state.
-</div>
-<div class="code">
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">m</span>, <span class="id" title="tactic">exists</span> <span class="id" title="var">t</span>, <span class="id" title="tactic">exists</span> <span class="id" title="var">x</span>, <span class="id" title="tactic">exists</span> <span class="id" title="var">y</span>, <span class="id" title="var">ovWaitStateEnt</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">e</span> . <span class="id" title="var">Admitted</span>. 
+<br/>
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">del_listening</span> (<span class="id" title="var">e</span> <span class="id" title="var">e'</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>) :<br/>
-&nbsp;&nbsp;<span class="id" title="var">reachableEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">e</span> -<span class="id" title="var">ED</span>- <span class="id" title="var">d</span> -&gt;&gt; <span class="id" title="var">e'</span> -&gt; <span class="id" title="var">listeningStateEnt</span> <span class="id" title="var">e</span>. <span class="id" title="var">Admitted</span>. </div>
-
-<div class="doc">
-Proof: First we apply (del_listening_pre), to get that
-we are either in abortOvlp, badOvlp, paused or listening. If the last case
-is true, then we are done. From here, we apply (del_ovlp) to further get
-dormant, tfsCurr or ovWait as possibilities for the current state. Now,
-if we are paused, then by (paused_switch) we are switchState- but this
-contradicts the three possibilities for an overlap state, so it must be
-thrown away. Hence we are either abortOvlp or badOvlp. But all three overlap
-possibilities can input on both abort and bad, so in all six cases a synchronisation
-is possible. Hence we arrive at our contradiction and conclude listening.
-&gt;Could use more automation in the tactic maybe? Pull out the software component,
-apply the two previous results, and run some sort of auto that eliminates all the
-cases that can synch.
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="var">reachableEnt</span> <span class="id" title="var">e</span> -&gt; <span class="id" title="var">e</span> -<span class="id" title="var">ED</span>- <span class="id" title="var">d</span> -&gt;&gt; <span class="id" title="var">e'</span> -&gt; <span class="id" title="var">listeningStateEnt</span> <span class="id" title="var">e</span>. <span class="id" title="var">Admitted</span>. 
 <br/>
 
 <br/>

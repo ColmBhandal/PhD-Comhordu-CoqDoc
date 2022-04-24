@@ -24,10 +24,11 @@
 <div class="doc">
 This file was written by Colm Bhandal, PhD student, Foundations and Methods group,
 School of Computer Science and Statistics, Trinity College, Dublin, Ireland.
+<div class="paragraph"> </div>
+
+*************************** Standard Imports 
 </div>
 <div class="code">
-
-<br/>
 
 <br/>
 <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">Equality</span>.<br/>
@@ -64,19 +65,7 @@ School of Computer Science and Statistics, Trinity College, Dublin, Ireland.
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">tfs_currModeNet</span> <span class="id" title="var">m1</span> <span class="id" title="var">m2</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> : <span class="id" title="var">tfs</span> <span class="id" title="var">m1</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt;<br/>
 &nbsp;&nbsp;<span class="id" title="var">currModeNet</span> <span class="id" title="var">m2</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; ~<span class="id" title="var">failSafe</span> <span class="id" title="var">m2</span> -&gt; <span class="id" title="var">m1</span> = <span class="id" title="var">m2</span>.<br/>
-&nbsp;&nbsp;<span class="id" title="var">Admitted</span>. </div>
-
-<div class="doc">
-Proof: induction on tfs. The first base follows from the definition of
-tfs. The discrete inductive case follows by application of I.H. and use
-of the mode-swith-states(exact name?) theorem to eliminate all states
-except tfsCurr-&gt;tfsBc. For this, it can be shown that the curr mode
-is fail safe in the derivative, contradicting our hypothesis. The delay
-inductive case follows by I.H. and a preservation theorem (name?) for
-currModeNet over a delay
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>. 
 <br/>
 
 <br/>
@@ -116,12 +105,6 @@ currModeNet over a delay
 &nbsp;&nbsp;<span class="id" title="var">delivered</span> ([-<span class="id" title="var">v</span>, <span class="id" title="var">l</span>, <span class="id" title="var">r</span>-]) <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="keyword">forall</span> <span class="id" title="var">q</span> : <span class="id" title="var">t</span> &lt; <span class="id" title="var">adaptNotif</span>,<br/>
 &nbsp;&nbsp;<span class="id" title="var">incomingNetNotif</span> ((<span class="id" title="var">baseDistance</span> <span class="id" title="var">r</span>)::<span class="id" title="var">v</span>) (<span class="id" title="var">minusTime</span> <span class="id" title="var">adaptNotif</span> <span class="id" title="var">t</span> (<span class="id" title="var">Rlt_le</span> <span class="id" title="var">t</span> <span class="id" title="var">adaptNotif</span> <span class="id" title="var">q</span>)) <span class="id" title="var">i</span> <span class="id" title="var">n</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">H</span> <span class="id" title="var">q</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: Induction on delivered.
-</div>
-<div class="code">
 &nbsp;&nbsp;<span class="id" title="tactic">induction</span> <span class="id" title="var">H</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">OI</span> : <span class="id" title="var">outNet_incomingNetNotif</span> <span class="id" title="var">w</span>. <span class="id" title="var">my_applys_eq</span> <span class="id" title="var">OI</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">timeEqR</span>. <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">ring</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="var">lets</span> <span class="id" title="var">IH</span> : <span class="id" title="var">IHdelivered</span> <span class="id" title="var">q</span>. <span class="id" title="tactic">clear</span> <span class="id" title="var">IHdelivered</span>.<br/>
@@ -137,28 +120,7 @@ Proof: Induction on delivered.
 &nbsp;&nbsp;<span class="id" title="var">nextModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt; ~<span class="id" title="var">sufficient</span> <span class="id" title="var">m</span> <span class="id" title="var">r</span> -&gt;<br/>
 &nbsp;&nbsp;<span class="id" title="var">incomingNetNotif</span> [<span class="id" title="var">baseDistance</span> <span class="id" title="var">r</span>, <span class="id" title="var">baseMode</span> <span class="id" title="var">m</span>, <span class="id" title="var">basePosition</span> <span class="id" title="var">l</span>] <span class="id" title="var">zeroTime</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt;<br/>
 &nbsp;&nbsp;<span class="id" title="var">incomingNetNotif</span> [<span class="id" title="var">baseDistance</span> <span class="id" title="var">r</span>, <span class="id" title="var">baseMode</span> <span class="id" title="var">m</span>, <span class="id" title="var">basePosition</span> <span class="id" title="var">l</span>] <span class="id" title="var">zeroTime</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span> \/<br/>
-&nbsp;&nbsp;<span class="id" title="var">notifAbortPathNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span>. <span class="id" title="var">Admitted</span>. </div>
-
-<div class="doc">
-Proof: Much like Basics::outgoing_timeout_disc. We case analyse the action a.
-For the cases where a is either input, output or ignore, we can show that
-incomingNetNotif is preserved (...linking theorems / theorems on timed lists...),
-and we have our LHS. In the remaining case, a is a tau action. Then we can show
-that either incomingNetNotif &lt;r, m, l&gt; 0 i n' or the tau is the result of an output
-of &lt;r, m, l&gt; by the interface on the channel AN and an input by the process on
-this channel. Then by the base case of notifAbortPath, we have that
-notifAbortPath m r i n', giving us the RHS of the goal, and we're done.
-
-<div class="paragraph"> </div>
-
-Idea: Standardised proof method? Destruct everything right down to timed lists of interface,
-then show the notif lists are either equal or there's a transition from one to the other.
-Then show that only such a transition, with the arguments of the buffered message,
-will cause it to leave the list. But in that case, you have a case for the notifAbort path.
-So that's it.
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="var">notifAbortPathNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span>. <span class="id" title="var">Admitted</span>. 
 <br/>
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">nextSince_next</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) : <br/>
 &nbsp;&nbsp;<span class="id" title="var">nextSince</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">nextModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span>.<br/>
@@ -169,24 +131,12 @@ So that's it.
 <br/>
 
 <br/>
-<span class="id" title="var">Admitted</span>. </div>
-
-<div class="doc">
-Proof: As detailed above
-</div>
-<div class="code">
-
+<span class="id" title="var">Admitted</span>. 
 <br/>
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">notifAbort_not_nextSince</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">a</span> : <span class="id" title="var">ActDiscNet</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">rn</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) : <br/>
 &nbsp;&nbsp;<span class="id" title="var">notifAbortPathNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt;<br/>
 &nbsp;&nbsp;<span class="id" title="var">notifAbortPathNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span> \/ ~<span class="id" title="var">nextSinceStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n'</span>. <span class="id" title="var">introz</span> <span class="id" title="var">U</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: Similar to msgAbort_not_nextSince
-</div>
-<div class="code">
 &nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">U</span>. <span class="id" title="var">link_netentdiscfwd_tac</span> <span class="id" title="var">e'</span> <span class="id" title="var">b</span> <span class="id" title="var">U1</span>. <span class="id" title="tactic">left</span>. <span class="id" title="tactic">econstructor</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">H</span>. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">U2</span>. <span class="id" title="tactic">assumption</span>.<br/>
 &nbsp;&nbsp;<span class="id" title="var">link_entsoftdisc_tac</span>;<br/>

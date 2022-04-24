@@ -24,10 +24,11 @@
 <div class="doc">
 This file was written by Colm Bhandal, PhD student, Foundations and Methods group,
 School of Computer Science and Statistics, Trinity College, Dublin, Ireland.
+<div class="paragraph"> </div>
+
+*************************** Standard Imports 
 </div>
 <div class="code">
-
-<br/>
 
 <br/>
 <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">Coq.Program.Equality</span>.<br/>
@@ -45,12 +46,6 @@ School of Computer Science and Statistics, Trinity College, Dublin, Ireland.
 <br/>
 
 <br/>
-</div>
-
-<div class="doc">
-A network of entities is a list of entities.
-</div>
-<div class="code">
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">Network</span> : <span class="id" title="keyword">Type</span> := <span class="id" title="var">list</span> <span class="id" title="var">Entity</span>.<br/>
 
 <br/>
@@ -300,13 +295,6 @@ For every ignore, there is a corresponding accept.
 &nbsp;&nbsp;<span class="id" title="keyword">where</span> &quot;n1 -NA- a -NA&gt; n2" := (<span class="id" title="var">stepDiscNet</span> <span class="id" title="var">n1</span> <span class="id" title="var">a</span> <span class="id" title="var">n2</span>).<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-An network n is discrete action enabled for the discrete action a iff
-there is some derivative network n' such that n transitions to n' via a.
-</div>
-<div class="code">
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">discActEnabledNet</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">ActDiscNet</span>) :=<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">n'</span>, <span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span>.<br/>
 
@@ -640,13 +628,7 @@ the singleton network.
 &nbsp;&nbsp;<span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">e</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">ActDiscNet</span>),<br/>
 &nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">NA</span>- <span class="id" title="var">a</span> -<span class="id" title="var">NA</span>&gt; <span class="id" title="var">n'</span> -&gt;<br/>
 &nbsp;&nbsp;<span class="id" title="var">e</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> -&gt;<br/>
-&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">e'</span>, <span class="id" title="var">e'</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n'</span> /\ (<span class="id" title="var">e</span> = <span class="id" title="var">e'</span> \/ (<span class="id" title="tactic">exists</span> <span class="id" title="var">a'</span>, <span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">a'</span> -&gt;&gt; <span class="id" title="var">e'</span>)). <span class="id" title="var">Admitted</span>. </div>
-
-<div class="doc">
-Proof: Case analyse the network transition and this follows from the semantics
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">e'</span>, <span class="id" title="var">e'</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n'</span> /\ (<span class="id" title="var">e</span> = <span class="id" title="var">e'</span> \/ (<span class="id" title="tactic">exists</span> <span class="id" title="var">a'</span>, <span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">a'</span> -&gt;&gt; <span class="id" title="var">e'</span>)). <span class="id" title="var">Admitted</span>. 
 <br/>
 <span class="id" title="keyword">Ltac</span> <span class="id" title="var">link_netentdiscfwd_tac0</span> <span class="id" title="var">e'</span> <span class="id" title="var">U</span> :=<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
@@ -814,14 +796,7 @@ as e', and e can perform the same timed step to e'.
 <div class="code">
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">link_net_ent_del_fwd</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">n</span> <span class="id" title="var">n'</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">e</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>),<br/>
 &nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">e</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n</span> -&gt; <span class="id" title="tactic">exists</span> <span class="id" title="var">e'</span>, <span class="id" title="var">e'</span> @ <span class="id" title="var">i</span> .: <span class="id" title="var">n'</span> /\ <span class="id" title="var">e</span> -<span class="id" title="var">ED</span>- <span class="id" title="var">d</span> -&gt;&gt; <span class="id" title="var">e'</span>.<br/>
-&nbsp;&nbsp;<span class="id" title="var">Admitted</span>. </div>
-
-<div class="doc">
-Proof: Straightforward from the semantics. Could do induction on the structure of n for the actual proof. Similar to
-link_net_ent_disc_fwd but probably simpler.
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="var">Admitted</span>. 
 <br/>
 <span class="id" title="keyword">Ltac</span> <span class="id" title="var">link_netentdelfwd_tac</span> <span class="id" title="var">e'</span> <span class="id" title="var">U</span> :=<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
@@ -911,11 +886,6 @@ are the derivatives of e1 and e2 respectively.
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">timeSplit_net</span> <span class="id" title="var">n</span> <span class="id" title="var">n''</span> <span class="id" title="var">d</span> <span class="id" title="var">d'</span> <span class="id" title="var">d''</span> :<br/>
 &nbsp;&nbsp;<span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d''</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n''</span> -&gt; <span class="id" title="var">d''</span> = <span class="id" title="var">d</span> +<span class="id" title="var">d</span>+ <span class="id" title="var">d'</span> -&gt;<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">n'</span>, <span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n'</span> /\ <span class="id" title="var">n'</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d'</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n''</span>. <span class="id" title="var">Admitted</span>. </div>
-
-<div class="doc">
-Proof: Straightforward. Lift time split property for entities. Maybe induction on struct of n.</div>
-<div class="code">
-</div>
 <hr/>This page has been generated by <a href="http://coq.inria.fr/">coqdoc</a>
 </div>
 

@@ -252,14 +252,6 @@ Used to solve the goal which is an inequality between two objects.
 <span class="id" title="keyword">Ltac</span> <span class="id" title="var">neq_inversion</span> := <span class="id" title="tactic">unfold</span> <span class="id" title="var">not</span>; <span class="id" title="keyword">let</span> <span class="id" title="var">Q</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span> <span class="id" title="tactic">intro</span> <span class="id" title="var">Q</span>; <span class="id" title="tactic">inversion</span> <span class="id" title="var">Q</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Adds a hypothesis Y to the context and generates a subgoal of unspecified
-type such that instantiation of the sub-goal solves it and sets the type
-of Y in the original proof context.
-</div>
-<div class="code">
 <span class="id" title="keyword">Ltac</span> <span class="id" title="var">eassertArg</span> <span class="id" title="var">Y</span> := <span class="id" title="keyword">let</span> <span class="id" title="var">P</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span><br/>
 &nbsp;&nbsp;<span class="id" title="tactic">evar</span> (<span class="id" title="var">P</span>:<span class="id" title="keyword">Prop</span>); <span class="id" title="tactic">assert</span> <span class="id" title="var">P</span> <span class="id" title="keyword">as</span> <span class="id" title="var">Y</span>;[<span class="id" title="tactic">unfold</span> <span class="id" title="var">P</span>; <span class="id" title="tactic">clear</span> <span class="id" title="var">P</span><br/>
 &nbsp;&nbsp;| <span class="id" title="tactic">unfold</span> <span class="id" title="var">P</span> <span class="id" title="tactic">in</span> <span class="id" title="var">Y</span>; <span class="id" title="tactic">clear</span> <span class="id" title="var">P</span>].<br/>
@@ -298,12 +290,6 @@ of Y in the original proof context.
 <span class="id" title="keyword">Ltac</span> <span class="id" title="var">uncurry</span> := <span class="id" title="tactic">repeat</span> <span class="id" title="var">uncurry_step</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Safe version of eexists that checks for existential first
-</div>
-<div class="code">
 <span class="id" title="keyword">Ltac</span> <span class="id" title="var">eexists_safe</span> := <span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span> [ |- <span class="id" title="var">ex</span> <span class="id" title="var">_</span>] =&gt; <span class="id" title="tactic">eexists</span> <span class="id" title="keyword">end</span>.<br/>
 
 <br/>
@@ -394,16 +380,6 @@ into a fresh hypothesis and a variable based on "x".
 &nbsp;&nbsp;<span class="id" title="tactic">inversion</span> <span class="id" title="var">U</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">e</span> <span class="id" title="var">U1</span> <span class="id" title="var">U2</span>]; <span class="id" title="tactic">inversion</span> <span class="id" title="var">U1</span>; <span class="id" title="tactic">subst</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Given a hypothesis H that the length of l = n, for some ACTUAL natural
-number n- not a symbolic n or this won't terminate!! This function then uses the dummy
-variable LG to turn the hypothesis that the length of l = n to an equation equating l to
-an actual list of length n. The name of the equation will be HeqLG (because I can't work
-out how to rename it and I'm getting errors with the remember tactic!)
-</div>
-<div class="code">
 <span class="id" title="keyword">Ltac</span> <span class="id" title="var">listGen</span> <span class="id" title="var">H</span> <span class="id" title="var">l</span> := <span class="id" title="var">remember</span> <span class="id" title="var">l</span> <span class="id" title="keyword">as</span> <span class="id" title="var">LG</span>; <span class="id" title="tactic">repeat</span> (<span class="id" title="tactic">destruct</span> <span class="id" title="var">LG</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">LG</span>|]; <span class="id" title="var">invertChange</span> <span class="id" title="var">H</span>);<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">clear</span> <span class="id" title="var">H</span>.<br/>
 

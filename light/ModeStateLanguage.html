@@ -24,10 +24,11 @@
 <div class="doc">
 This file was written by Colm Bhandal, PhD student, Foundations and Methods group,
 School of Computer Science and Statistics, Trinity College, Dublin, Ireland.
+<div class="paragraph"> </div>
+
+*************************** Standard Imports 
 </div>
 <div class="code">
-
-<br/>
 
 <br/>
 <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.Extras.LibTactics</span>.<br/>
@@ -246,12 +247,6 @@ Every mode state can delay by any amount d.
 <br/>
 
 <br/>
-</div>
-
-<div class="doc">
-A mode state is unstable if it is a transition from one mode to another.
-</div>
-<div class="code">
 <span class="id" title="keyword">Inductive</span> <span class="id" title="var">unstable</span> : <span class="id" title="var">ModeState</span> -&gt; <span class="id" title="keyword">Prop</span> :=<br/>
 &nbsp;&nbsp;| <span class="id" title="var">unstbl</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span> <span class="id" title="var">t</span> : <span class="id" title="var">unstable</span> (&lt;| <span class="id" title="var">m</span> , <span class="id" title="var">m'</span> , <span class="id" title="var">t</span> |&gt;).<br/>
 

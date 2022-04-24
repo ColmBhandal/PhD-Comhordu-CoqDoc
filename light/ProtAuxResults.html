@@ -24,10 +24,11 @@
 <div class="doc">
 This file was written by Colm Bhandal, PhD student, Foundations and Methods group,
 School of Computer Science and Statistics, Trinity College, Dublin, Ireland.
+<div class="paragraph"> </div>
+
+*************************** Standard Imports 
 </div>
 <div class="code">
-
-<br/>
 
 <br/>
 <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.Extras.LibTactics</span>.<br/>
@@ -218,17 +219,8 @@ some cleanup on this until it is in the form of a process body as the source.
 <br/>
 
 <br/>
-</div>
 
-<div class="doc">
-Results about whether certain actions are enabled or not.
-Activation results take a p and a predicate on p, and infer
-that a certain action is available to p.
-<div class="paragraph"> </div>
-
- Activation tactic stuff 
-</div>
-<div class="code">
+<br/>
 
 <br/>
 <span class="id" title="keyword">Ltac</span> <span class="id" title="var">activation_pre_tac</span> :=<br/>
@@ -262,12 +254,6 @@ that a certain action is available to p.
 <span class="id" title="keyword">Ltac</span> <span class="id" title="var">activation_tac</span> := <span class="id" title="var">activation_pre_tac</span>; <span class="id" title="var">activation_post_tac</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Results 
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">bcReady_outProc_out</span> <span class="id" title="var">m</span> <span class="id" title="var">l</span> <span class="id" title="var">p</span> :<br/>
@@ -356,12 +342,6 @@ Results
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">paused_unpause_in</span> <span class="id" title="var">p</span> : <span class="id" title="var">pausedState</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">discActEnabled</span> <span class="id" title="var">p</span> (<span class="id" title="var">chanUnpause</span> *?).<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Versions of activation using sort 
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">paused_unpause_in_sort</span> <span class="id" title="var">d</span> <span class="id" title="var">p</span> : <span class="id" title="var">pausedState</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">sort</span> (<span class="id" title="var">chanUnpause</span> *?) <span class="id" title="var">d</span> <span class="id" title="var">p</span>.<br/>
@@ -373,28 +353,10 @@ Versions of activation using sort
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">tfsListen_unpause_out_sort</span> <span class="id" title="var">d</span> <span class="id" title="var">p</span> : <span class="id" title="var">tfsListenState</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">sort</span> (<span class="id" title="var">chanUnpause</span> *!) <span class="id" title="var">d</span> <span class="id" title="var">p</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Non standard activation results - need a bit more thinking
-</div>
-<div class="code">
 
 <br/>
-</div>
-
-<div class="doc">
-A listener process cannot output on the channel outProc.
-</div>
-<div class="code">
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">listener_outProc_out_not</span> (<span class="id" title="var">p</span> <span class="id" title="var">p'</span> : <span class="id" title="var">ProcTerm</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>) : <br/>
-&nbsp;&nbsp;<span class="id" title="var">listenerState</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">chanOutProc</span> ;! <span class="id" title="var">v</span> -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> -&gt; <span class="id" title="var">False</span>. </div>
-
-<div class="doc">
-Proof sketch: Because none of its constituents can output on said channel.
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="var">listenerState</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">chanOutProc</span> ;! <span class="id" title="var">v</span> -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> -&gt; <span class="id" title="var">False</span>. 
 <br/>
 </div>
 
@@ -404,29 +366,10 @@ A process in the listening state is listening on the channel AN.
 <div class="code">
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">listening_AN_prot</span> <span class="id" title="var">p</span> <span class="id" title="var">v</span> :<br/>
 &nbsp;&nbsp;<span class="id" title="var">listeningStateProt</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">discActEnabled</span> <span class="id" title="var">p</span> (<span class="id" title="var">chanAN</span> ;? <span class="id" title="var">v</span>).<br/>
-</div>
-
-<div class="doc">
-Proof: Lift an activation result from simple level.
-Come up with a general tactic for that lifting?
-</div>
-<div class="code">
 
 <br/>
-</div>
 
-<div class="doc">
-Results which take a transition across processes and derive information on this
-transition based on the nature of the source/derivative process. Fwd tracking takes
-p -PA- a -PA&gt; p' and a predicate on p &amp; infers something about a &amp; p' (usuall the channel
-&amp; tuple type of a and a simple state predicate on p'). Back tracking is similar,
-but works the opposite direction: starting with a predicate on p' and inferring a
-and p from there.
-<div class="paragraph"> </div>
-
- Bidirectional tracking (action/variable matching) 
-</div>
-<div class="code">
+<br/>
 
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">goMsg_gotRange_track</span> <span class="id" title="var">m</span> <span class="id" title="var">m'</span> <span class="id" title="var">l</span> <span class="id" title="var">r</span> <span class="id" title="var">p</span> <span class="id" title="var">p'</span> <span class="id" title="var">a</span> :<br/>
@@ -445,17 +388,8 @@ and p from there.
 &nbsp;&nbsp;<span class="id" title="var">a</span> = <span class="id" title="var">chanAbort</span>;! []. <br/>
 
 <br/>
-</div>
 
-<div class="doc">
-Tactics 
-<div class="paragraph"> </div>
-
- Does some pre-processing on a back-tracking result, in the form of
-some transition followed by two state predicates as premises. TR2 is
-just a hypothesis that needs to be cleared.
-</div>
-<div class="code">
+<br/>
 <span class="id" title="keyword">Ltac</span> <span class="id" title="var">backtrack_pre</span> <span class="id" title="var">p</span> <span class="id" title="var">TR2</span> :=<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">TR1</span> := <span class="id" title="tactic">fresh</span> "TR" <span class="id" title="tactic">in</span><br/>
 &nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">SP1</span> := <span class="id" title="tactic">fresh</span> "SP" <span class="id" title="tactic">in</span> <span class="id" title="keyword">let</span> <span class="id" title="var">SP2</span> := <span class="id" title="tactic">fresh</span> "SP" <span class="id" title="tactic">in</span><br/>
@@ -485,22 +419,10 @@ TR2 is just a hypothesis that needs to be cleared.
 &nbsp;&nbsp;<span class="id" title="var">backtrack_pre</span> <span class="id" title="var">p</span> <span class="id" title="var">TR</span>; <span class="id" title="var">backtrack_post</span> <span class="id" title="var">TR</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Results 
-</div>
-<div class="code">
 
 <br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Back tracking 
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">tfsNext_prev</span> (<span class="id" title="var">p</span> <span class="id" title="var">p'</span> : <span class="id" title="var">ProcTerm</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">DiscAct</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) :<br/>
@@ -529,16 +451,15 @@ Back tracking
 &nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">m</span>, <span class="id" title="var">switchBcState</span> <span class="id" title="var">m</span> <span class="id" title="var">p</span>. <br/>
 
 <br/>
+
+<br/>
 </div>
 
 <div class="doc">
-Fwd tracking 
+Tactics 
 <div class="paragraph"> </div>
 
- Tactics 
-<div class="paragraph"> </div>
-
- This is an activation-esque pre-tactic that instead of proving a dae,
+This is an activation-esque pre-tactic that instead of proving a dae,
 matches to an actual transition, possibly with an eVar.
 </div>
 <div class="code">
@@ -561,12 +482,6 @@ Results
 <br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Conditional fwd tracking 
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">currOK_next</span> (<span class="id" title="var">p</span> <span class="id" title="var">p'</span> : <span class="id" title="var">ProcTerm</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">DiscAct</span>) (<span class="id" title="var">m''</span> : <span class="id" title="var">Mode</span>) :<br/>
@@ -649,30 +564,12 @@ Conditional fwd tracking
 <br/>
 
 <br/>
-</div>
-
-<div class="doc">
-In this section, we would like to collect a number of results asserting
-that the delay relation preserves certain state predicates. Here we will
-write a few examples, but there is no need to write out all the cases,
-especially since the way these things are defined might change. Just
-enough to get a general idea.
-<div class="paragraph"> </div>
-
- Tactics 
-</div>
-<div class="code">
 
 <br/>
 
 <br/>
-</div>
 
-<div class="doc">
-Very similar to existentialise_evals but for a delay transition rather
-than a discrete transition.
-</div>
-<div class="code">
+<br/>
 <span class="id" title="keyword">Ltac</span> <span class="id" title="var">existentialise_evals_del</span> <span class="id" title="var">H</span> :=<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">y1</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span> <span class="id" title="keyword">let</span> <span class="id" title="var">y2</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span><br/>
 &nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">y3</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span> <span class="id" title="keyword">let</span> <span class="id" title="var">y4</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span> <span class="id" title="keyword">let</span> <span class="id" title="var">U</span> := <span class="id" title="tactic">fresh</span> <span class="id" title="tactic">in</span><br/>
@@ -716,12 +613,6 @@ than a discrete transition.
 &nbsp;&nbsp;=&gt; <span class="id" title="var">invertClear</span> <span class="id" title="var">P</span>; <span class="id" title="tactic">subst</span> <span class="id" title="keyword">end</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Simple Predicate Preservation 
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">ovWait_del_pres</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> <span class="id" title="var">p</span> <span class="id" title="var">p'</span> <span class="id" title="var">d</span> :<br/>
@@ -741,25 +632,12 @@ Simple Predicate Preservation
 &nbsp;&nbsp;<span class="id" title="var">switchCurrState</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">p</span> -<span class="id" title="var">PD</span>- <span class="id" title="var">d</span> -<span class="id" title="var">PD</span>&gt; <span class="id" title="var">p'</span> -&gt;<br/>
 &nbsp;&nbsp;<span class="id" title="var">switchCurrState</span> <span class="id" title="var">p'</span>. 
 <br/>
-</div>
 
-<div class="doc">
-Compound Predicate Preservation 
-<div class="paragraph"> </div>
-
- The delay relation preserves the nextSinceState predicate.
-</div>
-<div class="code">
+<br/>
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">del_pres_nextSinceState</span> (<span class="id" title="var">p</span> <span class="id" title="var">p'</span> : <span class="id" title="var">ProcTerm</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>) : <br/>
 &nbsp;&nbsp;<span class="id" title="var">nextSinceState</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">p</span> -<span class="id" title="var">PD</span>- <span class="id" title="var">d</span> -<span class="id" title="var">PD</span>&gt; <span class="id" title="var">p'</span> -&gt; <span class="id" title="var">nextSinceState</span> <span class="id" title="var">p'</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-The delay relation preserves the tfsState predicate.
-</div>
-<div class="code">
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">del_pres_tfsState</span> (<span class="id" title="var">p</span> <span class="id" title="var">p'</span> : <span class="id" title="var">ProcTerm</span>) (<span class="id" title="var">d</span> : <span class="id" title="var">Delay</span>): <br/>
 &nbsp;&nbsp;<span class="id" title="var">tfsState</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">p</span> -<span class="id" title="var">PD</span>- <span class="id" title="var">d</span> -<span class="id" title="var">PD</span>&gt; <span class="id" title="var">p'</span> -&gt; <span class="id" title="var">tfsState</span> <span class="id" title="var">p'</span>.<br/>
 
@@ -851,17 +729,6 @@ The delay relation preserves the tfsState predicate.
 &nbsp;&nbsp;(<span class="id" title="var">p1</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">c</span> ;? <span class="id" title="var">v</span> -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p1'</span> /\ <span class="id" title="var">p3</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">c</span> ;! <span class="id" title="var">v</span> -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p3'</span> /\ <span class="id" title="var">p2</span> = <span class="id" title="var">p2'</span>) \/<br/>
 &nbsp;&nbsp;(<span class="id" title="var">p2</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">c</span> ;! <span class="id" title="var">v</span> -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p2'</span> /\ <span class="id" title="var">p3</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">c</span> ;? <span class="id" title="var">v</span> -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p3'</span> /\ <span class="id" title="var">p1</span> = <span class="id" title="var">p1'</span>) \/<br/>
 &nbsp;&nbsp;(<span class="id" title="var">p2</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">c</span> ;? <span class="id" title="var">v</span> -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p2'</span> /\ <span class="id" title="var">p3</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">c</span> ;! <span class="id" title="var">v</span> -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p3'</span> /\ <span class="id" title="var">p1</span> = <span class="id" title="var">p1'</span>).<br/>
-</div>
-
-<div class="doc">
-Prove more general result including taus and then eliminate the taus by anti-activation
-  on each broadcast, listener and overlap process?
-  Proof: From reachable, we have that p1, p2, p3 are braodcast, overlap, listener
-  protocol components respectively. We then invert on the tau action and eliminate the tau
-  cases for pi -tau-&gt; pi' as they come up because none of the protocol components can ever
-  do a tau (show this elsewhere). Leaving us our goal.
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Ltac</span> <span class="id" title="var">link_partriptau_tac</span> <span class="id" title="var">c</span> <span class="id" title="var">v</span> <span class="id" title="var">U</span> :=<br/>
@@ -880,12 +747,6 @@ Prove more general result including taus and then eliminate the taus by anti-act
 &nbsp;&nbsp;(<span class="id" title="var">p1</span> -<span class="id" title="var">PD</span>- <span class="id" title="var">d</span> -<span class="id" title="var">PD</span>&gt; <span class="id" title="var">p1'</span> /\ <span class="id" title="var">p2</span> -<span class="id" title="var">PD</span>- <span class="id" title="var">d</span>-<span class="id" title="var">PD</span>&gt; <span class="id" title="var">p2'</span> /\ <span class="id" title="var">p3</span> -<span class="id" title="var">PD</span>- <span class="id" title="var">d</span> -<span class="id" title="var">PD</span>&gt; <span class="id" title="var">p3'</span>).<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Proof: Immediate from semantics.
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Ltac</span> <span class="id" title="var">link_partripdel_tac</span> <span class="id" title="var">U</span> :=<br/>
@@ -895,42 +756,14 @@ Proof: Immediate from semantics.
 &nbsp;&nbsp;<span class="id" title="keyword">end</span>.<br/>
 
 <br/>
-</div>
 
-<div class="doc">
-In here we put results that are specific to reachable processes,
-i.e. ones that can be reached by the transition semantics via the
-protocol process. Results about the relationship between states of
-the various components belong here e.g. "If the overlap component
-is in such a state, then the listener is paused".
-<div class="paragraph"> </div>
-
- If a reachable process is paused, then it is in the process of a
-mode switch and vice versa.
-</div>
-<div class="code">
+<br/>
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">paused_switch</span> (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <br/>
 &nbsp;&nbsp;<span class="id" title="var">reachableProt</span> <span class="id" title="var">p</span> -&gt;<br/>
-&nbsp;&nbsp;(<span class="id" title="var">pausedStateProt</span> <span class="id" title="var">p</span> &lt;-&gt; <span class="id" title="var">switchStateProt</span> <span class="id" title="var">p</span>). </div>
-
-<div class="doc">
-Proof: Induction on reachable. Then show that whenever either of these states happens initially, the other happens. Then show that if
-both are true, and a transition happens, then either bother are still true or an unpause happens from switchListenState and both become
-false. This is all evident on inspection of the overlap and listener component diagrams.
-<div class="paragraph"> </div>
-
- If p is reachable from the "protocol" process via
-the semantics, then it has the "shape" of a protocol process.
-</div>
-<div class="code">
+&nbsp;&nbsp;(<span class="id" title="var">pausedStateProt</span> <span class="id" title="var">p</span> &lt;-&gt; <span class="id" title="var">switchStateProt</span> <span class="id" title="var">p</span>). 
+<br/>
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">reachableProt_triple</span> (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) : <br/>
 &nbsp;&nbsp;<span class="id" title="var">reachableProt</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">protocolState</span> <span class="id" title="var">p</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: Induction on reachable and use results that show broadcast, overlap and listener processes are closed under transitions
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Ltac</span> <span class="id" title="var">reachprot</span> <span class="id" title="var">U</span> :=<br/>
@@ -944,74 +777,30 @@ Proof: Induction on reachable and use results that show broadcast, overlap and l
 <br/>
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">bc_outProc_out</span> (<span class="id" title="var">p</span> <span class="id" title="var">p'</span> : <span class="id" title="var">ProcTerm</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>) : <br/>
 &nbsp;&nbsp;<span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">chanOutProc</span> ;! [<span class="id" title="var">baseMode</span> <span class="id" title="var">m</span>, <span class="id" title="var">basePosition</span> <span class="id" title="var">l</span>] -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> -&gt; <span class="id" title="var">broadcastState</span> <span class="id" title="var">p</span> -&gt;<br/>
-&nbsp;&nbsp;<span class="id" title="var">bcReadyState</span> <span class="id" title="var">m</span> <span class="id" title="var">l</span> <span class="id" title="var">p</span> /\ <span class="id" title="var">bcWaitState</span> <span class="id" title="var">m</span> (<span class="id" title="var">period</span> <span class="id" title="var">m</span>) <span class="id" title="var">p'</span>. </div>
-
-<div class="doc">
-Proof: Brute force try all the other possible broadcast states (auto tactic) and this is the only one that matches
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="var">bcReadyState</span> <span class="id" title="var">m</span> <span class="id" title="var">l</span> <span class="id" title="var">p</span> /\ <span class="id" title="var">bcWaitState</span> <span class="id" title="var">m</span> (<span class="id" title="var">period</span> <span class="id" title="var">m</span>) <span class="id" title="var">p'</span>. 
 <br/>
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">ovlp_outProc_out</span> (<span class="id" title="var">p</span> <span class="id" title="var">p'</span> : <span class="id" title="var">ProcTerm</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>) : <br/>
 &nbsp;&nbsp;<span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">chanOutProc</span> ;! [<span class="id" title="var">baseMode</span> <span class="id" title="var">m</span>, <span class="id" title="var">basePosition</span> <span class="id" title="var">l</span>] -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> -&gt; <span class="id" title="var">overlapState</span> <span class="id" title="var">p</span> -&gt;<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">t</span> <span class="id" title="var">f</span>, <span class="id" title="var">ovReadyState</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">l</span> <span class="id" title="var">p</span> /\ <br/>
 &nbsp;&nbsp;<span class="id" title="var">ovWaitState</span> <span class="id" title="var">m</span> (<span class="id" title="var">minusTime</span> <span class="id" title="var">t</span> (<span class="id" title="var">period</span> <span class="id" title="var">m</span>) <span class="id" title="var">f</span>) (<span class="id" title="var">minusTime</span> <span class="id" title="var">t</span> (<span class="id" title="var">period</span> <span class="id" title="var">m</span>) <span class="id" title="var">f</span>) (<span class="id" title="var">period</span> <span class="id" title="var">m</span>) <span class="id" title="var">p'</span>.<br/>
-</div>
 
-<div class="doc">
-Proof: Brute force. Analogous to bc_outProc_out but with overlap states
-<div class="paragraph"> </div>
-
- A protocol process cannot input on the channel outProc.
-</div>
-<div class="code">
+<br/>
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">prot_outProc_in_not</span> (<span class="id" title="var">p</span> <span class="id" title="var">p'</span> : <span class="id" title="var">ProcTerm</span>) (<span class="id" title="var">v</span> : <span class="id" title="var">list</span> <span class="id" title="var">BaseType</span>) : <br/>
-&nbsp;&nbsp;<span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">chanOutProc</span> ;? <span class="id" title="var">v</span> -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> -&gt; <span class="id" title="var">protocolState</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">False</span>. </div>
-
-<div class="doc">
-Proof sketch: Brute force. Because none of its constituents can input on said channel.
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">chanOutProc</span> ;? <span class="id" title="var">v</span> -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> -&gt; <span class="id" title="var">protocolState</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">False</span>. 
 <br/>
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">bc_mCurr_out_not</span> (<span class="id" title="var">p</span> <span class="id" title="var">p'</span> : <span class="id" title="var">ProcTerm</span>) : <br/>
-&nbsp;&nbsp;<span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">chanMCurr</span> ;! [] -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> -&gt; <span class="id" title="var">broadcastState</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">False</span>. </div>
-
-<div class="doc">
-Proof: Brute force analysis of all broadcast states and none of them are enabled on this action
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">chanMCurr</span> ;! [] -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> -&gt; <span class="id" title="var">broadcastState</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">False</span>. 
 <br/>
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">bc_abort_in_not</span> (<span class="id" title="var">p</span> <span class="id" title="var">p'</span> : <span class="id" title="var">ProcTerm</span>) : <br/>
-&nbsp;&nbsp;<span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">chanAbort</span>*? -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> -&gt; <span class="id" title="var">broadcastState</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">False</span>. </div>
-
-<div class="doc">
-Proof: Brute force analysis of all broadcast states and none of them are enabled on this action
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">chanAbort</span>*? -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> -&gt; <span class="id" title="var">broadcastState</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">False</span>. 
 <br/>
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">listen_mCurr_out_not</span> (<span class="id" title="var">p</span> <span class="id" title="var">p'</span> : <span class="id" title="var">ProcTerm</span>) : <br/>
-&nbsp;&nbsp;<span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">chanMCurr</span> ;! [] -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> -&gt; <span class="id" title="var">listenerState</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">False</span>. </div>
-
-<div class="doc">
-Proof: Brute force analysis of all listener states and none of them are enabled on this action
-<div class="paragraph"> </div>
-
- The two cases where the overlap component can output on mCurr.
-</div>
-<div class="code">
+&nbsp;&nbsp;<span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">chanMCurr</span> ;! [] -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> -&gt; <span class="id" title="var">listenerState</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">False</span>. 
+<br/>
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">ovlp_mCurr_out</span> (<span class="id" title="var">p</span> <span class="id" title="var">p'</span> : <span class="id" title="var">ProcTerm</span>) : <br/>
 &nbsp;&nbsp;<span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">chanMCurr</span> ;! [] -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> -&gt; <span class="id" title="var">overlapState</span> <span class="id" title="var">p</span> -&gt;<br/>
 &nbsp;&nbsp;(<span class="id" title="var">switchCurrState</span> <span class="id" title="var">p</span> /\ <span class="id" title="var">switchListenState</span> <span class="id" title="var">p'</span>) \/<br/>
-&nbsp;&nbsp;(<span class="id" title="var">tfsCurrState</span> <span class="id" title="var">p</span> /\ <span class="id" title="var">tfsBcState</span> <span class="id" title="var">p'</span>). </div>
-
-<div class="doc">
-Proof: Brute force analysis on overlap states and show that these are the only two matches
-</div>
-<div class="code">
-
+&nbsp;&nbsp;(<span class="id" title="var">tfsCurrState</span> <span class="id" title="var">p</span> /\ <span class="id" title="var">tfsBcState</span> <span class="id" title="var">p'</span>). 
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">bc_abort_out_not</span> (<span class="id" title="var">p</span> <span class="id" title="var">p'</span> : <span class="id" title="var">ProcTerm</span>) : <br/>
 &nbsp;&nbsp;<span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">chanAbort</span>;! [] -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> -&gt; <span class="id" title="var">broadcastState</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">False</span>.<br/>
@@ -1021,24 +810,12 @@ Proof: Brute force analysis on overlap states and show that these are the only t
 &nbsp;&nbsp;<span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">chanAbort</span>;! [] -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> -&gt; <span class="id" title="var">overlapState</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">False</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-The two cases where the overlap component can output on mCurr.
-</div>
-<div class="code">
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">ovlp_abort_in</span> (<span class="id" title="var">p</span> <span class="id" title="var">p'</span> : <span class="id" title="var">ProcTerm</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) :<br/>
 &nbsp;&nbsp;<span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">chanAbort</span>*? -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> -&gt; <span class="id" title="var">overlapState</span> <span class="id" title="var">p</span> -&gt;<br/>
 &nbsp;&nbsp;(<span class="id" title="var">dormantState</span> <span class="id" title="var">p</span> /\ <span class="id" title="var">dormantState</span> <span class="id" title="var">p'</span>) \/<br/>
 &nbsp;&nbsp;<span class="id" title="var">ovAbortState</span> <span class="id" title="var">p'</span> \/<br/>
 &nbsp;&nbsp;(<span class="id" title="var">tfsCurrState</span> <span class="id" title="var">p</span> /\ <span class="id" title="var">tfsCurrState</span> <span class="id" title="var">p'</span>) \/<br/>
-&nbsp;&nbsp;(<span class="id" title="var">tfsListenState</span> <span class="id" title="var">p</span> /\ <span class="id" title="var">tfsListenState</span> <span class="id" title="var">p'</span>). </div>
-
-<div class="doc">
-Proof: Brute force analysis of overlap states and these are the only ones that fit the transition
-</div>
-<div class="code">
-
+&nbsp;&nbsp;(<span class="id" title="var">tfsListenState</span> <span class="id" title="var">p</span> /\ <span class="id" title="var">tfsListenState</span> <span class="id" title="var">p'</span>). 
 <br/>
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">bc_mStable_out_not</span> (<span class="id" title="var">p</span> <span class="id" title="var">p'</span> : <span class="id" title="var">ProcTerm</span>) : <br/>
 &nbsp;&nbsp;<span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">chanMStable</span>*! -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> -&gt; <span class="id" title="var">broadcastState</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">False</span>. <br/>
@@ -1050,12 +827,6 @@ Proof: Brute force analysis of overlap states and these are the only ones that f
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">gotMsg_state</span> <span class="id" title="var">p</span> <span class="id" title="var">p'</span> <span class="id" title="var">m</span> <span class="id" title="var">l</span> :<br/>
 &nbsp;&nbsp;<span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">chanInProc</span>;? [<span class="id" title="var">baseMode</span> <span class="id" title="var">m</span>, <span class="id" title="var">basePosition</span> <span class="id" title="var">l</span>] -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> -&gt; <span class="id" title="var">gotMsgStateProt</span> <span class="id" title="var">m</span> <span class="id" title="var">l</span> <span class="id" title="var">p'</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: p is a protocol process, so can be decomposed into p1 | p2 | p3. Brute force on p1, p2 shows that these don't match. Brute force analysis on listener states shows that the only state that fits for p3 is gotMsgState.
-</div>
-<div class="code">
 
 <br/>
 

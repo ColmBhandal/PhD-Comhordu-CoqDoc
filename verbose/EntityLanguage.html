@@ -26,10 +26,11 @@
 <div class="doc">
 This file was written by Colm Bhandal, PhD student, Foundations and Methods group,
 School of Computer Science and Statistics, Trinity College, Dublin, Ireland.
+<div class="paragraph"> </div>
+
+*************************** Standard Imports 
 </div>
 <div class="code">
-
-<br/>
 
 <br/>
 <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.Extras.LibTactics</span>.<br/>
@@ -300,13 +301,6 @@ If the message sent was within range, then it gets input. This can be proven not
 &nbsp;&nbsp;<span class="id" title="keyword">where</span> &quot;e1 -EA- a -&gt;&gt; e2" := (<span class="id" title="var">stepDiscEnt</span> <span class="id" title="var">e1</span> <span class="id" title="var">a</span> <span class="id" title="var">e2</span>).<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-An entity e is discrete action enabled for the discrete action a iff
-there is some entity e' such that e transitions to e' via a.
-</div>
-<div class="code">
 <span class="id" title="keyword">Definition</span> <span class="id" title="var">discActEnabledEnt</span> (<span class="id" title="var">e</span> : <span class="id" title="var">Entity</span>) (<span class="id" title="var">a</span> : <span class="id" title="var">ActDiscEnt</span>) :=<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">e'</span>, <span class="id" title="var">e</span> -<span class="id" title="var">EA</span>- <span class="id" title="var">a</span> -&gt;&gt; <span class="id" title="var">e'</span>.<br/>
 
@@ -368,13 +362,6 @@ be capable of synchronisation at any point during the delay.
 &nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">h</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">li</span> <span class="id" title="var">lo</span> <span class="id" title="var">ln</span>].<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-If the current mode has changed across a tau transition, then the software process
-output on mCurr, and the mode state input on the same channel.
-</div>
-<div class="code">
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">curr_switch_proc</span> (<span class="id" title="var">p</span> <span class="id" title="var">p'</span> : <span class="id" title="var">ProcTerm</span>) (<span class="id" title="var">l</span> <span class="id" title="var">l'</span> : <span class="id" title="var">Position</span>) (<span class="id" title="var">h</span> <span class="id" title="var">h'</span> : <span class="id" title="var">Interface</span>) (<span class="id" title="var">k</span> <span class="id" title="var">k'</span> : <span class="id" title="var">ModeState</span>) :<br/>
 &nbsp;&nbsp;[|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|] -<span class="id" title="var">EA</span>- <span class="id" title="var">aeTau</span> -&gt;&gt; [|<span class="id" title="var">p'</span>, <span class="id" title="var">l'</span>, <span class="id" title="var">h'</span>, <span class="id" title="var">k'</span>|] -&gt; <span class="id" title="var">currModeMState</span> <span class="id" title="var">k</span> &lt;&gt; <span class="id" title="var">currModeMState</span> <span class="id" title="var">k'</span> -&gt;<br/>
 &nbsp;&nbsp;<span class="id" title="var">p</span> -<span class="id" title="var">PA</span>- <span class="id" title="var">chanMCurr</span> *! -<span class="id" title="var">PA</span>&gt; <span class="id" title="var">p'</span> /\ <span class="id" title="var">k</span> -<span class="id" title="var">ms</span>- <span class="id" title="var">chanMCurr</span> @? -<span class="id" title="var">ms</span>&gt; <span class="id" title="var">k'</span>.<br/>
@@ -414,22 +401,10 @@ An entity can always either input or ignore a message.
 <br/>
 <span class="id" title="keyword">Conjecture</span> <span class="id" title="var">dec_compatible</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">e1</span> <span class="id" title="var">e2</span> : <span class="id" title="var">Entity</span>),<br/>
 &nbsp;&nbsp;<span class="id" title="var">e1</span> ~~ <span class="id" title="var">e2</span> \/ ~(<span class="id" title="var">e1</span> ~~<span class="id" title="var">e2</span>).<br/>
-</div>
-
-<div class="doc">
-Proof: Obvious
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Conjecture</span> <span class="id" title="var">currMode_ent_mState</span> : <span class="id" title="keyword">forall</span> (<span class="id" title="var">p</span> : <span class="id" title="var">ProcTerm</span>) (<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>) (<span class="id" title="var">h</span> : <span class="id" title="var">Interface</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">k</span> : <span class="id" title="var">ModeState</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>), <span class="id" title="var">currModeEnt</span> ([|<span class="id" title="var">p</span>, <span class="id" title="var">l</span>, <span class="id" title="var">h</span>, <span class="id" title="var">k</span>|]) = <span class="id" title="var">m</span> -&gt; <span class="id" title="var">currModeMState</span> <span class="id" title="var">k</span> = <span class="id" title="var">m</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: Obvious from definitions
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">link_ent_inter_disc</span> <span class="id" title="var">p</span> <span class="id" title="var">p'</span> <span class="id" title="var">l</span> <span class="id" title="var">l'</span> <span class="id" title="var">h</span> <span class="id" title="var">h'</span> <span class="id" title="var">k</span> <span class="id" title="var">k'</span> <span class="id" title="var">a</span> :<br/>
@@ -508,13 +483,7 @@ Proof: Obvious from definitions
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">timeSplit_ent</span> <span class="id" title="var">e</span> <span class="id" title="var">e''</span> <span class="id" title="var">d</span> <span class="id" title="var">d'</span> <span class="id" title="var">d''</span> :<br/>
 &nbsp;&nbsp;<span class="id" title="var">e</span> -<span class="id" title="var">ED</span>- <span class="id" title="var">d''</span> -&gt;&gt; <span class="id" title="var">e''</span> -&gt; <span class="id" title="var">d''</span> = <span class="id" title="var">d</span> +<span class="id" title="var">d</span>+ <span class="id" title="var">d'</span> -&gt;<br/>
-&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">e'</span>, <span class="id" title="var">e</span> -<span class="id" title="var">ED</span>- <span class="id" title="var">d</span> -&gt;&gt; <span class="id" title="var">e'</span> /\ <span class="id" title="var">e'</span> -<span class="id" title="var">ED</span>- <span class="id" title="var">d'</span> -&gt;&gt; <span class="id" title="var">e''</span>. <span class="id" title="var">Admitted</span>. </div>
-
-<div class="doc">
-Proof: This should follow from time split properties of the underlying components. Also, it would have to be shown that the noSynch predicate would still hold for the intermediate entity component e', with the time parameter changed.
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">e'</span>, <span class="id" title="var">e</span> -<span class="id" title="var">ED</span>- <span class="id" title="var">d</span> -&gt;&gt; <span class="id" title="var">e'</span> /\ <span class="id" title="var">e'</span> -<span class="id" title="var">ED</span>- <span class="id" title="var">d'</span> -&gt;&gt; <span class="id" title="var">e''</span>. <span class="id" title="var">Admitted</span>. 
 <br/>
 
 <br/>
@@ -543,12 +512,6 @@ Repeatedly destructs all entities according to the names given.
 <span class="id" title="keyword">Ltac</span> <span class="id" title="var">destrEnts</span> <span class="id" title="var">p</span> <span class="id" title="var">l</span> <span class="id" title="var">h</span> <span class="id" title="var">k</span> := <span class="id" title="tactic">repeat</span> <span class="id" title="var">destrEnt</span> <span class="id" title="var">p</span> <span class="id" title="var">l</span> <span class="id" title="var">h</span> <span class="id" title="var">k</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Destructs any entities it finds. May have also be searched for as destr_ents.
-</div>
-<div class="code">
 <span class="id" title="keyword">Ltac</span> <span class="id" title="var">destrEnts_norm</span> := <span class="id" title="keyword">let</span> <span class="id" title="var">p</span> := <span class="id" title="tactic">fresh</span> "p" <span class="id" title="tactic">in</span> <span class="id" title="keyword">let</span> <span class="id" title="var">l</span> := <span class="id" title="tactic">fresh</span> "l" <span class="id" title="tactic">in</span><br/>
 &nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">h</span> := <span class="id" title="tactic">fresh</span> "h" <span class="id" title="tactic">in</span> <span class="id" title="keyword">let</span> <span class="id" title="var">k</span> := <span class="id" title="tactic">fresh</span> "k" <span class="id" title="tactic">in</span> <span class="id" title="var">destrEnts</span> <span class="id" title="var">p</span> <span class="id" title="var">l</span> <span class="id" title="var">h</span> <span class="id" title="var">k</span>.<br/>
 
@@ -592,13 +555,6 @@ the components of the entity, via the first action a matched in the hypotheses.
 &nbsp;&nbsp;<span class="id" title="tactic">clear</span> <span class="id" title="var">X</span>.<br/>
 
 <br/>
-</div>
-
-<div class="doc">
-Takes a delay hypothesis and inverts to give that noSyncNow holds for
-the components of the entity in question.
-</div>
-<div class="code">
 <span class="id" title="keyword">Ltac</span> <span class="id" title="var">noSyncNow_tac</span> := <span class="id" title="keyword">match</span> <span class="id" title="keyword">goal</span> <span class="id" title="keyword">with</span><br/>
 &nbsp;&nbsp;[<span class="id" title="var">A</span> : [|?<span class="id" title="var">p</span>, <span class="id" title="var">_</span>, ?<span class="id" title="var">h</span>, ?<span class="id" title="var">k</span>|] -<span class="id" title="var">ED</span>- ?<span class="id" title="var">d</span> -&gt;&gt; <span class="id" title="var">_</span> |- <span class="id" title="var">_</span>] =&gt;<br/>
 &nbsp;&nbsp;<span class="id" title="keyword">let</span> <span class="id" title="var">NS</span> := <span class="id" title="tactic">fresh</span> "NS" <span class="id" title="tactic">in</span><br/>

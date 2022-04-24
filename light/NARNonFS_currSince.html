@@ -24,10 +24,11 @@
 <div class="doc">
 This file was written by Colm Bhandal, PhD student, Foundations and Methods group,
 School of Computer Science and Statistics, Trinity College, Dublin, Ireland.
+<div class="paragraph"> </div>
+
+*************************** Standard Imports 
 </div>
 <div class="code">
-
-<br/>
 
 <br/>
 <span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">ComhCoq.Extras.LibTactics</span>.<br/>
@@ -64,80 +65,26 @@ School of Computer Science and Statistics, Trinity College, Dublin, Ireland.
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">ovReady_nextSince_pending</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">t</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">l</span> : <span class="id" title="var">Position</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) :<br/>
 &nbsp;&nbsp;<span class="id" title="var">ovReadyStateNet</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">l</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="var">pending</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> \/ <span class="id" title="tactic">exists</span> <span class="id" title="var">t</span>, <span class="id" title="var">nextSince</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: Induction on reachable.
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Lemma</span> <span class="id" title="var">pending_urgent</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">n'</span> <span class="id" title="var">p</span> <span class="id" title="var">d</span> :<br/>
-&nbsp;&nbsp;<span class="id" title="var">pending</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">False</span>. </div>
-
-<div class="doc">
-Proof: Induction on pending. BaseType case: ovWait is ready to input a position,
-and so is urgent. This readiness is not perverted by any other discreet action,
-so the ovWait-ovWait inductive case follows. Both inductive cases with ovReady
-as the current state follows immediately from the fact that ovWaitState is
-itself urgent
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="var">pending</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span> -&gt; <span class="id" title="var">n</span> -<span class="id" title="var">ND</span>- <span class="id" title="var">d</span> -<span class="id" title="var">ND</span>&gt; <span class="id" title="var">n'</span> -&gt; <span class="id" title="var">False</span>. 
 <br/>
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">ovWait_zero_nextSince</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">t</span> <span class="id" title="var">y</span> : <span class="id" title="keyword">Time</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) : <span class="id" title="var">ovWaitStateNet</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">zeroTime</span> <span class="id" title="var">y</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt;<br/>
-&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">t</span>, <span class="id" title="var">nextSince</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span>. </div>
-
-<div class="doc">
-Proof: Induction on reachable. BaseType case fails. For the inductive case(s),
-case analyse- is the last state ovWait? If yes, then the result follows easily
-by induction. If not, then use (...ovWait_prev...) to get the possible shapes of
-the previous state. Well, it can't be initState m, because this would give us
-x = tw(m0, m) + period m, which is greater than 0. But x = 0. So our previous
-state must have been ovReady m (t + period m) l. Then by (ovReady_nextSince_pending),
-the previous state was either pending or nextSince. In either case, there is a
-constructor of nextSince that allows us to prove nextSince holds for the current state.
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">t</span>, <span class="id" title="var">nextSince</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span>. 
 <br/>
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">switchBc_nextSince</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) : <span class="id" title="var">switchBcStateNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; <span class="id" title="tactic">exists</span> <span class="id" title="var">t</span>, <span class="id" title="var">nextSince</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: By induction on reachable. Eliminate the easy cases, leaving us with the
-discrete inductive case with the previous state not switchBcState. Then we use
-(...switchBc_prev...) to give us ovWait m t 0 y as the predecessor state- we know
-the parameter x is 0 because the transition would have to have been enabled.
-Then by (ovWait_nextSince_pending &amp; elimination of the pending case somehow) we have that the previous state was nextSince and so by
-application of the nextSince discrete constructor so is this one.
-</div>
-<div class="code">
 
 <br/>
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">switchCurr_nextSince</span> (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>)<br/>
 &nbsp;&nbsp;(<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) : <span class="id" title="var">switchCurrStateNet</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt;<br/>
-&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">t</span>, <span class="id" title="var">nextSince</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span>. </div>
-
-<div class="doc">
-Proof: By induction on reachable and (...switchCurr_prev...) to give us switchBc m
-as the predecessor state. Then by (swtichBc_nextSince) and application of the nextSince
-discrete constructor our results follows.
-</div>
-<div class="code">
-
+&nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">t</span>, <span class="id" title="var">nextSince</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span>. 
 <br/>
 <span class="id" title="keyword">Theorem</span> <span class="id" title="var">nonFS_currSince</span> (<span class="id" title="var">m</span> : <span class="id" title="var">Mode</span>) (<span class="id" title="var">i</span> : <span class="id" title="var">nat</span>) (<span class="id" title="var">n</span> : <span class="id" title="var">Network</span>) <br/>
 &nbsp;&nbsp;(<span class="id" title="var">p</span> : <span class="id" title="var">reachableNet</span> <span class="id" title="var">n</span>) : <span class="id" title="var">currModeNet</span> <span class="id" title="var">m</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> -&gt; ~<span class="id" title="var">failSafe</span> <span class="id" title="var">m</span> -&gt;<br/>
 &nbsp;&nbsp;<span class="id" title="tactic">exists</span> <span class="id" title="var">t</span>, <span class="id" title="var">currSince</span> <span class="id" title="var">m</span> <span class="id" title="var">t</span> <span class="id" title="var">i</span> <span class="id" title="var">n</span> <span class="id" title="var">p</span>.<br/>
-</div>
-
-<div class="doc">
-Proof: Induction on the proof of reachability of n.
-</div>
-<div class="code">
 </div>
 <hr/>This page has been generated by <a href="http://coq.inria.fr/">coqdoc</a>
 </div>
